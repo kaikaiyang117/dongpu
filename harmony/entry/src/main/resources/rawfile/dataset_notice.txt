@@ -1,0 +1,7 @@
+Exercise names, categories, equipment metadata and instructions are derived from:
+https://github.com/hasaneyldrm/exercises-dataset
+
+Dataset text and structure: MIT License, Copyright (c) 2026 Hasan Emir Yıldırım.
+This development build packages all 1324 original 180x180 thumbnails and derived 12 FPS H.264 MP4 demonstrations for local testing.
+Exercise media: © Gym visual — https://gymvisual.com/
+The media requires separate permission from Gym visual before distribution.
