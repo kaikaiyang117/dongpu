@@ -21,6 +21,8 @@ export interface ExerciseRecord {
   recommended: boolean;
 }
 
+const HOME_EQUIPMENT: string[] = ['自重', '哑铃', '弹力带', '壶铃', '瑜伽垫'];
+
 export class Exercise {
   id: string;
   name: string;
@@ -48,5 +50,25 @@ export class Exercise {
 
   get tip(): string {
     return this.steps[0] ?? '';
+  }
+
+  get stepsZh(): string[] {
+    return this.steps;
+  }
+
+  get cautionsZh(): string {
+    return this.caution;
+  }
+
+  get equipmentSetupZh(): string {
+    return `调整${this.equipment}到舒适且稳定的位置，先用轻重量确认动作路径。`;
+  }
+
+  get gymEligible(): boolean {
+    return !HOME_EQUIPMENT.includes(this.equipment);
+  }
+
+  get contentApproved(): boolean {
+    return this.recommended;
   }
 }
