@@ -1,53 +1,31 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## Project Structure
 
-`harmony/` is the production HarmonyOS NEXT app (ArkTS, ArkUI, ArkData). Keep app composition in `entry/src/main/ets/app`, screens under `features/`, reusable UI in `components/`, business models in `domain/` and `model/`, repositories/database code in `data/`, and bundled catalog/media in `entry/src/main/resources`. `harmony/tools/` contains catalog and media generation scripts. `prototype/` is the browser-based visual prototype; its app-owned UI lives in `src/`. Product requirements, research, and reference screenshots are in `docs/`, `design/`, and `docs/效果图/`. There is currently no dedicated Harmony unit-test tree.
+`harmony/` contains the production HarmonyOS NEXT app. ArkTS source lives in `harmony/entry/src/main/ets/`: app composition in `app/`, screens in `features/`, shared UI in `components/`, domain models in `domain/`, and persistence in `data/`. Catalog JSON and exercise media are under `harmony/entry/src/main/resources/`; maintenance scripts are in `harmony/tools/`. `prototype/` is the browser visual prototype. Product requirements, implementation plans, and reference screenshots live in `docs/` and `docs/效果图/`.
 
-## V2 Product Source of Truth
+## V2 Source of Truth
 
-Before implementing V2 features, read these files in order:
+For V2 work, read these documents in order: `docs/PRODUCT_SPEC.md`, `docs/DATABASE_DESIGN.md`, `docs/PAGE_STRUCTURE.md`, `docs/AGENT_IMPLEMENTATION_PLAN.md`, then `docs/IMPLEMENTATION_REFERENCE.md`. Earlier documents win on conflicts. The product is goal-driven fat-loss and strength training; the old A/B flow is compatibility-only. Keep persistence and snapshots in repositories, aggregation/trends/recommendations in services, and SQL out of UI.
 
-1. `docs/PRODUCT_SPEC.md`
-2. `docs/DATABASE_DESIGN.md`
-3. `docs/PAGE_STRUCTURE.md`
-4. `docs/AGENT_IMPLEMENTATION_PLAN.md`
-5. `docs/IMPLEMENTATION_REFERENCE.md`
+## Build and Test
 
-If requirements conflict, the earlier document wins. `IMPLEMENTATION_REFERENCE.md` documents the existing V1 implementation and compatibility constraints; it is not the V2 product decision source.
-
-The V2 product is goal-driven fat-loss and strength-training execution. Do not continue the old A/B beginner-product assumptions unless explicitly working on legacy compatibility.
-
-## Build, Test, and Development Commands
-
-From `harmony/`, build the signed debug HAP with:
+From `harmony/`, build the signed debug HAP:
 
 ```bash
 DEVECO_SDK_HOME="$PWD/.sdk" /Applications/DevEco-Studio.app/Contents/tools/hvigor/bin/hvigorw assembleHap --mode module -p product=default -p module=entry@default -p buildMode=debug --no-daemon
 ```
 
-Regenerate the catalog after updating upstream data with `node tools/sync_exercise_catalog.mjs`; use `tools/transcode_exercise_media.sh` for media conversion. The HAP is written to `entry/build/default/outputs/default/entry-default-signed.hap`.
+The artifact is `harmony/entry/build/default/outputs/default/entry-default-signed.hap`. Verify affected flows on an emulator or Mate 60 Pro. Database changes require both fresh-install and V1→V2 migration checks, including restart, active-workout recovery, rest countdown, and history when applicable. Prototype checks run from `prototype/` with `npm run build`, `npm run test:runtime`, and `npm run test:sites`.
 
-From `prototype/`, use `npm run dev` for local preview, `npm run build` for a production build, `npm run test:runtime` for Playwright checks, and `npm run test:sites` for the Sites worker tests. Run `npm run check:runtime` before preview or handoff.
+## Style and Naming
 
-## Coding Style & Naming Conventions
+Use two-space indentation, semicolons, explicit ArkTS types, and small feature-local components. Classes/components use `PascalCase`, methods and variables `camelCase`, and constants `UPPER_SNAKE_CASE`. Preserve theme tokens. Prefer phase-sized changes and keep legacy compatibility explicit.
 
-Use two-space indentation, semicolons, explicit ArkTS types, and small feature-local components. Name components and classes in `PascalCase`, methods and variables in `camelCase`, and constants in `UPPER_SNAKE_CASE`. Keep repositories responsible for persistence and snapshots; keep route/UI composition in `AppRoot` and feature components. Preserve the existing theme tokens instead of scattering color literals.
+## Commits and Pull Requests
 
-For V2, keep cross-domain aggregation and trend/recommendation rules in service classes rather than adding more business logic to `AppRoot`. UI must not execute SQL directly.
+Use short imperative conventional prefixes such as `feat:`, `fix:`, and `docs:`. PRs should describe user-visible behavior and affected modules, link an issue when available, list verification commands, and attach emulator screenshots for UI changes. Do not commit generated build output, credentials, or signing keys.
 
-## Testing Guidelines
+## Security
 
-For prototype changes, add or update Playwright tests using descriptive `.spec` names and run the relevant npm test command. For Harmony changes, require a successful ArkTS type check/HAP build and exercise the affected flow on an emulator or Mate 60 Pro; verify restart, active-workout, rest countdown, and history behavior when state persistence is touched.
-
-Database changes require both fresh-install and V1-to-V2 migration verification. New-install success is not a substitute for migration testing.
-
-## Commit & Pull Request Guidelines
-
-Use short imperative messages with a conventional prefix, matching history (for example, `feat: ...`, `fix: ...`, or `docs: ...`). Pull requests should explain the user-visible behavior and affected modules, link an issue when one exists, list build/test commands run, and include emulator screenshots or recordings for UI changes. Keep generated build output, signing material, and secrets out of commits.
-
-Prefer phase-sized commits from `docs/AGENT_IMPLEMENTATION_PLAN.md`; do not combine database migration, full navigation redesign, nutrition, and program-engine changes into one large unreviewable commit.
-
-## Security & Configuration Tips
-
-Signing configuration is local to DevEco Studio; never commit credentials or private keys. Review upstream dataset licenses and preserve required Gym visual attribution before distributing catalog media.
+Keep signing configuration local. Review upstream catalog/media licensing and retain required attribution before distribution.
