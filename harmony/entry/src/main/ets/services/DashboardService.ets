@@ -86,8 +86,10 @@ export class DashboardService {
     const todayWorkout: ProgramWorkoutV2 | undefined = await this.loadTodayWorkout(goal);
     const weightTrend: WeightTrend = TrendService.calculateWeightTrend(measurements, now);
     const waistTrend: WaistTrend = TrendService.calculateWaistTrend(measurements, now);
-    const workoutDone: boolean = await this.workoutRepository.hasCompletedRequiredToday(
-      dayStart.getTime(), dayEnd.getTime());
+    const programState = await this.goalRepository.getActiveProgramState();
+    const workoutDone: boolean = goal !== undefined && programState !== undefined ?
+      await this.workoutRepository.hasCompletedRequiredToday(dayStart.getTime(), dayEnd.getTime(), goal.id,
+        programState.programId) : false;
     const checklist: DashboardChecklistItem[] = this.buildChecklist(goal, latestWeight, dayStart, nutrition, activity,
       workoutDone);
     return new DashboardViewModel(goal, latestWeight, weightTrend, waistTrend, nutrition, activity, todayWorkout, checklist,

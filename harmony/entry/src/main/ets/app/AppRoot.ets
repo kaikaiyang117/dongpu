@@ -13,7 +13,6 @@ import { WorkoutRepository } from '../data/repository/WorkoutRepository';
 import { NutritionRepository } from '../data/repository/NutritionRepository';
 import { ProgramRepository } from '../data/repository/ProgramRepository';
 import { DashboardService, DashboardViewModel } from '../services/DashboardService';
-import { TrendService } from '../services/TrendService';
 import { ProgramExercise, ProgramWorkout, recommendedWorkout } from '../domain/program/ProgramModels';
 import { WorkoutExerciseRecord, WorkoutPhase, WorkoutSession, WorkoutStatus, ExerciseProgress } from '../domain/workout/WorkoutModels';
 import { CustomTrainingFlow } from '../features/custom/CustomTrainingFlow';
@@ -23,6 +22,7 @@ import { ExerciseLibraryPage } from '../features/exercise/ExerciseLibraryPage';
 import { HistoryPage } from '../features/history/HistoryPage';
 import { WorkoutHistoryDetailPage } from '../features/history/WorkoutHistoryDetailPage';
 import { OnboardingPage } from '../features/onboarding/OnboardingPage';
+import { V2UpgradePage } from '../features/onboarding/V2UpgradePage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { TrainingHomePage } from '../features/training/TrainingHomePage';
 import { ExerciseCompletedPage } from '../features/training/ExerciseCompletedPage';
@@ -45,13 +45,16 @@ import { FitnessGoal } from '../domain/goal/GoalModels';
 import { BodyMeasurement } from '../domain/body/BodyModels';
 import { FoodEntry, NutritionSummary, QuickFood } from '../domain/nutrition/NutritionModels';
 import { DailyActivity } from '../domain/activity/ActivityModels';
+import { OnboardingService } from '../services/OnboardingService';
+import { WeeklyReviewService, WeeklyReviewViewModel } from '../services/WeeklyReviewService';
+import { TrendService } from '../services/TrendService';
 
 @Component
 export struct AppRoot {
   @State exercises: Exercise[] = [];
   @State route: AppRoute = AppRoute.Loading;
-  @State weeklyFrequency: number = 2;
-  @State selectedFrequency: number = 2;
+  @State weeklyFrequency: number = 3;
+  @State selectedFrequency: number = 3;
   @State weeklyCompleted: number = 0;
   @State nextWorkoutCode: string = 'A';
   @State weightUnit: string = 'kg';
@@ -68,8 +71,16 @@ export struct AppRoot {
   @State operationError: string = '';
   @State weeklyProteinDays: number = 0;
   @State weeklyAverageCalories: number = 0;
+  @State weeklyNutritionLoggedDays: number = 0;
   @State weeklyAverageSteps: number = 0;
+  @State weeklyActivityLoggedDays: number = 0;
+  @State weeklyTotalWorkouts: number = 0;
+  @State weeklyRequiredWorkouts: number = 0;
+  @State weeklyOptionalWorkouts: number = 0;
   @State weeklyStrengthHighlights: ExerciseProgress[] = [];
+  @State upgradeHeightCm: number = 0;
+  @State upgradeWeightKg: number = 0;
+  @State upgradeFrequency: number = 3;
   @State dashboard: DashboardViewModel = new DashboardViewModel();
   @State nutritionSummary: NutritionSummary = new NutritionSummary();
   @State nutritionQuickFoods: QuickFood[] = [];
@@ -99,6 +110,8 @@ export struct AppRoot {
   private programRepository: ProgramRepository | undefined;
   private programWorkoutRecords: ProgramWorkoutV2[] = [];
   private dashboardService: DashboardService | undefined;
+  private onboardingService: OnboardingService | undefined;
+  private weeklyReviewService: WeeklyReviewService | undefined;
   private programCatalogValid: boolean = false;
 
   aboutToAppear(): void {
@@ -116,6 +129,8 @@ export struct AppRoot {
       this.nutritionRepository = new NutritionRepository(hostContext);
       this.programRepository = new ProgramRepository(hostContext);
       this.dashboardService = new DashboardService(hostContext);
+      this.onboardingService = new OnboardingService(hostContext);
+      this.weeklyReviewService = new WeeklyReviewService(hostContext);
       this.initializeApp();
     }
   }
@@ -125,21 +140,46 @@ export struct AppRoot {
       this.profileRepository === undefined) {
       return;
     }
+    let legacyOnboardingCompleted: boolean = false;
     try {
       const settings = await this.settingsRepository.getSettings();
+      legacyOnboardingCompleted = settings.onboardingCompleted;
       const profile: UserProfile | undefined = await this.profileRepository.getProfile();
       const programState = await this.workoutRepository.getProgramState();
       const activeWorkout: WorkoutSession | undefined = await this.workoutRepository.getActiveWorkout();
+      this.applyActiveWorkout(activeWorkout);
       await this.loadCustomPlan();
-      this.weeklyFrequency = settings.weeklyFrequency;
-      this.selectedFrequency = settings.weeklyFrequency;
+      this.weeklyFrequency = settings.weeklyFrequency === 4 ? 4 : 3;
+      this.selectedFrequency = this.weeklyFrequency;
       this.weightUnit = settings.weightUnit;
       if (this.goalRepository !== undefined) {
         this.activeGoal = await this.goalRepository.getActiveGoal() ?? new FitnessGoal();
       }
+      const latestMeasurement: BodyMeasurement | undefined = this.bodyRepository === undefined ? undefined :
+        await this.bodyRepository.getLatestMeasurement();
+      this.upgradeWeightKg = latestMeasurement?.weightKg ?? 0;
+      this.upgradeFrequency = settings.weeklyFrequency === 4 ? 4 : 3;
+      if (this.onboardingService !== undefined) {
+        const readiness = await this.onboardingService.getReadiness();
+        const legacyCompleted: boolean = await this.onboardingService.isLegacyOnboardingCompleted();
+        if (readiness.ready) {
+          await this.normalizeV2GoalFrequency();
+          await this.loadActiveProgram();
+          await this.refreshDashboard();
+          this.route = AppRoute.Dashboard;
+          return;
+        }
+        if (legacyCompleted) {
+          const existingProfile: UserProfile | undefined = await this.profileRepository.getProfile();
+          this.upgradeHeightCm = existingProfile?.heightCm ?? 0;
+          this.route = AppRoute.V2Upgrade;
+          return;
+        }
+        this.route = AppRoute.Onboarding;
+        return;
+      }
       this.weeklyCompleted = programState.weeklyCompleted;
       this.nextWorkoutCode = programState.nextWorkoutCode;
-      this.applyActiveWorkout(activeWorkout);
       if (profile?.onboardingCompleted ?? settings.onboardingCompleted) {
         await this.loadActiveProgram();
         await this.refreshDashboard();
@@ -148,8 +188,17 @@ export struct AppRoot {
         this.route = AppRoute.Onboarding;
       }
     } catch (_) {
-      this.route = AppRoute.Onboarding;
+      this.route = legacyOnboardingCompleted ? AppRoute.V2Upgrade : AppRoute.Onboarding;
     }
+  }
+
+  private async normalizeV2GoalFrequency(): Promise<void> {
+    if (this.goalRepository === undefined || this.activeGoal.id <= 0) return;
+    if (this.activeGoal.trainingFrequencyMin === 3 || this.activeGoal.trainingFrequencyMin === 4) return;
+    await this.goalRepository.updateActiveTrainingPreference(3, this.activeGoal.trainingLocation,
+      this.activeGoal.dedicatedLegDay, this.activeGoal.preferMachines);
+    this.activeGoal = await this.goalRepository.getActiveGoal() ?? this.activeGoal;
+    this.weeklyFrequency = 3;
   }
 
   private async refreshDashboard(): Promise<void> {
@@ -157,34 +206,26 @@ export struct AppRoot {
       return;
     }
     this.dashboard = await this.dashboardService.load();
-    await this.refreshWeeklyNutrition();
+    await this.refreshWeeklyReviewStats();
   }
 
-  private async refreshWeeklyNutrition(): Promise<void> {
-    if (this.nutritionRepository === undefined) return;
-    const now: Date = new Date();
-    const day: number = now.getDay();
-    const mondayOffset: number = day === 0 ? -6 : 1 - day;
-    const monday: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
-    const nextMonday: Date = new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const entries: FoodEntry[] = await this.nutritionRepository.getFoodEntries(monday.getTime(), nextMonday.getTime());
-    const daily: Map<string, NutritionSummary> = new Map<string, NutritionSummary>();
-    for (const entry of entries) {
-      const key: string = TrendService.localDateKey(entry.recordedAt);
-      const summary: NutritionSummary = daily.get(key) ?? new NutritionSummary();
-      summary.calories += entry.calories;
-      summary.proteinG += entry.proteinG;
-      daily.set(key, summary);
-    }
-    let totalCalories: number = 0;
-    daily.forEach((item: NutritionSummary) => totalCalories += item.calories);
-    this.weeklyAverageCalories = daily.size > 0 ? totalCalories / daily.size : 0;
-    this.weeklyProteinDays = 0;
-    if (this.activeGoal.targetProteinG > 0) {
-      daily.forEach((item: NutritionSummary) => {
-        if (item.proteinG >= this.activeGoal.targetProteinG) this.weeklyProteinDays += 1;
-      });
-    }
+  private applyWeeklyReviewStats(viewModel: WeeklyReviewViewModel): void {
+    this.weeklyAverageCalories = viewModel.averageCalories;
+    this.weeklyNutritionLoggedDays = viewModel.nutritionLoggedDays;
+    this.weeklyProteinDays = viewModel.proteinTargetDays;
+    this.weeklyAverageSteps = viewModel.averageSteps;
+    this.weeklyActivityLoggedDays = viewModel.activityLoggedDays;
+    this.weeklyTotalWorkouts = viewModel.totalWorkouts;
+    this.weeklyRequiredWorkouts = viewModel.requiredWorkouts;
+    this.weeklyOptionalWorkouts = viewModel.optionalWorkouts;
+    this.weeklyStrengthHighlights = viewModel.strengthHighlights;
+    this.weeklyCompleted = viewModel.requiredWorkouts;
+  }
+
+  private async refreshWeeklyReviewStats(): Promise<void> {
+    if (this.weeklyReviewService === undefined) return;
+    const viewModel: WeeklyReviewViewModel = await this.weeklyReviewService.load(this.activeGoal);
+    this.applyWeeklyReviewStats(viewModel);
   }
 
   private async refreshNutrition(): Promise<void> {
@@ -221,7 +262,7 @@ export struct AppRoot {
     this.programWorkoutRecords = records;
     this.programWorkouts = records.map((item: ProgramWorkoutV2) => this.toProgramWorkout(item));
     this.programName = program?.name ?? '';
-    this.programWeek = state.currentWeek;
+    this.programWeek = TrendService.calendarWeekFrom(state.startedAt);
     this.nextRequiredWorkoutIndex = state.nextRequiredWorkoutIndex;
     this.programCatalogValid = this.programWorkouts.length > 0 && this.programWorkouts.every(
       (workout: ProgramWorkout) => workout.exercises.length > 0 && workout.exercises.every(
@@ -235,11 +276,11 @@ export struct AppRoot {
       const catalogExercise: Exercise | undefined = findExerciseExact(this.exercises, item.exerciseId);
       if (catalogExercise === undefined) {
         return new ProgramExercise(item.exerciseId, item.exerciseId, '', '', '', item.plannedSets,
-          item.repMin, item.repMax, item.restSeconds);
+          item.repMin, item.repMax, item.restSeconds, item.id, item.weightIncrementKg);
       }
       return new ProgramExercise(catalogExercise.id, catalogExercise.name, this.userPartName(catalogExercise),
         catalogExercise.equipment, catalogExercise.imagePath, item.plannedSets, item.repMin, item.repMax,
-        item.restSeconds);
+        item.restSeconds, item.id, item.weightIncrementKg);
     });
     return new ProgramWorkout(record.code, record.name, record.estimatedMinutes, exercises);
   }
@@ -475,10 +516,11 @@ export struct AppRoot {
     this.isSaving = true;
     try {
       const now: number = Date.now();
-      const calories: number = Math.max(1400, Math.round(draft.currentWeightKg * 28 - 300 +
-        (draft.frequencyMax - 3) * 50));
-      const protein: number = Math.round(draft.currentWeightKg * 1.8);
-      const profile: UserProfile = new UserProfile(1, draft.heightCm, '', 0, false, now, now);
+      const calories: number = OnboardingService.caloriesForWeight(draft.currentWeightKg, draft.frequencyMax);
+      const protein: number = OnboardingService.proteinForWeight(draft.currentWeightKg);
+      const existingProfile: UserProfile | undefined = await this.profileRepository.getProfile();
+      const profile: UserProfile = new UserProfile(1, draft.heightCm, existingProfile?.sex ?? '',
+        existingProfile?.birthYear ?? 0, false, existingProfile?.createdAt ?? now, now);
       await this.profileRepository.saveProfile(profile);
       await this.bodyRepository.addMeasurement(new BodyMeasurement(0, now, draft.currentWeightKg, draft.waistCm,
         0, 'onboarding'));
@@ -753,16 +795,13 @@ export struct AppRoot {
     const finished: WorkoutSession = this.activeSession;
     await this.workoutRepository.finishWorkout(finished);
     if (finished.sourceType === 'program' && this.programRepository !== undefined) {
-      await this.programRepository.advanceAfterCompletion(finished.programWorkoutId);
       await this.loadActiveProgram();
     }
-    const programState = await this.workoutRepository.getProgramState();
-    this.weeklyCompleted = programState.weeklyCompleted;
-    this.nextWorkoutCode = programState.nextWorkoutCode;
     this.progressHighlights = await this.workoutRepository.getProgressHighlights(finished);
     this.completedSession = finished;
     this.applyActiveWorkout(undefined);
     await this.loadHistory();
+    await this.refreshWeeklyReviewStats();
     this.route = AppRoute.WorkoutComplete;
   }
 
@@ -782,42 +821,11 @@ export struct AppRoot {
   }
 
   private async openWeeklyReview(): Promise<void> {
-    if (this.workoutRepository === undefined || this.nutritionRepository === undefined ||
-      this.activityRepository === undefined) {
+    if (this.weeklyReviewService === undefined) {
       return;
     }
-    const now: Date = new Date();
-    const day: number = now.getDay();
-    const mondayOffset: number = day === 0 ? -6 : 1 - day;
-    const monday: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
-    const nextMonday: Date = new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const startAt: number = monday.getTime();
-    const todayEnd: number = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
-    const endAt: number = Math.min(nextMonday.getTime(), todayEnd);
-    const entries: FoodEntry[] = await this.nutritionRepository.getFoodEntries(startAt, endAt);
-    const proteinByDay: Map<string, number> = new Map<string, number>();
-    for (const entry of entries) {
-      const key: string = TrendService.localDateKey(entry.recordedAt);
-      proteinByDay.set(key, (proteinByDay.get(key) ?? 0) + entry.proteinG);
-    }
-    this.weeklyProteinDays = 0;
-    if (this.activeGoal.targetProteinG > 0) {
-      proteinByDay.forEach((protein: number) => {
-        if (protein >= this.activeGoal.targetProteinG) this.weeklyProteinDays += 1;
-      });
-    }
-    const activities: DailyActivity[] = await this.activityRepository.getRange(
-      TrendService.localDateKey(startAt), TrendService.localDateKey(nextMonday.getTime()));
-    const totalSteps: number = activities.reduce((total: number, item: DailyActivity) => total + item.steps, 0);
-    this.weeklyAverageSteps = Math.round(totalSteps / 7);
-    const sessions: WorkoutSession[] = await this.workoutRepository.getHistory();
-    const weekSessions: WorkoutSession[] = sessions.filter((session: WorkoutSession) =>
-      session.completedAt >= startAt && session.completedAt < endAt);
-    this.weeklyStrengthHighlights = [];
-    for (const session of weekSessions) {
-      const highlights: ExerciseProgress[] = await this.workoutRepository.getProgressHighlights(session);
-      this.weeklyStrengthHighlights = this.weeklyStrengthHighlights.concat(highlights).slice(0, 3);
-    }
+    const viewModel: WeeklyReviewViewModel = await this.weeklyReviewService.load(this.activeGoal);
+    this.applyWeeklyReviewStats(viewModel);
     this.route = AppRoute.WeeklyReview;
   }
 
@@ -898,6 +906,14 @@ export struct AppRoot {
           isSaving: this.isSaving,
           onStart: (draft: OnboardingDraft) => this.completeOnboarding(draft)
         })
+      } else if (this.route === AppRoute.V2Upgrade) {
+        V2UpgradePage({
+          isSaving: this.isSaving,
+          existingHeightCm: this.upgradeHeightCm,
+          existingWeightKg: this.upgradeWeightKg,
+          existingFrequency: this.upgradeFrequency,
+          onComplete: (draft: OnboardingDraft) => this.completeOnboarding(draft)
+        })
       } else if (this.route === AppRoute.Dashboard) {
         DashboardPage({
           viewModel: this.dashboard,
@@ -947,9 +963,14 @@ export struct AppRoot {
           nutrition: this.dashboard.nutrition,
           weeklyCompleted: this.weeklyCompleted,
           weeklyFrequency: this.weeklyFrequency,
-          todaySteps: this.dashboard.activity?.steps ?? 0,
           proteinDays: this.weeklyProteinDays,
+          nutritionLoggedDays: this.weeklyNutritionLoggedDays,
+          averageCalories: this.weeklyAverageCalories,
           averageSteps: this.weeklyAverageSteps,
+          activityLoggedDays: this.weeklyActivityLoggedDays,
+          totalWorkouts: this.weeklyTotalWorkouts,
+          requiredWorkouts: this.weeklyRequiredWorkouts,
+          optionalWorkouts: this.weeklyOptionalWorkouts,
           strengthHighlights: this.weeklyStrengthHighlights,
           onBack: () => this.route = AppRoute.Progress
         })

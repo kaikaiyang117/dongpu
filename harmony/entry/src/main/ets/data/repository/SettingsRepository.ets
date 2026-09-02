@@ -33,6 +33,9 @@ export class SettingsRepository {
   }
 
   async updateWeeklyFrequency(weeklyFrequency: number): Promise<void> {
+    if (weeklyFrequency !== 3 && weeklyFrequency !== 4) {
+      throw new Error('V2 supports three or four weekly sessions');
+    }
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     await store.executeSql('UPDATE app_settings SET weekly_frequency = ? WHERE id = 1', [weeklyFrequency]);
   }

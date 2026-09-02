@@ -81,7 +81,7 @@ export class GoalRepository {
 
   async updateActiveTrainingPreference(frequency: number, location: string, dedicatedLegDay: boolean,
     preferMachines: boolean): Promise<void> {
-    if (frequency < 1 || frequency > 7 || location === '') {
+    if ((frequency !== 3 && frequency !== 4) || location === '') {
       throw new Error('Invalid training preference');
     }
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);

@@ -1,9 +1,9 @@
 import {
-  APP_COLOR_BG,
   APP_COLOR_GREEN_DARK,
   APP_COLOR_LINE,
   APP_COLOR_MUTED,
-  APP_COLOR_TEXT
+  APP_COLOR_TEXT,
+  APP_COLOR_OVERLAY
 } from '../app/AppTheme';
 
 @Component
@@ -20,6 +20,7 @@ export struct BottomNav {
       .fontWeight(this.selectedTab === id ? FontWeight.Bold : FontWeight.Medium)
       .fontColor(this.selectedTab === id ? APP_COLOR_GREEN_DARK : APP_COLOR_MUTED)
       .backgroundColor(Color.Transparent)
+      .stateEffect(true)
       .onClick(() => this.onSelect(id))
   }
 
@@ -33,7 +34,7 @@ export struct BottomNav {
     .width('100%')
     .height(72)
     .padding({ left: 12, right: 12, bottom: 8 })
-    .backgroundColor(APP_COLOR_BG)
+    .backgroundColor(APP_COLOR_OVERLAY)
     .border({ width: { top: 1 }, color: APP_COLOR_LINE })
   }
 }

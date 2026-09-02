@@ -11,7 +11,7 @@ import { WorkoutSession } from '../../domain/workout/WorkoutModels';
 export struct HistoryPage {
   @Prop sessions: WorkoutSession[] = [];
   @Prop weeklyCompleted: number = 0;
-  @Prop weeklyFrequency: number = 2;
+  @Prop weeklyFrequency: number = 3;
   onOpenDetail: (sessionId: number) => void = () => {};
 
   private dateText(timestamp: number): string {
@@ -71,7 +71,7 @@ export struct HistoryPage {
             .fontSize(14)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)
-          Text(`已完成 ${this.weeklyCompleted} / ${this.weeklyFrequency} 次`)
+          Text(`已完成 ${this.weeklyCompleted} / 3 次必做训练`)
             .width('100%')
             .fontSize(22)
             .fontWeight(FontWeight.Bold)

@@ -1,7 +1,7 @@
 import { relationalStore } from '@kit.ArkData';
 
 const DATABASE_NAME: string = 'dongpu.db';
-const DATABASE_VERSION: number = 2;
+const DATABASE_VERSION: number = 3;
 
 interface QuickFoodSeed {
   name: string;
@@ -36,7 +36,7 @@ interface ProgramExerciseSeed {
 const V1_SCHEMA: string[] = [
   `CREATE TABLE IF NOT EXISTS app_settings (
     id INTEGER PRIMARY KEY CHECK (id = 1),
-    weekly_frequency INTEGER NOT NULL DEFAULT 2,
+    weekly_frequency INTEGER NOT NULL DEFAULT 3,
     onboarding_completed INTEGER NOT NULL DEFAULT 0,
     weight_unit TEXT NOT NULL DEFAULT 'kg'
   )`,
@@ -302,8 +302,12 @@ export class AppDatabase {
     if (currentVersion === 0) {
       await AppDatabase.createSchemaV1(store);
     }
-    if (currentVersion < DATABASE_VERSION) {
+    if (currentVersion < 2) {
       await AppDatabase.migrateV1ToV2(store);
+      store.version = 2;
+    }
+    if (store.version < 3) {
+      await AppDatabase.migrateV2ToV3(store);
       store.version = DATABASE_VERSION;
     }
     // Repair stores created by pre-V2 builds whose version was already advanced.
@@ -315,6 +319,9 @@ export class AppDatabase {
     await AppDatabase.addColumnIfMissing(store, 'workout_session', 'program_version', 'TEXT');
     await AppDatabase.addColumnIfMissing(store, 'workout_session', 'goal_id', 'INTEGER');
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'suggested_weight_kg', 'REAL');
+    await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'program_workout_exercise_id', 'INTEGER');
+    await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'weight_increment_kg', 'REAL NOT NULL DEFAULT 2.5');
+    await AppDatabase.backfillV3(store);
     // Keep built-in catalog rows available for databases created by an earlier V2 build.
     await AppDatabase.seedV2(store);
     AppDatabase.store = store;
@@ -327,7 +334,7 @@ export class AppDatabase {
     }
     await store.executeSql(
       `INSERT OR IGNORE INTO app_settings (id, weekly_frequency, onboarding_completed, weight_unit)
-       VALUES (1, 2, 0, 'kg')`
+       VALUES (1, 3, 0, 'kg')`
     );
     await store.executeSql(
       `INSERT OR IGNORE INTO user_program_state (id, next_workout_code, weekly_completed, week_started_at)
@@ -345,6 +352,31 @@ export class AppDatabase {
     await AppDatabase.addColumnIfMissing(store, 'workout_session', 'goal_id', 'INTEGER');
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'suggested_weight_kg', 'REAL');
     await AppDatabase.seedV2(store);
+  }
+
+  private static async migrateV2ToV3(store: relationalStore.RdbStore): Promise<void> {
+    await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'program_workout_exercise_id', 'INTEGER');
+    await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'weight_increment_kg', 'REAL NOT NULL DEFAULT 2.5');
+    await AppDatabase.backfillV3(store);
+  }
+
+  private static async backfillV3(store: relationalStore.RdbStore): Promise<void> {
+    await store.executeSql(
+      `UPDATE workout_exercise_record
+       SET program_workout_exercise_id = (
+         SELECT pwe.id FROM program_workout_exercise pwe
+         JOIN workout_session ws ON ws.program_workout_id = pwe.workout_id
+         WHERE ws.id = workout_exercise_record.session_id
+           AND pwe.order_index = workout_exercise_record.order_index
+       ),
+       weight_increment_kg = COALESCE((
+         SELECT pwe.weight_increment_kg FROM program_workout_exercise pwe
+         JOIN workout_session ws ON ws.program_workout_id = pwe.workout_id
+         WHERE ws.id = workout_exercise_record.session_id
+           AND pwe.order_index = workout_exercise_record.order_index
+       ), 2.5)
+       WHERE program_workout_exercise_id IS NULL`
+    );
   }
 
   private static async addColumnIfMissing(store: relationalStore.RdbStore, table: string, column: string,

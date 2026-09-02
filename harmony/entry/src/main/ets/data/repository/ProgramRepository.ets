@@ -85,28 +85,6 @@ export class ProgramRepository {
     return state;
   }
 
-  async advanceAfterCompletion(workoutId: string): Promise<void> {
-    const state = await this.getActiveProgramState();
-    if (state === undefined) {
-      return;
-    }
-    const workouts: ProgramWorkoutV2[] = await this.getWorkouts(state.programId);
-    const workout: ProgramWorkoutV2 | undefined = workouts.find((item: ProgramWorkoutV2) => item.id === workoutId);
-    if (workout === undefined || workout.optional) {
-      return;
-    }
-    const required: ProgramWorkoutV2[] = workouts.filter((item: ProgramWorkoutV2) => !item.optional);
-    const completedIndex: number = required.findIndex((item: ProgramWorkoutV2) => item.id === workoutId);
-    if (completedIndex < 0 || completedIndex !== state.nextRequiredWorkoutIndex) {
-      return;
-    }
-    const nextIndex: number = (completedIndex + 1) % required.length;
-    const nextWeek: number = nextIndex === 0 ? state.currentWeek + 1 : state.currentWeek;
-    await this.saveActiveProgramState(new ActiveProgramState(
-      state.id, state.goalId, state.programId, state.programVersion, state.startedAt, nextWeek, nextIndex
-    ));
-  }
-
   async getWorkout(workoutId: string): Promise<ProgramWorkoutV2 | undefined> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const result: relationalStore.ResultSet = await store.querySql(

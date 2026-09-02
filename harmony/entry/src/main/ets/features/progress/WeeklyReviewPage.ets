@@ -10,9 +10,14 @@ export struct WeeklyReviewPage {
   @Prop nutrition: NutritionSummary = new NutritionSummary();
   @Prop weeklyCompleted: number = 0;
   @Prop weeklyFrequency: number = 0;
-  @Prop todaySteps: number = 0;
   @Prop proteinDays: number = 0;
+  @Prop nutritionLoggedDays: number = 0;
+  @Prop averageCalories: number = 0;
   @Prop averageSteps: number = 0;
+  @Prop activityLoggedDays: number = 0;
+  @Prop totalWorkouts: number = 0;
+  @Prop requiredWorkouts: number = 0;
+  @Prop optionalWorkouts: number = 0;
   @Prop strengthHighlights: ExerciseProgress[] = [];
   onBack: () => void = () => {};
 
@@ -41,12 +46,17 @@ export struct WeeklyReviewPage {
           }.width('100%').alignItems(HorizontalAlign.Start)
           Column() {
             this.Metric('体重变化', this.trend.status === WeightTrendStatus.Insufficient ? '数据不足' :
-              `${this.trend.changeKg > 0 ? '+' : ''}${this.trend.changeKg.toFixed(1)} kg`)
+              `${this.trend.changeKg > 0 ? '+' : ''}${this.trend.changeKg.toFixed(1)} kg · ${this.trend.changePercent > 0 ? '+' : ''}${this.trend.changePercent.toFixed(1)}%`)
             this.Metric('腰围变化', this.waistTrend.hasData && this.waistTrend.previousCm > 0 ?
               `${this.waistTrend.changeCm > 0 ? '+' : ''}${this.waistTrend.changeCm.toFixed(1)} cm` : '数据不足')
-            this.Metric('训练完成', `${this.weeklyCompleted} / ${this.weeklyFrequency} 次`)
-            this.Metric('蛋白质达标', `${this.proteinDays} / 7 天`)
-            this.Metric('平均步数', `${this.averageSteps} 步`)
+            this.Metric('训练完成', `${this.requiredWorkouts} / 3 必做${this.optionalWorkouts > 0 ? ` · +${this.optionalWorkouts} 可选` : ''}`)
+            this.Metric('训练总数', `${this.totalWorkouts} 次`)
+            this.Metric('蛋白质达标', this.nutritionLoggedDays > 0 ?
+              `${this.proteinDays} / ${this.nutritionLoggedDays} 个记录日` : '暂无饮食数据')
+            this.Metric('热量平均', this.nutritionLoggedDays > 0 ?
+              `${Math.round(this.averageCalories)} kcal · ${this.nutritionLoggedDays} 天` : '暂无饮食数据')
+            this.Metric('平均步数', this.activityLoggedDays > 0 ?
+              `${this.averageSteps} 步 · ${this.activityLoggedDays} 天` : '暂无步数数据')
           }.width('100%').padding(18).borderRadius(18).backgroundColor(Color.White)
             .border({ width: 1, color: APP_COLOR_LINE })
           Column({ space: 8 }) {

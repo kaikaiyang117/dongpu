@@ -87,6 +87,7 @@ export struct OnboardingPage {
       .borderRadius(14)
       .backgroundColor(selected ? APP_COLOR_GREEN_SOFT : Color.White)
       .border({ width: 1, color: selected ? APP_COLOR_GREEN : APP_COLOR_LINE })
+      .stateEffect(true)
       .onClick(() => onTap())
   }
 
@@ -143,10 +144,6 @@ export struct OnboardingPage {
       Text('先给你一个可执行的 3—4 练方案。').width('100%').fontSize(15).fontColor(APP_COLOR_MUTED)
       Text('每周训练次数').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
       Row({ space: 10 }) {
-        this.ChoiceButton('2 次', this.frequencyMin === 2, () => {
-          this.frequencyMin = 2;
-          this.frequencyMax = 2;
-        })
         this.ChoiceButton('3 次', this.frequencyMin === 3, () => {
           this.frequencyMin = 3;
           this.frequencyMax = 4;
@@ -154,10 +151,6 @@ export struct OnboardingPage {
         this.ChoiceButton('4 次', this.frequencyMin === 4, () => {
           this.frequencyMin = 4;
           this.frequencyMax = 4;
-        })
-        this.ChoiceButton('5 次', this.frequencyMin === 5, () => {
-          this.frequencyMin = 5;
-          this.frequencyMax = 5;
         })
       }.width('100%')
       Text('训练地点').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)

@@ -9,7 +9,7 @@ export struct WorkoutCompletePage {
   @Prop exerciseCount: number = 0;
   @Prop setCount: number = 0;
   @Prop weeklyCompleted: number = 0;
-  @Prop weeklyFrequency: number = 2;
+  @Prop weeklyFrequency: number = 3;
   @Prop weightUnit: string = 'kg';
   @Prop progressHighlights: ExerciseProgress[] = [];
   onDone: () => void = () => {};
@@ -107,7 +107,7 @@ export struct WorkoutCompletePage {
           .fontSize(16)
           .fontWeight(FontWeight.Bold)
           .fontColor(APP_COLOR_TEXT)
-        Text(`已完成 ${this.weeklyCompleted} / ${this.weeklyFrequency} 次`)
+        Text(`已完成 ${this.weeklyCompleted} / 3 次必做训练`)
           .width('100%')
           .fontSize(22)
           .fontWeight(FontWeight.Bold)

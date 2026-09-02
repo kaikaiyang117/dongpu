@@ -9,7 +9,7 @@ import {
 @Component
 export struct SettingsPage {
   @Prop title: string = '设置';
-  @Prop weeklyFrequency: number = 2;
+  @Prop weeklyFrequency: number = 3;
   @Prop weightUnit: string = 'kg';
   @Prop targetCalories: number = 0;
   @Prop targetProteinG: number = 0;
@@ -53,6 +53,7 @@ export struct SettingsPage {
       .borderRadius(12)
       .backgroundColor(selected ? APP_COLOR_GREEN_SOFT : Color.White)
       .border({ width: 1, color: selected ? APP_COLOR_GREEN_DARK : APP_COLOR_LINE })
+      .stateEffect(true)
       .onClick(() => onTap())
   }
 
@@ -132,14 +133,9 @@ export struct SettingsPage {
             Row() {
               Text('每周训练次数').layoutWeight(1).fontSize(15).fontColor(APP_COLOR_TEXT)
               Row({ space: 8 }) {
-                this.ChoiceButton('2 次', this.weeklyFrequency === 2, () => this.onChangeFrequency(2))
                 this.ChoiceButton('3 次', this.weeklyFrequency === 3, () => this.onChangeFrequency(3))
+                this.ChoiceButton('4 次', this.weeklyFrequency === 4, () => this.onChangeFrequency(4))
               }
-            }
-            .width('100%')
-            Row({ space: 8 }) {
-              this.ChoiceButton('4 次', this.weeklyFrequency === 4, () => this.onChangeFrequency(4))
-              this.ChoiceButton('5 次', this.weeklyFrequency === 5, () => this.onChangeFrequency(5))
             }
             .width('100%')
             this.InfoRow('训练日提醒', '未开启')

@@ -8,9 +8,12 @@ export class ProgramExercise {
   repMax: number;
   restSeconds: number;
   imagePath: string;
+  programWorkoutExerciseId: number;
+  weightIncrementKg: number;
 
   constructor(exerciseId: string, nameSnapshot: string, partName: string, equipmentName: string, imagePath: string,
-    sets: number = 3, repMin: number = 8, repMax: number = 12, restSeconds: number = 60) {
+    sets: number = 3, repMin: number = 8, repMax: number = 12, restSeconds: number = 60,
+    programWorkoutExerciseId: number = 0, weightIncrementKg: number = 2.5) {
     this.exerciseId = exerciseId;
     this.nameSnapshot = nameSnapshot;
     this.partName = partName;
@@ -20,6 +23,8 @@ export class ProgramExercise {
     this.repMin = repMin;
     this.repMax = repMax;
     this.restSeconds = restSeconds;
+    this.programWorkoutExerciseId = programWorkoutExerciseId;
+    this.weightIncrementKg = weightIncrementKg;
   }
 }
 

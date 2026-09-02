@@ -20,7 +20,7 @@ export struct ProgressPage {
   @Prop nutrition: NutritionSummary = new NutritionSummary();
   @Prop sessions: WorkoutSession[] = [];
   @Prop weeklyCompleted: number = 0;
-  @Prop weeklyFrequency: number = 0;
+  @Prop weeklyFrequency: number = 3;
   @Prop weeklyAverageCalories: number = 0;
   @Prop weeklyProteinDays: number = 0;
   @State private selectedTab: string = 'weight';
@@ -44,7 +44,7 @@ export struct ProgressPage {
           Text('当前 7 日平均').fontSize(13).fontColor(APP_COLOR_MUTED)
         }.alignItems(HorizontalAlign.Start).layoutWeight(1)
         Column({ space: 4 }) {
-          Text(this.trend.changeKg === 0 ? '--' : `${this.trend.changeKg > 0 ? '+' : ''}${this.trend.changeKg.toFixed(1)} kg`)
+          Text(this.trend.changeKg === 0 ? '--' : `${this.trend.changeKg > 0 ? '+' : ''}${this.trend.changeKg.toFixed(1)} kg · ${this.trend.changePercent > 0 ? '+' : ''}${this.trend.changePercent.toFixed(1)}%`)
             .fontSize(22).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_GREEN_DARK)
           Text(this.statusText()).fontSize(13).fontColor(APP_COLOR_MUTED)
         }.alignItems(HorizontalAlign.End)
@@ -80,7 +80,7 @@ export struct ProgressPage {
   TrainingTab() {
     Column({ space: 14 }) {
       Text('训练趋势').width('100%').fontSize(18).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
-      Text(`${this.weeklyCompleted} / ${this.weeklyFrequency} 次 · 本周完成`).fontSize(27).fontWeight(FontWeight.Bold)
+      Text(`${this.weeklyCompleted} / 3 次 · 本周必做完成`).fontSize(27).fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_GREEN_DARK)
       Text(this.sessions.length === 0 ? '完成训练后，这里会保留最近训练记录。' : `最近完成 ${this.sessions.length} 次训练`)
         .fontSize(14).fontColor(APP_COLOR_MUTED)

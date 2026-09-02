@@ -44,6 +44,8 @@ export class WorkoutExerciseRecord {
   repMin: number;
   repMax: number;
   restSeconds: number;
+  programWorkoutExerciseId: number;
+  weightIncrementKg: number;
   completedSets: number;
   setRecords: SetRecord[];
   suggestedWeight: number;
@@ -53,7 +55,7 @@ export class WorkoutExerciseRecord {
     exerciseNameSnapshot: string, partNameSnapshot: string, equipmentNameSnapshot: string,
     imagePathSnapshot: string, orderIndex: number, targetSets: number, repMin: number, repMax: number,
     restSeconds: number, completedSets: number = 0, setRecords: SetRecord[] = [], suggestedWeight: number = 0,
-    suggestedReps: number = 10) {
+    suggestedReps: number = 10, programWorkoutExerciseId: number = 0, weightIncrementKg: number = 2.5) {
     this.id = id;
     this.sessionId = sessionId;
     this.originalExerciseId = originalExerciseId;
@@ -67,6 +69,8 @@ export class WorkoutExerciseRecord {
     this.repMin = repMin;
     this.repMax = repMax;
     this.restSeconds = restSeconds;
+    this.programWorkoutExerciseId = programWorkoutExerciseId;
+    this.weightIncrementKg = weightIncrementKg;
     this.completedSets = completedSets;
     this.setRecords = setRecords;
     this.suggestedWeight = suggestedWeight;

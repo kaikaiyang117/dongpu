@@ -1,6 +1,7 @@
 export enum AppRoute {
   Loading = 'loading',
   Onboarding = 'onboarding',
+  V2Upgrade = 'v2-upgrade',
   Dashboard = 'dashboard',
   Nutrition = 'nutrition',
   FoodEntryEditor = 'food-entry-editor',

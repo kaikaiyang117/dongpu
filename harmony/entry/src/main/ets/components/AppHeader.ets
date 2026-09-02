@@ -21,6 +21,7 @@ export struct AppHeader {
         .width(48)
         .height(48)
         .backgroundColor(Color.Transparent)
+        .stateEffect(true)
         .onClick(() => this.onBack())
       } else {
         Blank().width(56)
@@ -43,6 +44,7 @@ export struct AppHeader {
         .width(56)
         .height(48)
         .backgroundColor(Color.Transparent)
+        .stateEffect(true)
         .onClick(() => this.onAction())
       } else {
         Blank().width(48)

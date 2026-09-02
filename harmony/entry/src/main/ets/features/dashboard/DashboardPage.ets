@@ -23,7 +23,7 @@ export struct DashboardPage {
     if (trend.status === WeightTrendStatus.Insufficient) {
       return '数据积累中';
     }
-    return `${trend.changeKg > 0 ? '+' : ''}${trend.changeKg.toFixed(1)} kg / 7日`;
+    return `${trend.changeKg > 0 ? '+' : ''}${trend.changeKg.toFixed(1)} kg · ${trend.changePercent > 0 ? '+' : ''}${trend.changePercent.toFixed(1)}% / 7日`;
   }
 
   private statusText(): string {
@@ -138,6 +138,7 @@ export struct DashboardPage {
           .fontSize(14).fontColor(Color.White)
         Button('继续训练').width('100%').height(52).fontSize(16).fontWeight(FontWeight.Bold)
           .fontColor(APP_COLOR_GREEN_DARK).borderRadius(16).backgroundColor(Color.White)
+          .stateEffect(true)
           .onClick(() => this.onResumeWorkout())
       }.width('100%').padding(20).borderRadius(20).backgroundColor(APP_COLOR_GREEN)
     } else if (this.viewModel.todayWorkout !== undefined) {
@@ -148,6 +149,7 @@ export struct DashboardPage {
           .fontSize(14).fontColor(APP_COLOR_MUTED)
         Button('开始训练').width('100%').height(52).fontSize(16).fontWeight(FontWeight.Bold)
           .fontColor(Color.White).borderRadius(16).backgroundColor(APP_COLOR_GREEN)
+          .stateEffect(true)
           .onClick(() => this.onOpenTraining())
       }.width('100%').padding(18).borderRadius(20).backgroundColor(Color.White)
         .border({ width: 1, color: APP_COLOR_LINE })
@@ -164,7 +166,8 @@ export struct DashboardPage {
     Row() {
       Column({ space: 5 }) {
         Text('今日活动').fontSize(14).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
-        Text(`${this.viewModel.activity?.steps ?? 0} 步`).fontSize(24).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+        Text(this.viewModel.activity === undefined ? '暂无记录' : `${this.viewModel.activity.steps} 步`)
+          .fontSize(24).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
       }.alignItems(HorizontalAlign.Start)
       Blank()
       Text(this.viewModel.goal === undefined ? '目标 --' : `目标 ${this.viewModel.goal.targetSteps} 步`)

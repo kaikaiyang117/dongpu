@@ -10,7 +10,7 @@ import { ProgramWorkout } from '../../domain/program/ProgramModels';
 
 @Component
 export struct TrainingHomePage {
-  @Prop weeklyFrequency: number = 2;
+  @Prop weeklyFrequency: number = 3;
   @Prop weeklyCompleted: number = 0;
   @Prop workout: ProgramWorkout = new ProgramWorkout('A', '全身训练', 40, []);
   @Prop hasActiveWorkout: boolean = false;
@@ -36,17 +36,14 @@ export struct TrainingHomePage {
   onOpenHistory: () => void = () => {};
 
   private progressValue(): number {
-    if (this.weeklyFrequency <= 0) {
-      return 0;
-    }
-    return Math.min(100, this.weeklyCompleted / this.weeklyFrequency * 100);
+    return Math.min(100, this.weeklyCompleted / 3 * 100);
   }
 
   @Builder
   WeeklyProgress() {
     Column({ space: 13 }) {
       Row() {
-        Text('本周训练进度')
+        Text('本周必做进度')
           .fontSize(14)
           .fontWeight(FontWeight.Bold)
           .fontColor(APP_COLOR_TEXT)
@@ -60,7 +57,7 @@ export struct TrainingHomePage {
         Text('已完成')
           .fontSize(15)
           .fontColor(APP_COLOR_TEXT)
-        Text(`${this.weeklyCompleted} / ${this.weeklyFrequency}`)
+        Text(`${this.weeklyCompleted} / 3`)
           .fontSize(23)
           .fontWeight(FontWeight.Bold)
           .fontColor(APP_COLOR_GREEN_DARK)
@@ -90,7 +87,7 @@ export struct TrainingHomePage {
         Row() {
           Column({ space: 4 }) {
             Text(this.programName).fontSize(18).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
-            Text(`第 ${this.programWeek} 周 · 按顺序完成必做训练`).fontSize(12).fontColor(APP_COLOR_MUTED)
+      Text('本周计划 · 按顺序完成必做训练').fontSize(12).fontColor(APP_COLOR_MUTED)
           }.alignItems(HorizontalAlign.Start).layoutWeight(1)
           Text('当前计划').fontSize(12).fontColor(APP_COLOR_GREEN_DARK)
         }.width('100%')
@@ -112,6 +109,7 @@ export struct TrainingHomePage {
           Button('查看 Optional 训练')
             .width('100%').height(46).fontSize(14).fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_GREEN_DARK).backgroundColor(APP_COLOR_GREEN_SOFT).borderRadius(14)
+            .stateEffect(true)
             .onClick(() => this.onOpenProgramWorkout('optional_arms'))
         }
       }.alignItems(HorizontalAlign.Start).width('100%').padding(18).borderRadius(18)
@@ -159,6 +157,7 @@ export struct TrainingHomePage {
         .fontColor(APP_COLOR_GREEN_DARK)
         .borderRadius(17)
         .backgroundColor(Color.White)
+        .stateEffect(true)
         .margin({ top: 8 })
         .onClick(() => this.onResumeWorkout())
     }
@@ -172,7 +171,7 @@ export struct TrainingHomePage {
   @Builder
   TodayWorkoutCard() {
     Column({ space: 10 }) {
-      Text(this.weeklyCompleted >= this.weeklyFrequency ? '下次训练' : '今天的训练')
+      Text('今天的训练')
         .width('100%')
         .fontSize(15)
         .fontWeight(FontWeight.Bold)
@@ -193,7 +192,7 @@ export struct TrainingHomePage {
         .fontColor(APP_COLOR_MUTED)
         .maxLines(1)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
-      Button(this.weeklyCompleted >= this.weeklyFrequency ? '仍然开始训练' : '开始今天训练')
+      Button('开始今天训练')
         .width('100%')
         .height(56)
         .fontSize(16)
@@ -201,6 +200,7 @@ export struct TrainingHomePage {
         .fontColor(Color.White)
         .borderRadius(17)
         .backgroundColor(APP_COLOR_GREEN)
+        .stateEffect(true)
         .margin({ top: 6 })
         .onClick(() => this.onStartRecommended())
     }
@@ -226,6 +226,7 @@ export struct TrainingHomePage {
             .fontSize(13)
             .fontColor(APP_COLOR_GREEN_DARK)
             .backgroundColor(Color.Transparent)
+            .stateEffect(true)
             .onClick(() => this.onOpenSettings())
         }
         .width('100%')
@@ -299,6 +300,7 @@ export struct TrainingHomePage {
             .fontColor(APP_COLOR_GREEN_DARK)
             .borderRadius(16)
             .backgroundColor(APP_COLOR_GREEN_SOFT)
+            .stateEffect(true)
             .border({ width: 1, color: APP_COLOR_LINE })
             .onClick(() => this.onStartCustom())
         }

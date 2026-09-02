@@ -45,8 +45,12 @@ export struct WorkoutPage {
   }
 
   private changeWeight(delta: number): void {
+    if (this.exercise.weightIncrementKg <= 0) {
+      return;
+    }
     if (!this.hasWeight && delta > 0) {
-      this.weight = this.weightUnit === 'lb' ? 5 : 2.5;
+      this.weight = this.weightUnit === 'lb' ? this.exercise.weightIncrementKg * 2.2046226218 :
+        this.exercise.weightIncrementKg;
       this.hasWeight = true;
       return;
     }
@@ -177,7 +181,8 @@ export struct WorkoutPage {
                 .fontSize(22)
                 .fontColor(APP_COLOR_GREEN_DARK)
                 .backgroundColor(APP_COLOR_GREEN_SOFT)
-                .onClick(() => this.changeWeight(-2.5))
+                .stateEffect(true)
+                .onClick(() => this.changeWeight(-this.exercise.weightIncrementKg))
               Text(this.hasWeight ? `${this.weight.toFixed(1)} ${this.weightUnit}` : '选择重量')
                 .layoutWeight(1)
                 .textAlign(TextAlign.Center)
@@ -190,7 +195,8 @@ export struct WorkoutPage {
                 .fontSize(22)
                 .fontColor(APP_COLOR_GREEN_DARK)
                 .backgroundColor(APP_COLOR_GREEN_SOFT)
-                .onClick(() => this.changeWeight(2.5))
+                .stateEffect(true)
+                .onClick(() => this.changeWeight(this.exercise.weightIncrementKg))
             }
             .width('100%')
           }
@@ -213,6 +219,7 @@ export struct WorkoutPage {
                 .fontSize(22)
                 .fontColor(APP_COLOR_GREEN_DARK)
                 .backgroundColor(APP_COLOR_GREEN_SOFT)
+                .stateEffect(true)
                 .onClick(() => this.reps = Math.max(1, this.reps - 1))
               Text(this.reps.toString())
                 .layoutWeight(1)
@@ -226,6 +233,7 @@ export struct WorkoutPage {
                 .fontSize(22)
                 .fontColor(APP_COLOR_GREEN_DARK)
                 .backgroundColor(APP_COLOR_GREEN_SOFT)
+                .stateEffect(true)
                 .onClick(() => this.reps += 1)
             }
             .width('100%')

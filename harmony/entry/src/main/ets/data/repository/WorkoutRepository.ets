@@ -112,14 +112,16 @@ export class WorkoutRepository {
     return sessions;
   }
 
-  async hasCompletedRequiredToday(dayStart: number, dayEnd: number): Promise<boolean> {
+  async hasCompletedRequiredToday(dayStart: number, dayEnd: number, goalId: number = 0,
+    programId: string = ''): Promise<boolean> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const result: relationalStore.ResultSet = await store.querySql(
       `SELECT ws.id FROM workout_session ws
        LEFT JOIN program_workout pw ON pw.id = ws.program_workout_id
-       WHERE ws.status = 'completed' AND ws.completed_at >= ? AND ws.completed_at < ?
-         AND (pw.optional IS NULL OR pw.optional = 0) LIMIT 1`,
-      [dayStart, dayEnd]
+       WHERE ws.status = 'completed' AND ws.source_type = 'program'
+         AND ws.completed_at >= ? AND ws.completed_at < ? AND pw.optional = 0
+         AND ws.goal_id = ? AND ws.program_id = ? LIMIT 1`,
+      [dayStart, dayEnd, goalId, programId]
     );
     try {
       return result.goToFirstRow();
@@ -189,6 +191,8 @@ export class WorkoutRepository {
           rep_min: exercise.repMin,
           rep_max: exercise.repMax,
           rest_seconds: exercise.restSeconds,
+          program_workout_exercise_id: exercise.programWorkoutExerciseId > 0 ? exercise.programWorkoutExerciseId : null,
+          weight_increment_kg: exercise.weightIncrementKg,
           completed_sets: 0
         });
       }
@@ -291,45 +295,93 @@ export class WorkoutRepository {
 
   async finishWorkout(session: WorkoutSession): Promise<void> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    const completedAt: number = Date.now();
     store.beginTransaction();
     try {
+      const statusResult: relationalStore.ResultSet = await store.querySql(
+        'SELECT status FROM workout_session WHERE id = ?', [session.id]);
+      let isActive: boolean = false;
+      try {
+        isActive = statusResult.goToFirstRow() && statusResult.getString(0) === WorkoutStatus.Active;
+      } finally {
+        statusResult.close();
+      }
+      if (!isActive) {
+        store.commit();
+        return;
+      }
       await store.executeSql(
-        'UPDATE workout_session SET status = ?, phase = ?, completed_at = ?, rest_end_at = 0 WHERE id = ?',
-        [WorkoutStatus.Completed, WorkoutPhase.Complete, Date.now(), session.id]
+        `UPDATE workout_session SET status = ?, phase = ?, completed_at = ?, rest_end_at = 0
+         WHERE id = ? AND status = 'active'`,
+        [WorkoutStatus.Completed, WorkoutPhase.Complete, completedAt, session.id]
       );
       if (session.sourceType === 'recommended') {
         await store.executeSql(
           `UPDATE user_program_state SET next_workout_code = ?, weekly_completed = weekly_completed + 1,
            week_started_at = CASE WHEN weekly_completed = 0 THEN ? ELSE week_started_at END
            WHERE id = 1`,
-          [session.workoutCode === 'A' ? 'B' : 'A', Date.now()]
+          [session.workoutCode === 'A' ? 'B' : 'A', completedAt]
         );
       } else if (session.sourceType === 'program') {
         const programResult: relationalStore.ResultSet = await store.querySql(
-          'SELECT optional FROM program_workout WHERE id = ?', [session.programWorkoutId]
+          `SELECT optional, program_id, order_index FROM program_workout WHERE id = ?`, [session.programWorkoutId]
         );
         let isOptional: boolean = false;
+        let programId: string = '';
+        let orderIndex: number = -1;
         try {
           if (programResult.goToFirstRow()) {
             isOptional = programResult.getLong(0) === 1;
+            programId = programResult.getString(1);
+            orderIndex = programResult.getLong(2);
           }
         } finally {
           programResult.close();
         }
         if (!isOptional) {
-          await store.executeSql(
-            `UPDATE user_program_state SET weekly_completed = weekly_completed + 1,
-             week_started_at = CASE WHEN weekly_completed = 0 THEN ? ELSE week_started_at END
-             WHERE id = 1`,
-            [Date.now()]
-          );
+          const requiredResult: relationalStore.ResultSet = await store.querySql(
+            `SELECT COUNT(*) FROM program_workout WHERE program_id = ? AND optional = 0`, [programId]);
+          let requiredCount: number = 0;
+          try {
+            if (requiredResult.goToFirstRow()) requiredCount = requiredResult.getLong(0);
+          } finally {
+            requiredResult.close();
+          }
+          const indexResult: relationalStore.ResultSet = await store.querySql(
+            `SELECT COUNT(*) FROM program_workout WHERE program_id = ? AND optional = 0 AND order_index < ?`,
+            [programId, orderIndex]);
+          let requiredIndex: number = -1;
+          try {
+            if (indexResult.goToFirstRow()) requiredIndex = indexResult.getLong(0);
+          } finally {
+            indexResult.close();
+          }
+          const stateResult: relationalStore.ResultSet = await store.querySql(
+            'SELECT goal_id, program_id, next_required_workout_index FROM active_program_state WHERE id = 1');
+          let stateMatches: boolean = false;
+          try {
+            if (stateResult.goToFirstRow()) {
+              stateMatches = stateResult.getLong(0) === session.goalId && stateResult.getString(1) === programId &&
+                stateResult.getLong(2) === requiredIndex;
+            }
+          } finally {
+            stateResult.close();
+          }
+          if (stateMatches && requiredCount > 0 && requiredIndex >= 0) {
+            await store.executeSql(
+              `UPDATE active_program_state SET next_required_workout_index = ? WHERE id = 1`,
+              [(requiredIndex + 1) % requiredCount]
+            );
+          }
         }
+      } else if (session.sourceType === 'ad_hoc' || session.sourceType === 'saved_plan') {
+        // Legacy weekly_completed remains untouched for V2 non-program sessions.
       } else {
         await store.executeSql(
           `UPDATE user_program_state SET weekly_completed = weekly_completed + 1,
            week_started_at = CASE WHEN weekly_completed = 0 THEN ? ELSE week_started_at END
            WHERE id = 1`,
-          [Date.now()]
+          [completedAt]
         );
       }
       store.commit();
@@ -408,7 +460,7 @@ export class WorkoutRepository {
     const result: relationalStore.ResultSet = await store.querySql(
       `SELECT id, original_exercise_id, actual_exercise_id, exercise_name_snapshot, part_name_snapshot,
        equipment_name_snapshot, image_path_snapshot, order_index, target_sets, rep_min, rep_max,
-       rest_seconds, completed_sets
+       rest_seconds, completed_sets, program_workout_exercise_id, weight_increment_kg
        FROM workout_exercise_record WHERE session_id = ? ORDER BY order_index`,
       [sessionId]
     );
@@ -421,7 +473,8 @@ export class WorkoutRepository {
         exercises.push(new WorkoutExerciseRecord(
           result.getLong(0), sessionId, result.getString(1), result.getString(2), result.getString(3),
           result.getString(4), result.getString(5), result.getString(6), result.getLong(7), result.getLong(8),
-          result.getLong(9), result.getLong(10), result.getLong(11), result.getLong(12)
+          result.getLong(9), result.getLong(10), result.getLong(11), result.getLong(12), [], 0, 10,
+          result.getLong(13), result.getDouble(14)
         ));
       } while (result.goToNextRow());
     } finally {
@@ -434,14 +487,16 @@ export class WorkoutRepository {
         exercise.suggestedWeight = latest.weight;
         exercise.suggestedReps = latest.reps;
       } else {
-        const previous: SetRecord[] = await this.getPreviousSets(store, exercise.actualExerciseId, sessionId);
+        const previous: SetRecord[] = await this.getPreviousSets(store, exercise.actualExerciseId, sessionId,
+          exercise.programWorkoutExerciseId);
         if (previous.length > 0) {
           const latest: SetRecord = previous[previous.length - 1];
           const allAtTop: boolean = previous.length >= exercise.targetSets && previous.every(
             (record: SetRecord) => record.reps >= exercise.repMax
           );
-          exercise.suggestedWeight = allAtTop && latest.weight > 0 ? latest.weight + 2.5 : latest.weight;
-          exercise.suggestedReps = latest.reps;
+          const progressed: boolean = allAtTop && latest.weight > 0;
+          exercise.suggestedWeight = progressed ? latest.weight + exercise.weightIncrementKg : latest.weight;
+          exercise.suggestedReps = progressed ? exercise.repMin : latest.reps;
         }
       }
     }
@@ -471,44 +526,57 @@ export class WorkoutRepository {
   }
 
   private async getPreviousSet(store: relationalStore.RdbStore, exerciseId: string,
-    excludedSessionId: number): Promise<SetRecord | undefined> {
+    excludedSessionId: number, programWorkoutExerciseId: number = 0): Promise<SetRecord | undefined> {
+    const slotClause: string = programWorkoutExerciseId > 0 ? 'AND wer.program_workout_exercise_id = ?' : '';
+    const args: relationalStore.ValueType[] = programWorkoutExerciseId > 0 ?
+      [exerciseId, excludedSessionId, programWorkoutExerciseId] :
+      [exerciseId, excludedSessionId];
     const result: relationalStore.ResultSet = await store.querySql(
       `SELECT sr.id, sr.exercise_record_id, sr.set_number, sr.weight, sr.reps, sr.completed_at
        FROM set_record sr
        JOIN workout_exercise_record wer ON wer.id = sr.exercise_record_id
        JOIN workout_session ws ON ws.id = wer.session_id
-       WHERE wer.actual_exercise_id = ? AND wer.session_id != ? AND ws.status = 'completed'
+       WHERE wer.actual_exercise_id = ? AND wer.session_id != ? AND ws.status = 'completed' ${slotClause}
        ORDER BY sr.completed_at DESC LIMIT 1`,
-      [exerciseId, excludedSessionId]
+      args
     );
+    let previous: SetRecord | undefined;
     try {
-      if (!result.goToFirstRow()) {
-        return undefined;
+      if (result.goToFirstRow()) {
+        previous = new SetRecord(
+          result.getLong(0), result.getLong(1), result.getLong(2), result.getDouble(3), result.getLong(4),
+          result.getLong(5)
+        );
       }
-      return new SetRecord(
-        result.getLong(0), result.getLong(1), result.getLong(2), result.getDouble(3), result.getLong(4),
-        result.getLong(5)
-      );
     } finally {
       result.close();
     }
+    if (previous === undefined && programWorkoutExerciseId > 0) {
+      return this.getPreviousSet(store, exerciseId, excludedSessionId, 0);
+    }
+    return previous;
   }
 
   private async getPreviousSets(store: relationalStore.RdbStore, exerciseId: string,
-    excludedSessionId: number): Promise<SetRecord[]> {
+    excludedSessionId: number, programWorkoutExerciseId: number = 0): Promise<SetRecord[]> {
+    const slotClause: string = programWorkoutExerciseId > 0 ? 'AND wer.program_workout_exercise_id = ?' : '';
+    const latestSlotClause: string = programWorkoutExerciseId > 0 ? 'AND wer2.program_workout_exercise_id = ?' : '';
+    const args: relationalStore.ValueType[] = programWorkoutExerciseId > 0 ?
+      [exerciseId, excludedSessionId, programWorkoutExerciseId, exerciseId, excludedSessionId, programWorkoutExerciseId] :
+      [exerciseId, excludedSessionId, exerciseId, excludedSessionId];
     const result: relationalStore.ResultSet = await store.querySql(
       `SELECT sr.id, sr.exercise_record_id, sr.set_number, sr.weight, sr.reps, sr.completed_at
        FROM set_record sr
        JOIN workout_exercise_record wer ON wer.id = sr.exercise_record_id
        JOIN workout_session ws ON ws.id = wer.session_id
-       WHERE wer.actual_exercise_id = ? AND wer.session_id != ? AND ws.status = 'completed'
+       WHERE wer.actual_exercise_id = ? AND wer.session_id != ? AND ws.status = 'completed' ${slotClause}
          AND ws.id = (SELECT wer2.session_id FROM workout_exercise_record wer2
                       JOIN set_record sr2 ON sr2.exercise_record_id = wer2.id
                       JOIN workout_session ws2 ON ws2.id = wer2.session_id
-                      WHERE wer2.actual_exercise_id = ? AND wer2.session_id != ? AND ws2.status = 'completed'
+                      WHERE wer2.actual_exercise_id = ? AND wer2.session_id != ? AND ws2.status = 'completed' ${latestSlotClause}
                       ORDER BY ws2.completed_at DESC LIMIT 1)
        ORDER BY sr.set_number ASC`,
-      [exerciseId, excludedSessionId, exerciseId, excludedSessionId]
+      args
     );
     const records: SetRecord[] = [];
     try {
@@ -518,10 +586,13 @@ export class WorkoutRepository {
             result.getDouble(3), result.getLong(4), result.getLong(5)));
         } while (result.goToNextRow());
       }
-      return records;
     } finally {
       result.close();
     }
+    if (records.length === 0 && programWorkoutExerciseId > 0) {
+      return this.getPreviousSets(store, exerciseId, excludedSessionId, 0);
+    }
+    return records;
   }
 
   async getProgressHighlights(session: WorkoutSession): Promise<ExerciseProgress[]> {
@@ -533,11 +604,13 @@ export class WorkoutRepository {
       }
       const latest: SetRecord = exercise.setRecords[exercise.setRecords.length - 1];
       const previous: SetRecord | undefined = await this.getPreviousSet(store, exercise.actualExerciseId,
-        session.id);
+        session.id, exercise.programWorkoutExerciseId);
       if (previous === undefined) {
         continue;
       }
-      if (latest.weight > previous.weight || latest.reps > previous.reps) {
+      const sameWeightMoreReps: boolean = latest.weight === previous.weight && latest.reps > previous.reps;
+      const heavierWithValidReps: boolean = latest.weight > previous.weight && latest.reps >= exercise.repMin;
+      if (sameWeightMoreReps || heavierWithValidReps) {
         highlights.push(new ExerciseProgress(
           exercise.exerciseNameSnapshot, previous.weight, latest.weight, previous.reps, latest.reps
         ));

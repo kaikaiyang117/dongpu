@@ -24,6 +24,7 @@ export struct PrimaryButton {
         .borderRadius(APP_BUTTON_RADIUS)
         .backgroundColor(this.isEnabled ? APP_COLOR_GREEN : APP_COLOR_SURFACE_DISABLED)
         .enabled(this.isEnabled)
+        .stateEffect(this.isEnabled)
         .onClick(() => this.onTap())
     }
     .width('100%')

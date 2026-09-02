@@ -3,8 +3,42 @@ import { DailyRepresentativeWeight, WaistTrend, WeightTrend, WeightTrendStatus }
 
 const DAY_MS: number = 24 * 60 * 60 * 1000;
 const MIN_VALID_DAYS: number = 4;
+export interface FatLossTrendThresholds {
+  fastPercent: number;
+  normalUpperPercent: number;
+}
+
+export const FAT_LOSS_TREND: FatLossTrendThresholds = {
+  fastPercent: -1.0,
+  normalUpperPercent: -0.25
+};
+
+export class DateRange {
+  startAt: number;
+  endAt: number;
+
+  constructor(startAt: number = 0, endAt: number = 0) {
+    this.startAt = startAt;
+    this.endAt = endAt;
+  }
+}
 
 export class TrendService {
+  static currentWeekRange(now: Date = new Date()): DateRange {
+    const day: number = now.getDay();
+    const mondayOffset: number = day === 0 ? -6 : 1 - day;
+    const monday: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
+    const nextMonday: number = monday.getTime() + 7 * DAY_MS;
+    const tomorrow: number = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
+    return new DateRange(monday.getTime(), Math.min(nextMonday, tomorrow));
+  }
+
+  static calendarWeekFrom(startedAt: number, now: Date = new Date()): number {
+    if (startedAt <= 0) return 1;
+    const startRange: DateRange = TrendService.currentWeekRange(new Date(startedAt));
+    const currentRange: DateRange = TrendService.currentWeekRange(now);
+    return Math.max(1, Math.floor((currentRange.startAt - startRange.startAt) / DAY_MS / 7) + 1);
+  }
   static localDateKey(timestamp: number): string {
     const date: Date = new Date(timestamp);
     const month: string = `${date.getMonth() + 1}`.padStart(2, '0');
@@ -45,7 +79,7 @@ export class TrendService {
     const changeKg: number = currentAverageKg - previousAverageKg;
     const changePercent: number = previousAverageKg === 0 ? 0 : changeKg / previousAverageKg * 100;
     return new WeightTrend(dailyWeights, currentAverageKg, previousAverageKg, changeKg, changePercent,
-      TrendService.statusForChange(changeKg));
+      TrendService.statusForChange(changePercent));
   }
 
   static calculateWaistTrend(measurements: BodyMeasurement[], now: Date = new Date()): WaistTrend {
@@ -61,13 +95,11 @@ export class TrendService {
     return new WaistTrend(latest, previousValue, previousValue === 0 ? 0 : latest - previousValue, true);
   }
 
-  static statusForChange(changeKg: number): WeightTrendStatus {
-    // The product spec leaves exact coaching bands open; keep the MVP bands explicit
-    // so a later recommendation service can replace them without changing aggregation.
-    if (changeKg <= -1) {
+  static statusForChange(changePercent: number): WeightTrendStatus {
+    if (changePercent < FAT_LOSS_TREND.fastPercent) {
       return WeightTrendStatus.Fast;
     }
-    if (changeKg <= -0.2) {
+    if (changePercent <= FAT_LOSS_TREND.normalUpperPercent) {
       return WeightTrendStatus.Normal;
     }
     return WeightTrendStatus.Slow;
