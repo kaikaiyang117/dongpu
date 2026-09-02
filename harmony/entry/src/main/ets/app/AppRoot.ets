@@ -4,6 +4,10 @@ import { AppHeader } from '../components/AppHeader';
 import { BottomNav } from '../components/BottomNav';
 import { exerciseMatchesPart, findExercise, findExerciseExact, getGymEligibleApprovedExercises, loadExercises, userPartId } from '../data/ExerciseCatalog';
 import { PlanRepository } from '../data/repository/PlanRepository';
+import { ActivityRepository } from '../data/repository/ActivityRepository';
+import { BodyRepository } from '../data/repository/BodyRepository';
+import { GoalRepository } from '../data/repository/GoalRepository';
+import { ProfileRepository } from '../data/repository/ProfileRepository';
 import { SettingsRepository } from '../data/repository/SettingsRepository';
 import { WorkoutRepository } from '../data/repository/WorkoutRepository';
 import { ProgramExercise, ProgramWorkout, recommendedWorkout } from '../domain/program/ProgramModels';
@@ -25,6 +29,10 @@ import { WorkoutPage } from '../features/training/WorkoutPage';
 import { WorkoutPreviewPage } from '../features/training/WorkoutPreviewPage';
 import { Exercise } from '../model/Exercise';
 import { PlanItem } from '../model/WorkoutData';
+import { ActiveProgramState } from '../domain/program/ProgramV2Models';
+import { OnboardingDraft, UserProfile } from '../domain/profile/ProfileModels';
+import { FitnessGoal } from '../domain/goal/GoalModels';
+import { BodyMeasurement } from '../domain/body/BodyModels';
 
 @Component
 export struct AppRoot {
@@ -57,6 +65,9 @@ export struct AppRoot {
   private settingsRepository: SettingsRepository | undefined;
   private workoutRepository: WorkoutRepository | undefined;
   private planRepository: PlanRepository | undefined;
+  private profileRepository: ProfileRepository | undefined;
+  private goalRepository: GoalRepository | undefined;
+  private bodyRepository: BodyRepository | undefined;
   private programCatalogValid: boolean = false;
 
   aboutToAppear(): void {
@@ -67,16 +78,21 @@ export struct AppRoot {
       this.settingsRepository = new SettingsRepository(hostContext);
       this.workoutRepository = new WorkoutRepository(hostContext);
       this.planRepository = new PlanRepository(hostContext);
+      this.profileRepository = new ProfileRepository(hostContext);
+      this.goalRepository = new GoalRepository(hostContext);
+      this.bodyRepository = new BodyRepository(hostContext);
       this.initializeApp();
     }
   }
 
   private async initializeApp(): Promise<void> {
-    if (this.settingsRepository === undefined || this.workoutRepository === undefined) {
+    if (this.settingsRepository === undefined || this.workoutRepository === undefined ||
+      this.profileRepository === undefined) {
       return;
     }
     try {
       const settings = await this.settingsRepository.getSettings();
+      const profile: UserProfile | undefined = await this.profileRepository.getProfile();
       const programState = await this.workoutRepository.getProgramState();
       const activeWorkout: WorkoutSession | undefined = await this.workoutRepository.getActiveWorkout();
       await this.loadCustomPlan();
@@ -86,7 +102,8 @@ export struct AppRoot {
       this.weeklyCompleted = programState.weeklyCompleted;
       this.nextWorkoutCode = programState.nextWorkoutCode;
       this.applyActiveWorkout(activeWorkout);
-      this.route = settings.onboardingCompleted ? AppRoute.TrainingHome : AppRoute.Onboarding;
+      this.route = (profile?.onboardingCompleted ?? settings.onboardingCompleted) ?
+        AppRoute.TrainingHome : AppRoute.Onboarding;
     } catch (_) {
       this.route = AppRoute.Onboarding;
     }
@@ -218,14 +235,33 @@ export struct AppRoot {
     }
   }
 
-  private async completeOnboarding(): Promise<void> {
-    if (this.settingsRepository === undefined || this.isSaving) {
+  private async completeOnboarding(draft: OnboardingDraft): Promise<void> {
+    if (this.settingsRepository === undefined || this.profileRepository === undefined ||
+      this.goalRepository === undefined || this.bodyRepository === undefined || this.isSaving) {
       return;
     }
     this.isSaving = true;
     try {
-      await this.settingsRepository.completeOnboarding(this.selectedFrequency);
-      this.weeklyFrequency = this.selectedFrequency;
+      const now: number = Date.now();
+      const calories: number = Math.max(1400, Math.round(draft.currentWeightKg * 28 - 300 +
+        (draft.frequencyMax - 3) * 50));
+      const protein: number = Math.round(draft.currentWeightKg * 1.8);
+      const profile: UserProfile = new UserProfile(1, draft.heightCm, '', 0, false, now, now);
+      await this.profileRepository.saveProfile(profile);
+      await this.bodyRepository.addMeasurement(new BodyMeasurement(0, now, draft.currentWeightKg, draft.waistCm,
+        0, 'onboarding'));
+      const goal: FitnessGoal = await this.goalRepository.saveActiveGoal(new FitnessGoal(
+        0, draft.goalType, draft.currentWeightKg, draft.targetWeightKg, now, calories, protein, 8000,
+        draft.frequencyMin, draft.frequencyMax, draft.trainingLocation, draft.dedicatedLegDay,
+        draft.preferMachines, 'active', now, now
+      ));
+      await this.goalRepository.saveActiveProgramState(new ActiveProgramState(
+        1, goal.id, 'fat_loss_upper_priority_3_4', '1.0', now, 1, 0
+      ));
+      await this.profileRepository.setOnboardingCompleted(true);
+      await this.settingsRepository.completeOnboarding(draft.frequencyMin);
+      this.weeklyFrequency = draft.frequencyMin;
+      this.selectedFrequency = draft.frequencyMin;
       this.route = AppRoute.TrainingHome;
     } finally {
       this.isSaving = false;
@@ -517,10 +553,8 @@ export struct AppRoot {
         .layoutWeight(1)
       } else if (this.route === AppRoute.Onboarding) {
         OnboardingPage({
-          selectedFrequency: this.selectedFrequency,
           isSaving: this.isSaving,
-          onSelectFrequency: (frequency: number) => this.selectedFrequency = frequency,
-          onStart: () => this.completeOnboarding()
+          onStart: (draft: OnboardingDraft) => this.completeOnboarding(draft)
         })
       } else if (this.route === AppRoute.TrainingHome) {
         TrainingHomePage({
