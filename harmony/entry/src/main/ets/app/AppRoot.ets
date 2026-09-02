@@ -13,6 +13,7 @@ import { WorkoutRepository } from '../data/repository/WorkoutRepository';
 import { NutritionRepository } from '../data/repository/NutritionRepository';
 import { ProgramRepository } from '../data/repository/ProgramRepository';
 import { DashboardService, DashboardViewModel } from '../services/DashboardService';
+import { TrendService } from '../services/TrendService';
 import { ProgramExercise, ProgramWorkout, recommendedWorkout } from '../domain/program/ProgramModels';
 import { WorkoutExerciseRecord, WorkoutPhase, WorkoutSession, WorkoutStatus, ExerciseProgress } from '../domain/workout/WorkoutModels';
 import { CustomTrainingFlow } from '../features/custom/CustomTrainingFlow';
@@ -65,6 +66,10 @@ export struct AppRoot {
   @State historySessions: WorkoutSession[] = [];
   @State detailSessionId: number = 0;
   @State operationError: string = '';
+  @State weeklyProteinDays: number = 0;
+  @State weeklyAverageCalories: number = 0;
+  @State weeklyAverageSteps: number = 0;
+  @State weeklyStrengthHighlights: ExerciseProgress[] = [];
   @State dashboard: DashboardViewModel = new DashboardViewModel();
   @State nutritionSummary: NutritionSummary = new NutritionSummary();
   @State nutritionQuickFoods: QuickFood[] = [];
@@ -152,6 +157,34 @@ export struct AppRoot {
       return;
     }
     this.dashboard = await this.dashboardService.load();
+    await this.refreshWeeklyNutrition();
+  }
+
+  private async refreshWeeklyNutrition(): Promise<void> {
+    if (this.nutritionRepository === undefined) return;
+    const now: Date = new Date();
+    const day: number = now.getDay();
+    const mondayOffset: number = day === 0 ? -6 : 1 - day;
+    const monday: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
+    const nextMonday: Date = new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const entries: FoodEntry[] = await this.nutritionRepository.getFoodEntries(monday.getTime(), nextMonday.getTime());
+    const daily: Map<string, NutritionSummary> = new Map<string, NutritionSummary>();
+    for (const entry of entries) {
+      const key: string = TrendService.localDateKey(entry.recordedAt);
+      const summary: NutritionSummary = daily.get(key) ?? new NutritionSummary();
+      summary.calories += entry.calories;
+      summary.proteinG += entry.proteinG;
+      daily.set(key, summary);
+    }
+    let totalCalories: number = 0;
+    daily.forEach((item: NutritionSummary) => totalCalories += item.calories);
+    this.weeklyAverageCalories = daily.size > 0 ? totalCalories / daily.size : 0;
+    this.weeklyProteinDays = 0;
+    if (this.activeGoal.targetProteinG > 0) {
+      daily.forEach((item: NutritionSummary) => {
+        if (item.proteinG >= this.activeGoal.targetProteinG) this.weeklyProteinDays += 1;
+      });
+    }
   }
 
   private async refreshNutrition(): Promise<void> {
@@ -748,6 +781,46 @@ export struct AppRoot {
     }
   }
 
+  private async openWeeklyReview(): Promise<void> {
+    if (this.workoutRepository === undefined || this.nutritionRepository === undefined ||
+      this.activityRepository === undefined) {
+      return;
+    }
+    const now: Date = new Date();
+    const day: number = now.getDay();
+    const mondayOffset: number = day === 0 ? -6 : 1 - day;
+    const monday: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
+    const nextMonday: Date = new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const startAt: number = monday.getTime();
+    const todayEnd: number = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
+    const endAt: number = Math.min(nextMonday.getTime(), todayEnd);
+    const entries: FoodEntry[] = await this.nutritionRepository.getFoodEntries(startAt, endAt);
+    const proteinByDay: Map<string, number> = new Map<string, number>();
+    for (const entry of entries) {
+      const key: string = TrendService.localDateKey(entry.recordedAt);
+      proteinByDay.set(key, (proteinByDay.get(key) ?? 0) + entry.proteinG);
+    }
+    this.weeklyProteinDays = 0;
+    if (this.activeGoal.targetProteinG > 0) {
+      proteinByDay.forEach((protein: number) => {
+        if (protein >= this.activeGoal.targetProteinG) this.weeklyProteinDays += 1;
+      });
+    }
+    const activities: DailyActivity[] = await this.activityRepository.getRange(
+      TrendService.localDateKey(startAt), TrendService.localDateKey(nextMonday.getTime()));
+    const totalSteps: number = activities.reduce((total: number, item: DailyActivity) => total + item.steps, 0);
+    this.weeklyAverageSteps = Math.round(totalSteps / 7);
+    const sessions: WorkoutSession[] = await this.workoutRepository.getHistory();
+    const weekSessions: WorkoutSession[] = sessions.filter((session: WorkoutSession) =>
+      session.completedAt >= startAt && session.completedAt < endAt);
+    this.weeklyStrengthHighlights = [];
+    for (const session of weekSessions) {
+      const highlights: ExerciseProgress[] = await this.workoutRepository.getProgressHighlights(session);
+      this.weeklyStrengthHighlights = this.weeklyStrengthHighlights.concat(highlights).slice(0, 3);
+    }
+    this.route = AppRoute.WeeklyReview;
+  }
+
   private findHistorySession(id: number): WorkoutSession {
     const found: WorkoutSession | undefined = this.historySessions.find(
       (session: WorkoutSession) => session.id === id
@@ -831,7 +904,8 @@ export struct AppRoot {
           onResumeWorkout: () => this.openActiveWorkout(),
           onOpenTraining: () => this.openRequiredPreview(),
           onOpenNutrition: () => this.openNutrition(),
-          onRecordBody: () => this.route = AppRoute.BodyQuickEntry
+          onRecordBody: () => this.route = AppRoute.BodyQuickEntry,
+          onRecordActivity: () => this.route = AppRoute.Profile
         })
         BottomNav({ selectedTab: 'today', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.Nutrition) {
@@ -860,8 +934,10 @@ export struct AppRoot {
           sessions: this.historySessions,
           weeklyCompleted: this.weeklyCompleted,
           weeklyFrequency: this.weeklyFrequency,
+          weeklyAverageCalories: this.weeklyAverageCalories,
+          weeklyProteinDays: this.weeklyProteinDays,
           onBack: () => this.route = AppRoute.Dashboard,
-          onOpenReview: () => this.route = AppRoute.WeeklyReview
+          onOpenReview: () => this.openWeeklyReview()
         })
         BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.WeeklyReview) {
@@ -872,6 +948,9 @@ export struct AppRoot {
           weeklyCompleted: this.weeklyCompleted,
           weeklyFrequency: this.weeklyFrequency,
           todaySteps: this.dashboard.activity?.steps ?? 0,
+          proteinDays: this.weeklyProteinDays,
+          averageSteps: this.weeklyAverageSteps,
+          strengthHighlights: this.weeklyStrengthHighlights,
           onBack: () => this.route = AppRoute.Progress
         })
         BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })

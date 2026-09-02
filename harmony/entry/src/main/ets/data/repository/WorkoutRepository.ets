@@ -112,6 +112,22 @@ export class WorkoutRepository {
     return sessions;
   }
 
+  async hasCompletedRequiredToday(dayStart: number, dayEnd: number): Promise<boolean> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    const result: relationalStore.ResultSet = await store.querySql(
+      `SELECT ws.id FROM workout_session ws
+       LEFT JOIN program_workout pw ON pw.id = ws.program_workout_id
+       WHERE ws.status = 'completed' AND ws.completed_at >= ? AND ws.completed_at < ?
+         AND (pw.optional IS NULL OR pw.optional = 0) LIMIT 1`,
+      [dayStart, dayEnd]
+    );
+    try {
+      return result.goToFirstRow();
+    } finally {
+      result.close();
+    }
+  }
+
   async startRecommendedWorkout(workout: ProgramWorkout): Promise<WorkoutSession> {
     return this.startWorkout(workout, 'recommended');
   }

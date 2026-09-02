@@ -16,6 +16,7 @@ export struct DashboardPage {
   onOpenTraining: () => void = () => {};
   onOpenNutrition: () => void = () => {};
   onRecordBody: () => void = () => {};
+  onRecordActivity: () => void = () => {};
 
   private trendText(): string {
     const trend = this.viewModel.weightTrend;
@@ -113,6 +114,14 @@ export struct DashboardPage {
             .fontSize(12).fontColor(APP_COLOR_MUTED)
         }.layoutWeight(1).alignItems(HorizontalAlign.Start)
       }.width('100%')
+      if (this.viewModel.goal !== undefined) {
+        Row() {
+          Text(`还可摄入 ${Math.max(0, this.viewModel.goal.targetCalories - this.viewModel.nutrition.calories).toFixed(0)} kcal`)
+            .fontSize(12).fontColor(APP_COLOR_MUTED).layoutWeight(1)
+          Text(`蛋白质还差 ${Math.max(0, this.viewModel.goal.targetProteinG - this.viewModel.nutrition.proteinG).toFixed(0)} g`)
+            .fontSize(12).fontColor(APP_COLOR_MUTED)
+        }.width('100%')
+      }
     }
     .width('100%').padding(18).borderRadius(20).backgroundColor(Color.White)
     .border({ width: 1, color: APP_COLOR_LINE }).onClick(() => this.onOpenNutrition())
@@ -161,7 +170,7 @@ export struct DashboardPage {
       Text(this.viewModel.goal === undefined ? '目标 --' : `目标 ${this.viewModel.goal.targetSteps} 步`)
         .fontSize(13).fontColor(APP_COLOR_MUTED)
     }.width('100%').padding(18).borderRadius(20).backgroundColor(Color.White)
-      .border({ width: 1, color: APP_COLOR_LINE })
+      .border({ width: 1, color: APP_COLOR_LINE }).onClick(() => this.onRecordActivity())
   }
 
   build() {

@@ -73,7 +73,7 @@ export class DashboardService {
   async load(now: Date = new Date()): Promise<DashboardViewModel> {
     const dayStart: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const dayEnd: Date = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-    const trendStart: Date = new Date(dayStart.getTime() - 27 * 24 * 60 * 60 * 1000);
+    const trendStart: Date = new Date(dayStart.getTime() - 29 * 24 * 60 * 60 * 1000);
     const dateKey: string = TrendService.localDateKey(dayStart.getTime());
     const goal: FitnessGoal | undefined = await this.goalRepository.getActiveGoal();
     const latestWeight: BodyMeasurement | undefined = await this.bodyRepository.getLatestMeasurement();
@@ -86,8 +86,10 @@ export class DashboardService {
     const todayWorkout: ProgramWorkoutV2 | undefined = await this.loadTodayWorkout(goal);
     const weightTrend: WeightTrend = TrendService.calculateWeightTrend(measurements, now);
     const waistTrend: WaistTrend = TrendService.calculateWaistTrend(measurements, now);
+    const workoutDone: boolean = await this.workoutRepository.hasCompletedRequiredToday(
+      dayStart.getTime(), dayEnd.getTime());
     const checklist: DashboardChecklistItem[] = this.buildChecklist(goal, latestWeight, dayStart, nutrition, activity,
-      activeWorkout);
+      workoutDone);
     return new DashboardViewModel(goal, latestWeight, weightTrend, waistTrend, nutrition, activity, todayWorkout, checklist,
       activeWorkout);
   }
@@ -110,7 +112,7 @@ export class DashboardService {
 
   private buildChecklist(goal: FitnessGoal | undefined, latestWeight: BodyMeasurement | undefined, dayStart: Date,
     nutrition: NutritionSummary, activity: DailyActivity | undefined,
-    activeWorkout: WorkoutSession | undefined): DashboardChecklistItem[] {
+    workoutDone: boolean): DashboardChecklistItem[] {
     const hasWeightToday: boolean = latestWeight !== undefined && latestWeight.recordedAt >= dayStart.getTime() &&
       latestWeight.recordedAt < dayStart.getTime() + 24 * 60 * 60 * 1000;
     const nutritionStarted: boolean = nutrition.calories > 0 || nutrition.proteinG > 0;
@@ -121,7 +123,7 @@ export class DashboardService {
       new DashboardChecklistItem('nutrition', '饮食记录已开始', nutritionStarted),
       new DashboardChecklistItem('protein', '蛋白质目标', proteinTarget > 0 && nutrition.proteinG >= proteinTarget),
       new DashboardChecklistItem('steps', '步数目标', stepsTarget > 0 && (activity?.steps ?? 0) >= stepsTarget),
-      new DashboardChecklistItem('workout', '今日训练', activeWorkout !== undefined)
+      new DashboardChecklistItem('workout', '今日训练', workoutDone)
     ];
   }
 }

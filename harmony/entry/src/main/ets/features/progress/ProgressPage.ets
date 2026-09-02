@@ -1,4 +1,4 @@
-import { APP_COLOR_GREEN_DARK, APP_COLOR_LINE, APP_COLOR_MUTED, APP_COLOR_TEXT } from '../../app/AppTheme';
+import { APP_COLOR_GREEN_DARK, APP_COLOR_GREEN_SOFT, APP_COLOR_LINE, APP_COLOR_MUTED, APP_COLOR_TEXT } from '../../app/AppTheme';
 import { NutritionSummary } from '../../domain/nutrition/NutritionModels';
 import { DailyRepresentativeWeight, WaistTrend, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
 import { WorkoutSession } from '../../domain/workout/WorkoutModels';
@@ -21,6 +21,8 @@ export struct ProgressPage {
   @Prop sessions: WorkoutSession[] = [];
   @Prop weeklyCompleted: number = 0;
   @Prop weeklyFrequency: number = 0;
+  @Prop weeklyAverageCalories: number = 0;
+  @Prop weeklyProteinDays: number = 0;
   @State private selectedTab: string = 'weight';
   onBack: () => void = () => {};
   onOpenReview: () => void = () => {};
@@ -54,7 +56,7 @@ export struct ProgressPage {
           .width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
       }
       Text('每日代表值').width('100%').fontSize(16).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
-      ForEach(this.trend.dailyWeights.slice(-7).reverse(), (item: DailyRepresentativeWeight) => {
+      ForEach(this.trend.dailyWeights.slice(-30).reverse(), (item: DailyRepresentativeWeight) => {
         Row() {
           Text(item.dateKey).fontSize(13).fontColor(APP_COLOR_MUTED).layoutWeight(1)
           Text(`${item.weightKg.toFixed(1)} kg`).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
@@ -83,7 +85,7 @@ export struct ProgressPage {
       Text(this.sessions.length === 0 ? '完成训练后，这里会保留最近训练记录。' : `最近完成 ${this.sessions.length} 次训练`)
         .fontSize(14).fontColor(APP_COLOR_MUTED)
       Button('查看本周复盘').width('100%').height(44).fontSize(14).fontWeight(FontWeight.Bold)
-        .fontColor(APP_COLOR_GREEN_DARK).backgroundColor('#E4F2E9').borderRadius(12)
+        .fontColor(APP_COLOR_GREEN_DARK).backgroundColor(APP_COLOR_GREEN_SOFT).borderRadius(12)
         .onClick(() => this.onOpenReview())
       ForEach(this.sessions.slice(0, 5), (session: WorkoutSession) => {
         Row() {
@@ -104,15 +106,16 @@ export struct ProgressPage {
       Text('营养趋势').width('100%').fontSize(18).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
       Row() {
         Column({ space: 4 }) {
-          Text(`${Math.round(this.nutrition.calories)} kcal`).fontSize(26).fontWeight(FontWeight.Bold)
-          Text('今日热量').fontSize(13).fontColor(APP_COLOR_MUTED)
+          Text(this.weeklyAverageCalories > 0 ? `${Math.round(this.weeklyAverageCalories)} kcal` : '--')
+            .fontSize(26).fontWeight(FontWeight.Bold)
+          Text('本周平均热量').fontSize(13).fontColor(APP_COLOR_MUTED)
         }.layoutWeight(1).alignItems(HorizontalAlign.Start)
         Column({ space: 4 }) {
-          Text(`${Math.round(this.nutrition.proteinG)} g`).fontSize(26).fontWeight(FontWeight.Bold)
-          Text('今日蛋白质').fontSize(13).fontColor(APP_COLOR_MUTED)
+          Text(`${this.weeklyProteinDays} 天`).fontSize(26).fontWeight(FontWeight.Bold)
+          Text('蛋白质达标').fontSize(13).fontColor(APP_COLOR_MUTED)
         }.layoutWeight(1).alignItems(HorizontalAlign.Start)
       }.width('100%')
-      Text('持续记录饮食后，这里会显示周平均和达标天数。').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
+      Text('按本周已记录天数汇总，未记录日期不会被伪造为达标。').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
     }.width('100%').padding(18).borderRadius(18).backgroundColor(Color.White)
       .border({ width: 1, color: APP_COLOR_LINE })
   }
@@ -131,7 +134,7 @@ export struct ProgressPage {
           new ProgressTab('nutrition', '营养')], (tab: ProgressTab) => {
             Button(tab.label).layoutWeight(1).height(42).fontSize(14).fontWeight(FontWeight.Bold)
               .fontColor(this.selectedTab === tab.id ? APP_COLOR_GREEN_DARK : APP_COLOR_MUTED)
-              .backgroundColor(this.selectedTab === tab.id ? '#E4F2E9' : Color.White).borderRadius(12)
+              .backgroundColor(this.selectedTab === tab.id ? APP_COLOR_GREEN_SOFT : Color.White).borderRadius(12)
               .onClick(() => this.selectedTab = tab.id)
           }, (tab: ProgressTab) => tab.id)
       }.width('100%').padding({ left: 20, right: 20, top: 6, bottom: 10 })

@@ -137,6 +137,11 @@ export struct SettingsPage {
               }
             }
             .width('100%')
+            Row({ space: 8 }) {
+              this.ChoiceButton('4 次', this.weeklyFrequency === 4, () => this.onChangeFrequency(4))
+              this.ChoiceButton('5 次', this.weeklyFrequency === 5, () => this.onChangeFrequency(5))
+            }
+            .width('100%')
             this.InfoRow('训练日提醒', '未开启')
             Row() {
               Text('训练地点').layoutWeight(1).fontSize(15).fontColor(APP_COLOR_TEXT)
