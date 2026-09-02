@@ -33,6 +33,8 @@ import { WorkoutPage } from '../features/training/WorkoutPage';
 import { WorkoutPreviewPage } from '../features/training/WorkoutPreviewPage';
 import { NutritionPage } from '../features/nutrition/NutritionPage';
 import { FoodEntryEditorPage } from '../features/nutrition/FoodEntryEditorPage';
+import { ProgressPage } from '../features/progress/ProgressPage';
+import { BodyQuickEntryPage } from '../features/progress/BodyQuickEntryPage';
 import { Exercise } from '../model/Exercise';
 import { PlanItem } from '../model/WorkoutData';
 import { ActiveProgramState, ProgramWorkoutV2 } from '../domain/program/ProgramV2Models';
@@ -275,6 +277,20 @@ export struct AppRoot {
       this.route = AppRoute.Dashboard;
     } catch (_) {
       this.operationError = '营养记录保存失败，请检查输入';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  private async saveBodyMeasurement(measurement: BodyMeasurement): Promise<void> {
+    if (this.bodyRepository === undefined || this.isSaving) return;
+    this.isSaving = true;
+    try {
+      await this.bodyRepository.addMeasurement(measurement);
+      await this.refreshDashboard();
+      this.route = AppRoute.Dashboard;
+    } catch (_) {
+      this.operationError = '身体记录保存失败，请检查输入';
     } finally {
       this.isSaving = false;
     }
@@ -689,8 +705,9 @@ export struct AppRoot {
       return;
     }
     if (tab === 'progress') {
+      this.refreshDashboard();
       this.loadHistory();
-      this.route = AppRoute.History;
+      this.route = AppRoute.Progress;
       return;
     }
     if (tab === 'profile') {
@@ -754,7 +771,7 @@ export struct AppRoot {
           onResumeWorkout: () => this.openActiveWorkout(),
           onOpenTraining: () => this.openRequiredPreview(),
           onOpenNutrition: () => this.openNutrition(),
-          onRecordBody: () => this.operationError = '身体记录将在下一阶段开放'
+          onRecordBody: () => this.route = AppRoute.BodyQuickEntry
         })
         BottomNav({ selectedTab: 'today', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.Nutrition) {
@@ -774,6 +791,22 @@ export struct AppRoot {
           isSaving: this.isSaving,
           onBack: () => this.route = AppRoute.Nutrition,
           onSave: (entry: FoodEntry) => this.saveFoodEntry(entry)
+        })
+      } else if (this.route === AppRoute.Progress) {
+        ProgressPage({
+          trend: this.dashboard.weightTrend,
+          nutrition: this.dashboard.nutrition,
+          sessions: this.historySessions,
+          weeklyCompleted: this.weeklyCompleted,
+          weeklyFrequency: this.weeklyFrequency,
+          onBack: () => this.route = AppRoute.Dashboard
+        })
+        BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
+      } else if (this.route === AppRoute.BodyQuickEntry) {
+        BodyQuickEntryPage({
+          isSaving: this.isSaving,
+          onBack: () => this.route = AppRoute.Dashboard,
+          onSave: (measurement: BodyMeasurement) => this.saveBodyMeasurement(measurement)
         })
       } else if (this.route === AppRoute.TrainingHome) {
         TrainingHomePage({
