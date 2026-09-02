@@ -1,5 +1,5 @@
 import { BodyMeasurement } from '../domain/body/BodyModels';
-import { DailyRepresentativeWeight, WeightTrend, WeightTrendStatus } from '../domain/progress/ProgressModels';
+import { DailyRepresentativeWeight, WaistTrend, WeightTrend, WeightTrendStatus } from '../domain/progress/ProgressModels';
 
 const DAY_MS: number = 24 * 60 * 60 * 1000;
 const MIN_VALID_DAYS: number = 4;
@@ -46,6 +46,19 @@ export class TrendService {
     const changePercent: number = previousAverageKg === 0 ? 0 : changeKg / previousAverageKg * 100;
     return new WeightTrend(dailyWeights, currentAverageKg, previousAverageKg, changeKg, changePercent,
       TrendService.statusForChange(changeKg));
+  }
+
+  static calculateWaistTrend(measurements: BodyMeasurement[], now: Date = new Date()): WaistTrend {
+    const today: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const currentStart: Date = new Date(today.getTime() - 13 * DAY_MS);
+    const current: BodyMeasurement[] = measurements.filter((item: BodyMeasurement) => item.waistCm > 0 &&
+      item.recordedAt >= currentStart.getTime() && item.recordedAt < today.getTime() + DAY_MS);
+    if (current.length === 0) return new WaistTrend();
+    const latest: number = current[current.length - 1].waistCm;
+    const previous: BodyMeasurement[] = measurements.filter((item: BodyMeasurement) => item.waistCm > 0 &&
+      item.recordedAt < currentStart.getTime());
+    const previousValue: number = previous.length === 0 ? 0 : previous[previous.length - 1].waistCm;
+    return new WaistTrend(latest, previousValue, previousValue === 0 ? 0 : latest - previousValue, true);
   }
 
   static statusForChange(changeKg: number): WeightTrendStatus {

@@ -34,3 +34,17 @@ export class WeightTrend {
     this.status = status;
   }
 }
+
+export class WaistTrend {
+  currentCm: number;
+  previousCm: number;
+  changeCm: number;
+  hasData: boolean;
+
+  constructor(currentCm: number = 0, previousCm: number = 0, changeCm: number = 0, hasData: boolean = false) {
+    this.currentCm = currentCm;
+    this.previousCm = previousCm;
+    this.changeCm = changeCm;
+    this.hasData = hasData;
+  }
+}

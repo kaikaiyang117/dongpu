@@ -5,6 +5,7 @@ export enum AppRoute {
   Nutrition = 'nutrition',
   FoodEntryEditor = 'food-entry-editor',
   Progress = 'progress',
+  WeeklyReview = 'weekly-review',
   BodyQuickEntry = 'body-quick-entry',
   Profile = 'profile',
   TrainingHome = 'training-home',

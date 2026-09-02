@@ -418,10 +418,14 @@ export class WorkoutRepository {
         exercise.suggestedWeight = latest.weight;
         exercise.suggestedReps = latest.reps;
       } else {
-        const previous: SetRecord | undefined = await this.getPreviousSet(store, exercise.actualExerciseId, sessionId);
-        if (previous !== undefined) {
-          exercise.suggestedWeight = previous.weight;
-          exercise.suggestedReps = previous.reps;
+        const previous: SetRecord[] = await this.getPreviousSets(store, exercise.actualExerciseId, sessionId);
+        if (previous.length > 0) {
+          const latest: SetRecord = previous[previous.length - 1];
+          const allAtTop: boolean = previous.length >= exercise.targetSets && previous.every(
+            (record: SetRecord) => record.reps >= exercise.repMax
+          );
+          exercise.suggestedWeight = allAtTop && latest.weight > 0 ? latest.weight + 2.5 : latest.weight;
+          exercise.suggestedReps = latest.reps;
         }
       }
     }
@@ -469,6 +473,36 @@ export class WorkoutRepository {
         result.getLong(0), result.getLong(1), result.getLong(2), result.getDouble(3), result.getLong(4),
         result.getLong(5)
       );
+    } finally {
+      result.close();
+    }
+  }
+
+  private async getPreviousSets(store: relationalStore.RdbStore, exerciseId: string,
+    excludedSessionId: number): Promise<SetRecord[]> {
+    const result: relationalStore.ResultSet = await store.querySql(
+      `SELECT sr.id, sr.exercise_record_id, sr.set_number, sr.weight, sr.reps, sr.completed_at
+       FROM set_record sr
+       JOIN workout_exercise_record wer ON wer.id = sr.exercise_record_id
+       JOIN workout_session ws ON ws.id = wer.session_id
+       WHERE wer.actual_exercise_id = ? AND wer.session_id != ? AND ws.status = 'completed'
+         AND ws.id = (SELECT wer2.session_id FROM workout_exercise_record wer2
+                      JOIN set_record sr2 ON sr2.exercise_record_id = wer2.id
+                      JOIN workout_session ws2 ON ws2.id = wer2.session_id
+                      WHERE wer2.actual_exercise_id = ? AND wer2.session_id != ? AND ws2.status = 'completed'
+                      ORDER BY ws2.completed_at DESC LIMIT 1)
+       ORDER BY sr.set_number ASC`,
+      [exerciseId, excludedSessionId, exerciseId, excludedSessionId]
+    );
+    const records: SetRecord[] = [];
+    try {
+      if (result.goToFirstRow()) {
+        do {
+          records.push(new SetRecord(result.getLong(0), result.getLong(1), result.getLong(2),
+            result.getDouble(3), result.getLong(4), result.getLong(5)));
+        } while (result.goToNextRow());
+      }
+      return records;
     } finally {
       result.close();
     }

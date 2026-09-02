@@ -14,6 +14,7 @@ export struct SettingsPage {
   @Prop targetCalories: number = 0;
   @Prop targetProteinG: number = 0;
   @Prop targetSteps: number = 0;
+  @Prop todaySteps: number = 0;
   @Prop trainingLocation: string = 'gym';
   @Prop dedicatedLegDay: boolean = false;
   @Prop preferMachines: boolean = true;
@@ -21,6 +22,7 @@ export struct SettingsPage {
   @State private caloriesText: string = '';
   @State private proteinText: string = '';
   @State private stepsText: string = '';
+  @State private todayStepsText: string = '';
   onBack: () => void = () => {};
   onChangeFrequency: (frequency: number) => void = () => {};
   onChangeWeightUnit: (unit: string) => void = () => {};
@@ -28,6 +30,7 @@ export struct SettingsPage {
     (_calories: number, _proteinG: number, _steps: number) => {};
   onChangeTrainingPreference: (location: string, dedicatedLegDay: boolean, preferMachines: boolean) => void =
     (_location: string, _dedicatedLegDay: boolean, _preferMachines: boolean) => {};
+  onSaveSteps: (steps: number) => void = (_steps: number) => {};
 
   private targetValue(text: string, fallback: number): number {
     if (text === '') return fallback;
@@ -110,6 +113,16 @@ export struct SettingsPage {
             Button(this.isSaving ? '正在保存…' : '保存目标').width('100%').height(44).fontSize(14)
               .fontWeight(FontWeight.Bold).fontColor(Color.White).backgroundColor(APP_COLOR_GREEN_DARK)
               .borderRadius(12).enabled(!this.isSaving).onClick(() => this.saveTargets())
+            Text(`今日步数：${this.todaySteps}`).fontSize(13).fontColor(APP_COLOR_MUTED)
+            TextInput({ placeholder: '手动录入今日步数', text: this.todayStepsText }).height(46).fontSize(14)
+              .backgroundColor(Color.White).borderRadius(12).border({ width: 1, color: APP_COLOR_LINE })
+              .onChange((value: string) => this.todayStepsText = value)
+            Button('保存今日步数').width('100%').height(42).fontSize(14).fontWeight(FontWeight.Bold)
+              .fontColor(APP_COLOR_GREEN_DARK).backgroundColor(APP_COLOR_GREEN_SOFT).borderRadius(12)
+              .enabled(!this.isSaving).onClick(() => {
+                const value: number = this.targetValue(this.todayStepsText, this.todaySteps);
+                if (value >= 0) this.onSaveSteps(value);
+              })
           }
           .width('100%').padding(17).borderRadius(18).backgroundColor(Color.White)
           .border({ width: 1, color: APP_COLOR_LINE })

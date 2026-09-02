@@ -9,7 +9,7 @@ import { BodyMeasurement } from '../domain/body/BodyModels';
 import { FitnessGoal } from '../domain/goal/GoalModels';
 import { NutritionSummary } from '../domain/nutrition/NutritionModels';
 import { ProgramWorkoutV2 } from '../domain/program/ProgramV2Models';
-import { WeightTrend } from '../domain/progress/ProgressModels';
+import { WaistTrend, WeightTrend } from '../domain/progress/ProgressModels';
 import { WorkoutSession } from '../domain/workout/WorkoutModels';
 import { TrendService } from './TrendService';
 
@@ -29,6 +29,7 @@ export class DashboardViewModel {
   goal: FitnessGoal | undefined;
   latestWeight: BodyMeasurement | undefined;
   weightTrend: WeightTrend;
+  waistTrend: WaistTrend;
   nutrition: NutritionSummary;
   activity: DailyActivity | undefined;
   todayWorkout: ProgramWorkoutV2 | undefined;
@@ -36,12 +37,14 @@ export class DashboardViewModel {
   activeWorkout: WorkoutSession | undefined;
 
   constructor(goal: FitnessGoal | undefined = undefined, latestWeight: BodyMeasurement | undefined = undefined,
-    weightTrend: WeightTrend = new WeightTrend(), nutrition: NutritionSummary = new NutritionSummary(),
+    weightTrend: WeightTrend = new WeightTrend(), waistTrend: WaistTrend = new WaistTrend(),
+    nutrition: NutritionSummary = new NutritionSummary(),
     activity: DailyActivity | undefined = undefined, todayWorkout: ProgramWorkoutV2 | undefined = undefined,
     checklist: DashboardChecklistItem[] = [], activeWorkout: WorkoutSession | undefined = undefined) {
     this.goal = goal;
     this.latestWeight = latestWeight;
     this.weightTrend = weightTrend;
+    this.waistTrend = waistTrend;
     this.nutrition = nutrition;
     this.activity = activity;
     this.todayWorkout = todayWorkout;
@@ -70,7 +73,7 @@ export class DashboardService {
   async load(now: Date = new Date()): Promise<DashboardViewModel> {
     const dayStart: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const dayEnd: Date = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-    const trendStart: Date = new Date(dayStart.getTime() - 13 * 24 * 60 * 60 * 1000);
+    const trendStart: Date = new Date(dayStart.getTime() - 27 * 24 * 60 * 60 * 1000);
     const dateKey: string = TrendService.localDateKey(dayStart.getTime());
     const goal: FitnessGoal | undefined = await this.goalRepository.getActiveGoal();
     const latestWeight: BodyMeasurement | undefined = await this.bodyRepository.getLatestMeasurement();
@@ -82,9 +85,10 @@ export class DashboardService {
     const activeWorkout: WorkoutSession | undefined = await this.workoutRepository.getActiveWorkout();
     const todayWorkout: ProgramWorkoutV2 | undefined = await this.loadTodayWorkout(goal);
     const weightTrend: WeightTrend = TrendService.calculateWeightTrend(measurements, now);
+    const waistTrend: WaistTrend = TrendService.calculateWaistTrend(measurements, now);
     const checklist: DashboardChecklistItem[] = this.buildChecklist(goal, latestWeight, dayStart, nutrition, activity,
       activeWorkout);
-    return new DashboardViewModel(goal, latestWeight, weightTrend, nutrition, activity, todayWorkout, checklist,
+    return new DashboardViewModel(goal, latestWeight, weightTrend, waistTrend, nutrition, activity, todayWorkout, checklist,
       activeWorkout);
   }
 

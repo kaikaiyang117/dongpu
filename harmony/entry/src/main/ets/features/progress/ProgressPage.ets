@@ -1,6 +1,6 @@
 import { APP_COLOR_GREEN_DARK, APP_COLOR_LINE, APP_COLOR_MUTED, APP_COLOR_TEXT } from '../../app/AppTheme';
 import { NutritionSummary } from '../../domain/nutrition/NutritionModels';
-import { DailyRepresentativeWeight, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
+import { DailyRepresentativeWeight, WaistTrend, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
 import { WorkoutSession } from '../../domain/workout/WorkoutModels';
 
 class ProgressTab {
@@ -16,12 +16,14 @@ class ProgressTab {
 @Component
 export struct ProgressPage {
   @Prop trend: WeightTrend = new WeightTrend();
+  @Prop waistTrend: WaistTrend = new WaistTrend();
   @Prop nutrition: NutritionSummary = new NutritionSummary();
   @Prop sessions: WorkoutSession[] = [];
   @Prop weeklyCompleted: number = 0;
   @Prop weeklyFrequency: number = 0;
   @State private selectedTab: string = 'weight';
   onBack: () => void = () => {};
+  onOpenReview: () => void = () => {};
 
   private statusText(): string {
     if (this.trend.status === WeightTrendStatus.Normal) return '进度正常';
@@ -58,6 +60,16 @@ export struct ProgressPage {
           Text(`${item.weightKg.toFixed(1)} kg`).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
         }.width('100%').padding({ top: 9, bottom: 9 })
       }, (item: DailyRepresentativeWeight) => item.dateKey)
+      if (this.waistTrend.hasData) {
+        Row() {
+          Text('腰围（最近）').fontSize(14).fontColor(APP_COLOR_MUTED).layoutWeight(1)
+          Text(`${this.waistTrend.currentCm.toFixed(1)} cm${this.waistTrend.previousCm > 0 ?
+            ` · ${this.waistTrend.changeCm > 0 ? '+' : ''}${this.waistTrend.changeCm.toFixed(1)}` : ''}`)
+            .fontSize(14).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+        }.width('100%').padding({ top: 12 })
+      } else {
+        Text('腰围：每 1—2 周记录一次即可。').fontSize(13).fontColor(APP_COLOR_MUTED)
+      }
     }.width('100%').padding(18).borderRadius(18).backgroundColor(Color.White)
       .border({ width: 1, color: APP_COLOR_LINE })
   }
@@ -70,6 +82,9 @@ export struct ProgressPage {
         .fontColor(APP_COLOR_GREEN_DARK)
       Text(this.sessions.length === 0 ? '完成训练后，这里会保留最近训练记录。' : `最近完成 ${this.sessions.length} 次训练`)
         .fontSize(14).fontColor(APP_COLOR_MUTED)
+      Button('查看本周复盘').width('100%').height(44).fontSize(14).fontWeight(FontWeight.Bold)
+        .fontColor(APP_COLOR_GREEN_DARK).backgroundColor('#E4F2E9').borderRadius(12)
+        .onClick(() => this.onOpenReview())
       ForEach(this.sessions.slice(0, 5), (session: WorkoutSession) => {
         Row() {
           Column({ space: 3 }) {

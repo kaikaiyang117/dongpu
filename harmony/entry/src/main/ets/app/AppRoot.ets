@@ -35,6 +35,7 @@ import { NutritionPage } from '../features/nutrition/NutritionPage';
 import { FoodEntryEditorPage } from '../features/nutrition/FoodEntryEditorPage';
 import { ProgressPage } from '../features/progress/ProgressPage';
 import { BodyQuickEntryPage } from '../features/progress/BodyQuickEntryPage';
+import { WeeklyReviewPage } from '../features/progress/WeeklyReviewPage';
 import { Exercise } from '../model/Exercise';
 import { PlanItem } from '../model/WorkoutData';
 import { ActiveProgramState, ProgramWorkoutV2 } from '../domain/program/ProgramV2Models';
@@ -42,6 +43,7 @@ import { OnboardingDraft, UserProfile } from '../domain/profile/ProfileModels';
 import { FitnessGoal } from '../domain/goal/GoalModels';
 import { BodyMeasurement } from '../domain/body/BodyModels';
 import { FoodEntry, NutritionSummary, QuickFood } from '../domain/nutrition/NutritionModels';
+import { DailyActivity } from '../domain/activity/ActivityModels';
 
 @Component
 export struct AppRoot {
@@ -82,6 +84,7 @@ export struct AppRoot {
   @State libraryEquipment: string = '全部';
   @State detailExerciseId: string = '';
   private settingsRepository: SettingsRepository | undefined;
+  private activityRepository: ActivityRepository | undefined;
   private workoutRepository: WorkoutRepository | undefined;
   private planRepository: PlanRepository | undefined;
   private profileRepository: ProfileRepository | undefined;
@@ -99,6 +102,7 @@ export struct AppRoot {
       this.exercises = loadExercises(hostContext.resourceManager);
       this.validateProgramCatalog();
       this.settingsRepository = new SettingsRepository(hostContext);
+      this.activityRepository = new ActivityRepository(hostContext);
       this.workoutRepository = new WorkoutRepository(hostContext);
       this.planRepository = new PlanRepository(hostContext);
       this.profileRepository = new ProfileRepository(hostContext);
@@ -488,6 +492,21 @@ export struct AppRoot {
     this.weightUnit = unit;
   }
 
+  private async saveTodaySteps(steps: number): Promise<void> {
+    if (this.activityRepository === undefined || this.isSaving) return;
+    this.isSaving = true;
+    try {
+      const now: Date = new Date();
+      const dateKey: string = `${now.getFullYear()}-${`${now.getMonth() + 1}`.padStart(2, '0')}-${`${now.getDate()}`.padStart(2, '0')}`;
+      await this.activityRepository.save(new DailyActivity(dateKey, Math.round(steps), 0, 'manual'));
+      await this.refreshDashboard();
+    } catch (_) {
+      this.operationError = '步数保存失败，请稍后重试';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
   private async saveGoalTargets(targetCalories: number, targetProteinG: number, targetSteps: number): Promise<void> {
     if (this.goalRepository === undefined || this.isSaving || this.activeGoal.id <= 0) return;
     this.isSaving = true;
@@ -836,11 +855,24 @@ export struct AppRoot {
       } else if (this.route === AppRoute.Progress) {
         ProgressPage({
           trend: this.dashboard.weightTrend,
+          waistTrend: this.dashboard.waistTrend,
           nutrition: this.dashboard.nutrition,
           sessions: this.historySessions,
           weeklyCompleted: this.weeklyCompleted,
           weeklyFrequency: this.weeklyFrequency,
-          onBack: () => this.route = AppRoute.Dashboard
+          onBack: () => this.route = AppRoute.Dashboard,
+          onOpenReview: () => this.route = AppRoute.WeeklyReview
+        })
+        BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
+      } else if (this.route === AppRoute.WeeklyReview) {
+        WeeklyReviewPage({
+          trend: this.dashboard.weightTrend,
+          waistTrend: this.dashboard.waistTrend,
+          nutrition: this.dashboard.nutrition,
+          weeklyCompleted: this.weeklyCompleted,
+          weeklyFrequency: this.weeklyFrequency,
+          todaySteps: this.dashboard.activity?.steps ?? 0,
+          onBack: () => this.route = AppRoute.Progress
         })
         BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.BodyQuickEntry) {
@@ -897,6 +929,7 @@ export struct AppRoot {
           targetCalories: this.activeGoal.targetCalories,
           targetProteinG: this.activeGoal.targetProteinG,
           targetSteps: this.activeGoal.targetSteps,
+          todaySteps: this.dashboard.activity?.steps ?? 0,
           trainingLocation: this.activeGoal.trainingLocation,
           dedicatedLegDay: this.activeGoal.dedicatedLegDay,
           preferMachines: this.activeGoal.preferMachines,
@@ -907,7 +940,8 @@ export struct AppRoot {
           onSaveTargets: (calories: number, proteinG: number, steps: number) =>
             this.saveGoalTargets(calories, proteinG, steps),
           onChangeTrainingPreference: (location: string, dedicatedLegDay: boolean, preferMachines: boolean) =>
-            this.changeTrainingPreference(location, dedicatedLegDay, preferMachines)
+            this.changeTrainingPreference(location, dedicatedLegDay, preferMachines),
+          onSaveSteps: (steps: number) => this.saveTodaySteps(steps)
         })
         if (this.route === AppRoute.Profile) {
           BottomNav({ selectedTab: 'profile', onSelect: (tab: string) => this.selectTab(tab) })
