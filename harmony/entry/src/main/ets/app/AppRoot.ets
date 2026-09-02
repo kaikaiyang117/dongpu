@@ -10,9 +10,11 @@ import { GoalRepository } from '../data/repository/GoalRepository';
 import { ProfileRepository } from '../data/repository/ProfileRepository';
 import { SettingsRepository } from '../data/repository/SettingsRepository';
 import { WorkoutRepository } from '../data/repository/WorkoutRepository';
+import { DashboardService, DashboardViewModel } from '../services/DashboardService';
 import { ProgramExercise, ProgramWorkout, recommendedWorkout } from '../domain/program/ProgramModels';
 import { WorkoutExerciseRecord, WorkoutPhase, WorkoutSession, WorkoutStatus, ExerciseProgress } from '../domain/workout/WorkoutModels';
 import { CustomTrainingFlow } from '../features/custom/CustomTrainingFlow';
+import { DashboardPage } from '../features/dashboard/DashboardPage';
 import { ExerciseDetailPage } from '../features/exercise/ExerciseDetailPage';
 import { ExerciseLibraryPage } from '../features/exercise/ExerciseLibraryPage';
 import { HistoryPage } from '../features/history/HistoryPage';
@@ -53,6 +55,7 @@ export struct AppRoot {
   @State historySessions: WorkoutSession[] = [];
   @State detailSessionId: number = 0;
   @State operationError: string = '';
+  @State dashboard: DashboardViewModel = new DashboardViewModel();
   @State customPlanSaved: boolean = false;
   @State libraryFromTab: boolean = false;
   @State selectedParts: string[] = ['chest'];
@@ -68,6 +71,7 @@ export struct AppRoot {
   private profileRepository: ProfileRepository | undefined;
   private goalRepository: GoalRepository | undefined;
   private bodyRepository: BodyRepository | undefined;
+  private dashboardService: DashboardService | undefined;
   private programCatalogValid: boolean = false;
 
   aboutToAppear(): void {
@@ -81,6 +85,7 @@ export struct AppRoot {
       this.profileRepository = new ProfileRepository(hostContext);
       this.goalRepository = new GoalRepository(hostContext);
       this.bodyRepository = new BodyRepository(hostContext);
+      this.dashboardService = new DashboardService(hostContext);
       this.initializeApp();
     }
   }
@@ -102,11 +107,22 @@ export struct AppRoot {
       this.weeklyCompleted = programState.weeklyCompleted;
       this.nextWorkoutCode = programState.nextWorkoutCode;
       this.applyActiveWorkout(activeWorkout);
-      this.route = (profile?.onboardingCompleted ?? settings.onboardingCompleted) ?
-        AppRoute.TrainingHome : AppRoute.Onboarding;
+      if (profile?.onboardingCompleted ?? settings.onboardingCompleted) {
+        await this.refreshDashboard();
+        this.route = AppRoute.Dashboard;
+      } else {
+        this.route = AppRoute.Onboarding;
+      }
     } catch (_) {
       this.route = AppRoute.Onboarding;
     }
+  }
+
+  private async refreshDashboard(): Promise<void> {
+    if (this.dashboardService === undefined) {
+      return;
+    }
+    this.dashboard = await this.dashboardService.load();
   }
 
   private async loadCustomPlan(): Promise<void> {
@@ -223,7 +239,7 @@ export struct AppRoot {
 
   private openActiveWorkout(): void {
     if (this.activeSession === undefined) {
-      this.route = AppRoute.TrainingHome;
+      this.route = AppRoute.Dashboard;
       return;
     }
     if (this.activeSession.phase === WorkoutPhase.Rest) {
@@ -262,7 +278,8 @@ export struct AppRoot {
       await this.settingsRepository.completeOnboarding(draft.frequencyMin);
       this.weeklyFrequency = draft.frequencyMin;
       this.selectedFrequency = draft.frequencyMin;
-      this.route = AppRoute.TrainingHome;
+      await this.refreshDashboard();
+      this.route = AppRoute.Dashboard;
     } finally {
       this.isSaving = false;
     }
@@ -495,14 +512,18 @@ export struct AppRoot {
   }
 
   private selectTab(tab: string): void {
-    if (tab === 'exercise') {
-      this.libraryFromTab = true;
-      this.route = AppRoute.ExerciseLibrary;
+    if (tab === 'today') {
+      this.refreshDashboard();
+      this.route = AppRoute.Dashboard;
       return;
     }
-    if (tab === 'history') {
+    if (tab === 'progress') {
       this.loadHistory();
       this.route = AppRoute.History;
+      return;
+    }
+    if (tab === 'profile') {
+      this.route = AppRoute.Settings;
       return;
     }
     this.route = AppRoute.TrainingHome;
@@ -556,6 +577,15 @@ export struct AppRoot {
           isSaving: this.isSaving,
           onStart: (draft: OnboardingDraft) => this.completeOnboarding(draft)
         })
+      } else if (this.route === AppRoute.Dashboard) {
+        DashboardPage({
+          viewModel: this.dashboard,
+          onResumeWorkout: () => this.openActiveWorkout(),
+          onOpenTraining: () => this.route = AppRoute.WorkoutPreview,
+          onOpenNutrition: () => this.operationError = '营养记录将在下一阶段开放',
+          onRecordBody: () => this.operationError = '身体记录将在下一阶段开放'
+        })
+        BottomNav({ selectedTab: 'today', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.TrainingHome) {
         TrainingHomePage({
           weeklyFrequency: this.weeklyFrequency,
@@ -595,7 +625,7 @@ export struct AppRoot {
         SettingsPage({
           weeklyFrequency: this.weeklyFrequency,
           weightUnit: this.weightUnit,
-          onBack: () => this.route = AppRoute.TrainingHome,
+          onBack: () => this.route = AppRoute.Dashboard,
           onChangeFrequency: (frequency: number) => this.changeWeeklyFrequency(frequency),
           onChangeWeightUnit: (unit: string) => this.changeWeightUnit(unit)
         })
@@ -654,7 +684,7 @@ export struct AppRoot {
           weeklyFrequency: this.weeklyFrequency,
           weightUnit: this.weightUnit,
           progressHighlights: this.progressHighlights,
-          onDone: () => this.route = AppRoute.TrainingHome
+          onDone: () => this.route = AppRoute.Dashboard
         })
       } else if (this.route === AppRoute.History) {
         HistoryPage({
@@ -666,7 +696,7 @@ export struct AppRoot {
             this.route = AppRoute.HistoryDetail;
           }
         })
-        BottomNav({ selectedTab: 'history', onSelect: (tab: string) => this.selectTab(tab) })
+        BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.HistoryDetail) {
         WorkoutHistoryDetailPage({
           session: this.findHistorySession(this.detailSessionId),
@@ -717,7 +747,7 @@ export struct AppRoot {
           })
         }
         if (this.route === AppRoute.ExerciseLibrary && this.libraryFromTab) {
-          BottomNav({ selectedTab: 'exercise', onSelect: (tab: string) => this.selectTab(tab) })
+          BottomNav({ selectedTab: 'training', onSelect: (tab: string) => this.selectTab(tab) })
         }
       }
     }

@@ -25,9 +25,10 @@ export struct BottomNav {
 
   build() {
     Row() {
+      this.NavItem('today', '今日')
       this.NavItem('training', '训练')
-      this.NavItem('exercise', '动作')
-      this.NavItem('history', '记录')
+      this.NavItem('progress', '数据')
+      this.NavItem('profile', '我的')
     }
     .width('100%')
     .height(72)
