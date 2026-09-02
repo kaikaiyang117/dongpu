@@ -2,6 +2,8 @@ export enum AppRoute {
   Loading = 'loading',
   Onboarding = 'onboarding',
   Dashboard = 'dashboard',
+  Nutrition = 'nutrition',
+  FoodEntryEditor = 'food-entry-editor',
   TrainingHome = 'training-home',
   WorkoutPreview = 'workout-preview',
   Workout = 'workout',

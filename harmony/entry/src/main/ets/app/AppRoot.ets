@@ -10,6 +10,7 @@ import { GoalRepository } from '../data/repository/GoalRepository';
 import { ProfileRepository } from '../data/repository/ProfileRepository';
 import { SettingsRepository } from '../data/repository/SettingsRepository';
 import { WorkoutRepository } from '../data/repository/WorkoutRepository';
+import { NutritionRepository } from '../data/repository/NutritionRepository';
 import { DashboardService, DashboardViewModel } from '../services/DashboardService';
 import { ProgramExercise, ProgramWorkout, recommendedWorkout } from '../domain/program/ProgramModels';
 import { WorkoutExerciseRecord, WorkoutPhase, WorkoutSession, WorkoutStatus, ExerciseProgress } from '../domain/workout/WorkoutModels';
@@ -29,12 +30,15 @@ import { RestPage } from '../features/training/RestPage';
 import { WorkoutCompletePage } from '../features/training/WorkoutCompletePage';
 import { WorkoutPage } from '../features/training/WorkoutPage';
 import { WorkoutPreviewPage } from '../features/training/WorkoutPreviewPage';
+import { NutritionPage } from '../features/nutrition/NutritionPage';
+import { FoodEntryEditorPage } from '../features/nutrition/FoodEntryEditorPage';
 import { Exercise } from '../model/Exercise';
 import { PlanItem } from '../model/WorkoutData';
 import { ActiveProgramState } from '../domain/program/ProgramV2Models';
 import { OnboardingDraft, UserProfile } from '../domain/profile/ProfileModels';
 import { FitnessGoal } from '../domain/goal/GoalModels';
 import { BodyMeasurement } from '../domain/body/BodyModels';
+import { FoodEntry, NutritionSummary, QuickFood } from '../domain/nutrition/NutritionModels';
 
 @Component
 export struct AppRoot {
@@ -56,6 +60,9 @@ export struct AppRoot {
   @State detailSessionId: number = 0;
   @State operationError: string = '';
   @State dashboard: DashboardViewModel = new DashboardViewModel();
+  @State nutritionSummary: NutritionSummary = new NutritionSummary();
+  @State nutritionQuickFoods: QuickFood[] = [];
+  @State nutritionEntries: FoodEntry[] = [];
   @State customPlanSaved: boolean = false;
   @State libraryFromTab: boolean = false;
   @State selectedParts: string[] = ['chest'];
@@ -71,6 +78,7 @@ export struct AppRoot {
   private profileRepository: ProfileRepository | undefined;
   private goalRepository: GoalRepository | undefined;
   private bodyRepository: BodyRepository | undefined;
+  private nutritionRepository: NutritionRepository | undefined;
   private dashboardService: DashboardService | undefined;
   private programCatalogValid: boolean = false;
 
@@ -85,6 +93,7 @@ export struct AppRoot {
       this.profileRepository = new ProfileRepository(hostContext);
       this.goalRepository = new GoalRepository(hostContext);
       this.bodyRepository = new BodyRepository(hostContext);
+      this.nutritionRepository = new NutritionRepository(hostContext);
       this.dashboardService = new DashboardService(hostContext);
       this.initializeApp();
     }
@@ -123,6 +132,67 @@ export struct AppRoot {
       return;
     }
     this.dashboard = await this.dashboardService.load();
+  }
+
+  private async refreshNutrition(): Promise<void> {
+    if (this.nutritionRepository === undefined) {
+      return;
+    }
+    const now: Date = new Date();
+    const dayStart: number = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const dayEnd: number = dayStart + 24 * 60 * 60 * 1000;
+    this.nutritionSummary = await this.nutritionRepository.getDailySummary(dayStart, dayEnd);
+    this.nutritionQuickFoods = await this.nutritionRepository.getQuickFoods();
+    this.nutritionEntries = await this.nutritionRepository.getFoodEntries(dayStart, dayEnd);
+  }
+
+  private defaultMealType(): string {
+    const hour: number = new Date().getHours();
+    const minutes: number = new Date().getMinutes();
+    const clock: number = hour * 60 + minutes;
+    if (clock >= 5 * 60 && clock < 10 * 60 + 30) return 'breakfast';
+    if (clock >= 10 * 60 + 30 && clock < 14 * 60 + 30) return 'lunch';
+    if (clock >= 17 * 60 + 30 && clock < 22 * 60 + 30) return 'dinner';
+    return 'snack';
+  }
+
+  private async openNutrition(): Promise<void> {
+    await this.refreshNutrition();
+    this.route = AppRoute.Nutrition;
+  }
+
+  private async addQuickFood(quickFoodId: number): Promise<void> {
+    if (this.nutritionRepository === undefined || this.isSaving) {
+      return;
+    }
+    this.isSaving = true;
+    try {
+      await this.nutritionRepository.addQuickFoodEntry(quickFoodId, this.defaultMealType(), 1, Date.now());
+      await this.refreshNutrition();
+      await this.refreshDashboard();
+      this.route = AppRoute.Dashboard;
+    } catch (_) {
+      this.operationError = '营养记录保存失败，请稍后重试';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  private async saveFoodEntry(entry: FoodEntry): Promise<void> {
+    if (this.nutritionRepository === undefined || this.isSaving) {
+      return;
+    }
+    this.isSaving = true;
+    try {
+      await this.nutritionRepository.addFoodEntry(entry);
+      await this.refreshNutrition();
+      await this.refreshDashboard();
+      this.route = AppRoute.Dashboard;
+    } catch (_) {
+      this.operationError = '营养记录保存失败，请检查输入';
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   private async loadCustomPlan(): Promise<void> {
@@ -582,10 +652,28 @@ export struct AppRoot {
           viewModel: this.dashboard,
           onResumeWorkout: () => this.openActiveWorkout(),
           onOpenTraining: () => this.route = AppRoute.WorkoutPreview,
-          onOpenNutrition: () => this.operationError = '营养记录将在下一阶段开放',
+          onOpenNutrition: () => this.openNutrition(),
           onRecordBody: () => this.operationError = '身体记录将在下一阶段开放'
         })
         BottomNav({ selectedTab: 'today', onSelect: (tab: string) => this.selectTab(tab) })
+      } else if (this.route === AppRoute.Nutrition) {
+        NutritionPage({
+          summary: this.nutritionSummary,
+          entries: this.nutritionEntries,
+          quickFoods: this.nutritionQuickFoods,
+          targetCalories: this.dashboard.goal?.targetCalories ?? 0,
+          targetProteinG: this.dashboard.goal?.targetProteinG ?? 0,
+          isSaving: this.isSaving,
+          onBack: () => this.route = AppRoute.Dashboard,
+          onQuickAdd: (quickFoodId: number) => this.addQuickFood(quickFoodId),
+          onOpenEditor: () => this.route = AppRoute.FoodEntryEditor
+        })
+      } else if (this.route === AppRoute.FoodEntryEditor) {
+        FoodEntryEditorPage({
+          isSaving: this.isSaving,
+          onBack: () => this.route = AppRoute.Nutrition,
+          onSave: (entry: FoodEntry) => this.saveFoodEntry(entry)
+        })
       } else if (this.route === AppRoute.TrainingHome) {
         TrainingHomePage({
           weeklyFrequency: this.weeklyFrequency,
