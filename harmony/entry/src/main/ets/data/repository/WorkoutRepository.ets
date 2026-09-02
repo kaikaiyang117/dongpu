@@ -114,7 +114,15 @@ export class WorkoutRepository {
   }
 
   async startCustomWorkout(workout: ProgramWorkout): Promise<WorkoutSession> {
-    return this.startWorkout(workout, 'custom');
+    return this.startAdHocWorkout(workout);
+  }
+
+  async startAdHocWorkout(workout: ProgramWorkout): Promise<WorkoutSession> {
+    return this.startWorkout(workout, 'ad_hoc');
+  }
+
+  async startSavedPlanWorkout(workout: ProgramWorkout): Promise<WorkoutSession> {
+    return this.startWorkout(workout, 'saved_plan');
   }
 
   private async startWorkout(workout: ProgramWorkout, sourceType: string): Promise<WorkoutSession> {
@@ -293,6 +301,9 @@ export class WorkoutRepository {
   async replaceCurrentExercise(session: WorkoutSession, replacement: ProgramExercise): Promise<WorkoutSession> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const current: WorkoutExerciseRecord = session.exercises[session.currentExerciseIndex];
+    if (current.completedSets > 0) {
+      throw new Error('Cannot replace an exercise after completing a set');
+    }
     await store.executeSql(
       `UPDATE workout_exercise_record SET actual_exercise_id = ?, exercise_name_snapshot = ?,
        part_name_snapshot = ?, equipment_name_snapshot = ?, image_path_snapshot = ? WHERE id = ?`,

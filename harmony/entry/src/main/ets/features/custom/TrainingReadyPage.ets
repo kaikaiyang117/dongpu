@@ -14,6 +14,7 @@ export struct TrainingReadyPage {
   @Prop exercises: Exercise[] = [];
   @Prop planItems: PlanItem[] = [];
   onEditPlan: () => void = () => {};
+  onStartWorkout: () => void = () => {};
 
   private exercise(id: string): Exercise {
     return findExercise(this.exercises, id);
@@ -95,6 +96,16 @@ export struct TrainingReadyPage {
           }, (item: PlanItem) => item.exerciseId)
         }
         .width('100%')
+
+        Button('开始训练')
+          .width('100%')
+          .height(48)
+          .fontSize(13)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(Color.White)
+          .borderRadius(14)
+          .backgroundColor(APP_COLOR_GREEN)
+          .onClick(() => this.onStartWorkout())
 
         Button('返回调整计划')
           .width('100%')

@@ -11,6 +11,7 @@ import { BodyPart, Exercise } from '../../model/Exercise';
 @Component
 export struct ExerciseAlternativePage {
   @Prop alternatives: Exercise[] = [];
+  @Prop canReplace: boolean = true;
   onReplace: (exerciseId: string) => void = () => {};
   onMoveToEnd: () => void = () => {};
   onCancel: () => void = () => {};
@@ -39,13 +40,14 @@ export struct ExerciseAlternativePage {
           Text(`${this.partName(userPartId(exercise))} · ${exercise.equipment}`)
             .fontSize(13)
             .fontColor(APP_COLOR_MUTED)
-        Button('换成这个动作')
+        Button(this.canReplace ? '换成这个动作' : '已记录，不能替换')
           .height(42)
           .fontSize(13)
           .fontWeight(FontWeight.Bold)
           .fontColor(Color.White)
           .borderRadius(13)
           .backgroundColor(APP_COLOR_GREEN)
+          .enabled(this.canReplace)
           .onClick(() => this.onReplace(exercise.id))
       }
       .alignItems(HorizontalAlign.Start)

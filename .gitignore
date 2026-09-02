@@ -8,6 +8,7 @@ local.properties
 
 # Build and dependency outputs
 .hvigor/
+.cache/
 build/
 entry/build/
 oh_modules/

@@ -93,7 +93,7 @@ export struct WorkoutPage {
               .fontSize(27)
               .fontWeight(FontWeight.Bold)
               .fontColor(APP_COLOR_TEXT)
-            Text(`${this.exercise.partNameSnapshot} · ${this.exercise.equipmentNameSnapshot}`)
+            Text(`${this.partName()} · ${this.exercise.equipmentNameSnapshot}`)
               .width('100%')
               .fontSize(13)
               .fontColor(APP_COLOR_MUTED)
@@ -381,5 +381,16 @@ export struct WorkoutPage {
       id: '', name: '', partId: '', equipment: '', target: '',
       steps: [], caution: '', imagePath: '', motionPath: '', recommended: false
     });
+  }
+
+  private partName(): string {
+    const part: string = this.exercise.partNameSnapshot;
+    if (part === 'chest') return '胸部';
+    if (part === 'back') return '背部';
+    if (part === 'shoulders') return '肩部';
+    if (part === 'arms') return '手臂';
+    if (part === 'legs') return '腿部';
+    if (part === 'core') return '核心';
+    return part;
   }
 }

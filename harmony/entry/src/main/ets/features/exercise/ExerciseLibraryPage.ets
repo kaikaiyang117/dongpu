@@ -8,7 +8,7 @@ import {
   APP_COLOR_TEXT,
   APP_COLOR_TEXT_TERTIARY
 } from '../../app/AppTheme';
-import { BODY_PARTS, exerciseMatchesPart, userPartId } from '../../data/ExerciseCatalog';
+import { BODY_PARTS, exerciseMatchesPart, getLibraryExercises, userPartId } from '../../data/ExerciseCatalog';
 import { BodyPart, Exercise } from '../../model/Exercise';
 
 @Component
@@ -45,7 +45,7 @@ export struct ExerciseLibraryPage {
   }
 
   private visibleExercises(): Exercise[] {
-    return this.exercises.filter((exercise: Exercise) => {
+    return getLibraryExercises(this.exercises).filter((exercise: Exercise) => {
       return exerciseMatchesPart(exercise, this.selectedPartId) &&
         (this.selectedEquipment === '全部' || exercise.equipment === this.selectedEquipment);
     });
@@ -53,7 +53,7 @@ export struct ExerciseLibraryPage {
 
   private equipmentOptions(): string[] {
     const options: string[] = ['全部'];
-    this.exercises.forEach((exercise: Exercise) => {
+    getLibraryExercises(this.exercises).forEach((exercise: Exercise) => {
       if (exerciseMatchesPart(exercise, this.selectedPartId) && !options.includes(exercise.equipment)) {
         options.push(exercise.equipment);
       }
@@ -196,7 +196,7 @@ export struct ExerciseLibraryPage {
         .scrollable(ScrollDirection.Horizontal)
         .scrollBar(BarState.Off)
 
-        Text(`${this.partName(this.selectedPartId)} · ${this.visibleExercises().length} 个动作 · 共 ${this.exercises.length} 个`)
+        Text(`${this.partName(this.selectedPartId)} · ${this.visibleExercises().length} 个动作 · 共 ${getLibraryExercises(this.exercises).length} 个`)
           .fontSize(12)
           .fontWeight(FontWeight.Bold)
           .fontColor(APP_COLOR_GREEN_DARK)

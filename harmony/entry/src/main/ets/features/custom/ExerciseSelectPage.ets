@@ -13,7 +13,7 @@ import {
   APP_PAGE_MARGIN
 } from '../../app/AppTheme';
 import { PageHero } from '../../components/PageHero';
-import { BODY_PARTS, exerciseMatchesPart } from '../../data/ExerciseCatalog';
+import { BODY_PARTS, exerciseMatchesPart, getApprovedExercises } from '../../data/ExerciseCatalog';
 import { BodyPart, Exercise } from '../../model/Exercise';
 
 @Component
@@ -48,7 +48,7 @@ export struct ExerciseSelectPage {
   }
 
   private visibleExercises(): Exercise[] {
-    return this.exercises.filter((exercise: Exercise) =>
+    return getApprovedExercises(this.exercises).filter((exercise: Exercise) =>
       this.selectedParts.some((partId: string) => exerciseMatchesPart(exercise, partId)));
   }
 

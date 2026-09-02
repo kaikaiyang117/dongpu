@@ -2,7 +2,7 @@ import { APP_COLOR_BG } from './AppTheme';
 import { AppRoute } from './AppRoutes';
 import { AppHeader } from '../components/AppHeader';
 import { BottomNav } from '../components/BottomNav';
-import { exerciseMatchesPart, findExercise, loadExercises, userPartId } from '../data/ExerciseCatalog';
+import { exerciseMatchesPart, findExercise, findExerciseExact, getGymEligibleApprovedExercises, loadExercises, userPartId } from '../data/ExerciseCatalog';
 import { PlanRepository } from '../data/repository/PlanRepository';
 import { SettingsRepository } from '../data/repository/SettingsRepository';
 import { WorkoutRepository } from '../data/repository/WorkoutRepository';
@@ -50,17 +50,20 @@ export struct AppRoot {
   @State selectedParts: string[] = ['chest'];
   @State selectedExerciseIds: string[] = [];
   @State planItems: PlanItem[] = [];
+  @State savedPlanItems: PlanItem[] = [];
   @State libraryPartId: string = 'chest';
   @State libraryEquipment: string = '全部';
   @State detailExerciseId: string = '';
   private settingsRepository: SettingsRepository | undefined;
   private workoutRepository: WorkoutRepository | undefined;
   private planRepository: PlanRepository | undefined;
+  private programCatalogValid: boolean = false;
 
   aboutToAppear(): void {
     const hostContext = this.getUIContext().getHostContext();
     if (hostContext !== undefined) {
       this.exercises = loadExercises(hostContext.resourceManager);
+      this.validateProgramCatalog();
       this.settingsRepository = new SettingsRepository(hostContext);
       this.workoutRepository = new WorkoutRepository(hostContext);
       this.planRepository = new PlanRepository(hostContext);
@@ -93,7 +96,13 @@ export struct AppRoot {
     if (this.planRepository === undefined) {
       return;
     }
-    const plan = await this.planRepository.getLatestPlan();
+    const draft = await this.planRepository.getDraftPlan();
+    const saved = await this.planRepository.getSavedPlan();
+    const plan = draft ?? saved;
+    this.customPlanSaved = saved !== undefined;
+    this.savedPlanItems = saved?.exercises.map((item) => new PlanItem(
+      item.exerciseId, item.sets, item.repMin, item.repMax, item.restSeconds
+    )) ?? [];
     if (plan === undefined) {
       return;
     }
@@ -111,7 +120,6 @@ export struct AppRoot {
         this.selectedParts = [...this.selectedParts, partId];
       }
     });
-    this.customPlanSaved = plan.status === 'saved';
   }
 
   private applyActiveWorkout(session: WorkoutSession | undefined): void {
@@ -122,13 +130,58 @@ export struct AppRoot {
       this.activeMinutes = 0;
       return;
     }
-    this.nextWorkoutCode = session.workoutCode;
     this.activeCompletedExercises = session.exercises.filter((item) => item.completedSets >= item.targetSets).length;
     this.activeMinutes = Math.max(1, Math.floor((Date.now() - session.startedAt) / 60000));
   }
 
   private currentWorkout(): ProgramWorkout {
-    return recommendedWorkout(this.nextWorkoutCode);
+    const template: ProgramWorkout = recommendedWorkout(this.nextWorkoutCode);
+    const exercises: ProgramExercise[] = template.exercises.map((item: ProgramExercise) => {
+      const catalogExercise: Exercise | undefined = findExerciseExact(this.exercises, item.exerciseId);
+      if (catalogExercise === undefined) {
+        return item;
+      }
+      return new ProgramExercise(
+        catalogExercise.id,
+        catalogExercise.name,
+        this.userPartName(catalogExercise),
+        catalogExercise.equipment,
+        catalogExercise.imagePath,
+        item.sets,
+        item.repMin,
+        item.repMax,
+        item.restSeconds
+      );
+    });
+    return new ProgramWorkout(template.code, template.name, template.estimatedMinutes, exercises);
+  }
+
+  private userPartName(exercise: Exercise): string {
+    const partId: string = userPartId(exercise);
+    if (partId === 'chest') return '胸部';
+    if (partId === 'back') return '背部';
+    if (partId === 'shoulders') return '肩部';
+    if (partId === 'arms') return '手臂';
+    if (partId === 'legs') return '腿部';
+    if (partId === 'core') return '核心';
+    return partId;
+  }
+
+  private validateProgramCatalog(): void {
+    this.programCatalogValid = false;
+    const codes: string[] = ['A', 'B'];
+    for (const code of codes) {
+      const workout: ProgramWorkout = recommendedWorkout(code);
+      for (const item of workout.exercises) {
+        const exercise: Exercise | undefined = findExerciseExact(this.exercises, item.exerciseId);
+        if (exercise === undefined || exercise.contentReviewStatus !== 'approved' ||
+          !exercise.gymEligible || !exercise.recommendedForBeginner) {
+          this.operationError = '推荐训练数据校验失败，请更新动作目录';
+          return;
+        }
+      }
+    }
+    this.programCatalogValid = true;
   }
 
   private currentActiveExercise(): WorkoutExerciseRecord {
@@ -196,7 +249,8 @@ export struct AppRoot {
   }
 
   private async startRecommendedWorkout(): Promise<void> {
-    if (this.workoutRepository === undefined || this.isSaving) {
+    if (this.workoutRepository === undefined || this.isSaving || !this.programCatalogValid) {
+      this.operationError = '推荐训练数据校验失败，请更新动作目录';
       return;
     }
     this.isSaving = true;
@@ -209,15 +263,15 @@ export struct AppRoot {
     }
   }
 
-  private customWorkout(): ProgramWorkout {
-    const programExercises: ProgramExercise[] = this.planItems.map((item: PlanItem) => {
+  private customWorkout(items: PlanItem[] = this.planItems): ProgramWorkout {
+    const programExercises: ProgramExercise[] = items.map((item: PlanItem) => {
       const exercise: Exercise = findExercise(this.exercises, item.exerciseId);
       return new ProgramExercise(
-        exercise.id, exercise.name, userPartId(exercise), exercise.equipment, exercise.imagePath,
+        exercise.id, exercise.name, this.userPartName(exercise), exercise.equipment, exercise.imagePath,
         item.sets, item.repMin, item.repMax, item.restSeconds
       );
     });
-    return new ProgramWorkout('自定义', '自定义训练', Math.max(20, this.planItems.length * 7), programExercises);
+    return new ProgramWorkout('自定义', '自定义训练', Math.max(20, items.length * 7), programExercises);
   }
 
   private async startCustomWorkout(): Promise<void> {
@@ -229,7 +283,7 @@ export struct AppRoot {
       if (this.planRepository !== undefined) {
         await this.planRepository.saveDraft(this.planItems);
       }
-      const session: WorkoutSession = await this.workoutRepository.startCustomWorkout(this.customWorkout());
+      const session: WorkoutSession = await this.workoutRepository.startAdHocWorkout(this.customWorkout());
       this.applyActiveWorkout(session);
       this.openActiveWorkout();
     } catch (_) {
@@ -238,6 +292,35 @@ export struct AppRoot {
       this.isSaving = false;
     }
   }
+
+  private async startSavedPlanWorkout(): Promise<void> {
+    if (this.workoutRepository === undefined || this.isSaving) {
+      return;
+    }
+    this.isSaving = true;
+    this.operationError = '';
+    try {
+      let savedItems: PlanItem[] = this.savedPlanItems;
+      if (this.planRepository !== undefined) {
+        const saved = await this.planRepository.getSavedPlan();
+        savedItems = saved?.exercises.map((item) => new PlanItem(
+          item.exerciseId, item.sets, item.repMin, item.repMax, item.restSeconds
+        )) ?? [];
+      }
+      if (savedItems.length === 0) {
+        this.operationError = '还没有可开始的我的计划';
+        return;
+      }
+      const session: WorkoutSession = await this.workoutRepository.startSavedPlanWorkout(this.customWorkout(savedItems));
+      this.applyActiveWorkout(session);
+      this.openActiveWorkout();
+    } catch (_) {
+      this.operationError = '无法开始我的计划，请重试';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
 
   private async completeActiveSet(weight: number, reps: number): Promise<void> {
     if (this.workoutRepository === undefined || this.activeSession === undefined || this.isSaving) {
@@ -288,11 +371,11 @@ export struct AppRoot {
 
   private alternativePartId(): string {
     const partName: string = this.currentActiveExercise().partNameSnapshot;
-    if (partName.includes('胸')) return 'chest';
-    if (partName.includes('背')) return 'back';
-    if (partName.includes('肩')) return 'shoulders';
-    if (partName.includes('手') || partName.includes('臂')) return 'arms';
-    if (partName.includes('核') || partName.includes('腰')) return 'core';
+    if (partName === 'chest' || partName.includes('胸')) return 'chest';
+    if (partName === 'back' || partName.includes('背')) return 'back';
+    if (partName === 'shoulders' || partName.includes('肩')) return 'shoulders';
+    if (partName === 'arms' || partName.includes('手') || partName.includes('臂')) return 'arms';
+    if (partName === 'core' || partName.includes('核') || partName.includes('腰')) return 'core';
     return 'legs';
   }
 
@@ -301,12 +384,17 @@ export struct AppRoot {
       return [];
     }
     const currentId: string = this.currentActiveExercise().actualExerciseId;
-    return this.exercises.filter((exercise: Exercise) =>
+    return getGymEligibleApprovedExercises(this.exercises).filter((exercise: Exercise) =>
       exercise.id !== currentId && exerciseMatchesPart(exercise, this.alternativePartId())).slice(0, 2);
   }
 
   private async replaceActiveExercise(exerciseId: string): Promise<void> {
     if (this.workoutRepository === undefined || this.activeSession === undefined) {
+      return;
+    }
+    if (this.currentActiveExercise().completedSets > 0) {
+      this.operationError = '已记录的动作不能替换';
+      this.route = AppRoute.Workout;
       return;
     }
     const exercise: Exercise = findExercise(this.exercises, exerciseId);
@@ -335,10 +423,11 @@ export struct AppRoot {
     }
     const finished: WorkoutSession = this.activeSession;
     await this.workoutRepository.finishWorkout(finished);
+    const programState = await this.workoutRepository.getProgramState();
+    this.weeklyCompleted = programState.weeklyCompleted;
+    this.nextWorkoutCode = programState.nextWorkoutCode;
     this.progressHighlights = await this.workoutRepository.getProgressHighlights(finished);
     this.completedSession = finished;
-    this.weeklyCompleted += 1;
-    this.nextWorkoutCode = finished.workoutCode === 'A' ? 'B' : 'A';
     this.applyActiveWorkout(undefined);
     await this.loadHistory();
     this.route = AppRoute.WorkoutComplete;
@@ -439,12 +528,14 @@ export struct AppRoot {
           weeklyCompleted: this.weeklyCompleted,
           workout: this.currentWorkout(),
           hasActiveWorkout: this.hasActiveWorkout,
+          activeWorkoutCode: this.activeSession?.workoutCode ?? '',
+          activeWorkoutName: this.activeSession?.workoutNameSnapshot ?? '',
           activeCompletedExercises: this.activeCompletedExercises,
           activeMinutes: this.activeMinutes,
           hasSavedPlan: this.customPlanSaved,
-          savedPlanActionCount: this.planItems.length,
-          savedPlanMinutes: Math.max(20, this.planItems.length * 7),
-          savedPlanSummary: this.planItems.slice(0, 3).map((item: PlanItem) => {
+          savedPlanActionCount: this.savedPlanItems.length,
+          savedPlanMinutes: Math.max(20, this.savedPlanItems.length * 7),
+          savedPlanSummary: this.savedPlanItems.slice(0, 3).map((item: PlanItem) => {
             const ex: Exercise = findExercise(this.exercises, item.exerciseId);
             return ex.name;
           }).join(' · ') + (this.planItems.length > 3 ? ' · …' : ''),
@@ -498,6 +589,7 @@ export struct AppRoot {
       } else if (this.route === AppRoute.ExerciseAlternatives && this.activeSession !== undefined) {
         ExerciseAlternativePage({
           alternatives: this.alternatives(),
+          canReplace: this.currentActiveExercise().completedSets === 0,
           onReplace: (exerciseId: string) => this.replaceActiveExercise(exerciseId),
           onMoveToEnd: () => this.moveActiveExerciseToEnd(),
           onCancel: () => this.route = AppRoute.Workout
@@ -558,6 +650,10 @@ export struct AppRoot {
           planItems: $planItems,
           customPlanSaved: $customPlanSaved,
           onStartWorkout: () => this.startCustomWorkout(),
+          onStartSavedWorkout: () => this.startSavedPlanWorkout(),
+          onPlanSaved: () => this.savedPlanItems = this.planItems.map((item: PlanItem) => new PlanItem(
+            item.exerciseId, item.sets, item.repMin, item.repMax, item.restSeconds
+          )),
           onNavigate: (route: AppRoute) => this.route = route
         })
       } else if (this.route === AppRoute.ExerciseDetail || this.route === AppRoute.ExerciseLibrary) {

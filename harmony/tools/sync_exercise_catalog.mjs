@@ -70,9 +70,14 @@ for (const item of source) {
     target: targets[item.target] ?? item.target,
     steps: steps.length >= 2 ? steps : [item.instructions?.zh ?? '请查看动作示范。', '使用可控重量缓慢完成动作。'],
     caution: cautions[item.body_part] ?? '从轻重量开始，在可控范围内完成动作。',
+    equipmentSetup: `调整${equipment[item.equipment] ?? item.equipment}到舒适且稳定的位置，先用轻重量确认动作路径。`,
     imagePath: `exercise_images/${imageName}`,
     motionPath: `exercise_videos/${motionName}`,
-    recommended: beginnerIds.has(item.id)
+    recommended: beginnerIds.has(item.id),
+    recommendedForBeginner: beginnerIds.has(item.id),
+    gymEligible: true,
+    contentReviewStatus: beginnerIds.has(item.id) ? 'approved' : 'reviewed',
+    libraryVisible: true
   });
 }
 

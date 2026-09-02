@@ -13,7 +13,7 @@ export const BODY_PARTS: BodyPart[] = [
 
 let cachedExercises: Exercise[] | undefined;
 
-export function loadExercises(manager: resourceManager.ResourceManager): Exercise[] {
+export function loadAllExercises(manager: resourceManager.ResourceManager): Exercise[] {
   if (cachedExercises !== undefined) {
     return cachedExercises;
   }
@@ -22,13 +22,36 @@ export function loadExercises(manager: resourceManager.ResourceManager): Exercis
     const bytes: Uint8Array = manager.getRawFileContentSync('exercise_catalog.json');
     const json: string = util.TextDecoder.create('utf-8', { ignoreBOM: true }).decodeToString(bytes);
     const records: ExerciseRecord[] = JSON.parse(json) as ExerciseRecord[];
-    cachedExercises = records
-      .filter((record: ExerciseRecord) => record.recommended)
-      .map((record: ExerciseRecord) => new Exercise(record));
+    cachedExercises = records.map((record: ExerciseRecord) => new Exercise(record));
   } catch (_) {
     cachedExercises = [];
   }
   return cachedExercises;
+}
+
+export function loadExercises(manager: resourceManager.ResourceManager): Exercise[] {
+  return loadAllExercises(manager);
+}
+
+export function getLibraryExercises(exercises: Exercise[]): Exercise[] {
+  return exercises.filter((exercise: Exercise) =>
+    (exercise.contentReviewStatus === 'approved' || exercise.contentReviewStatus === 'reviewed') &&
+      exercise.libraryVisible);
+}
+
+export function getApprovedExercises(exercises: Exercise[]): Exercise[] {
+  return exercises.filter((exercise: Exercise) => exercise.contentReviewStatus === 'approved' &&
+    exercise.libraryVisible);
+}
+
+export function getBeginnerRecommendedExercises(exercises: Exercise[]): Exercise[] {
+  return exercises.filter((exercise: Exercise) => exercise.contentReviewStatus === 'approved' &&
+    exercise.gymEligible && exercise.recommendedForBeginner);
+}
+
+export function getGymEligibleApprovedExercises(exercises: Exercise[]): Exercise[] {
+  return exercises.filter((exercise: Exercise) => exercise.contentReviewStatus === 'approved' &&
+    exercise.gymEligible);
 }
 
 export function exerciseMatchesPart(exercise: Exercise, userPartId: string): boolean {
@@ -59,5 +82,12 @@ export function userPartId(exercise: Exercise): string {
 
 export function findExercise(exercises: Exercise[], id: string): Exercise {
   const result: Exercise | undefined = exercises.find((exercise: Exercise) => exercise.id === id);
-  return result ?? exercises[0];
+  if (result === undefined) {
+    throw new Error(`Unknown exercise id: ${id}`);
+  }
+  return result;
+}
+
+export function findExerciseExact(exercises: Exercise[], id: string): Exercise | undefined {
+  return exercises.find((exercise: Exercise) => exercise.id === id);
 }

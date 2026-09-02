@@ -23,6 +23,7 @@ export struct PlanConfirmPage {
   onEditExercises: () => void = () => {};
   onSavePlan: () => void = () => {};
   @Prop isSaved: boolean = false;
+  @Prop errorText: string = '';
 
   private exercise(id: string): Exercise {
     return findExercise(this.exercises, id);
@@ -179,6 +180,13 @@ export struct PlanConfirmPage {
           .backgroundColor(Color.Transparent)
           .border({ width: 1, color: APP_COLOR_LINE })
           .onClick(() => this.onSavePlan())
+        if (this.errorText !== '') {
+          Text(this.errorText)
+            .width('100%')
+            .fontSize(12)
+            .fontColor(Color.Red)
+            .textAlign(TextAlign.Center)
+        }
       }
       .width('100%')
       .padding({ left: APP_PAGE_MARGIN, right: APP_PAGE_MARGIN, bottom: 24 })

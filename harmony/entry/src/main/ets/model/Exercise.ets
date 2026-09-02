@@ -8,6 +8,8 @@ export class BodyPart {
   }
 }
 
+export type ContentReviewStatus = 'raw' | 'reviewed' | 'approved' | 'rejected';
+
 export interface ExerciseRecord {
   id: string;
   name: string;
@@ -16,9 +18,14 @@ export interface ExerciseRecord {
   target: string;
   steps: string[];
   caution: string;
+  equipmentSetup?: string;
   imagePath: string;
   motionPath: string;
   recommended: boolean;
+  recommendedForBeginner?: boolean;
+  gymEligible?: boolean;
+  contentReviewStatus?: ContentReviewStatus;
+  libraryVisible?: boolean;
 }
 
 const HOME_EQUIPMENT: string[] = ['自重', '哑铃', '弹力带', '壶铃', '瑜伽垫'];
@@ -31,9 +38,14 @@ export class Exercise {
   target: string;
   steps: string[];
   caution: string;
+  equipmentSetup: string;
   imagePath: string;
   motionPath: string;
   recommended: boolean;
+  recommendedForBeginner: boolean;
+  gymEligible: boolean;
+  contentReviewStatus: ContentReviewStatus;
+  libraryVisible: boolean;
 
   constructor(record: ExerciseRecord) {
     this.id = record.id;
@@ -43,9 +55,14 @@ export class Exercise {
     this.target = record.target;
     this.steps = record.steps;
     this.caution = record.caution;
+    this.equipmentSetup = record.equipmentSetup ?? `调整${record.equipment}到舒适且稳定的位置。`;
     this.imagePath = record.imagePath;
     this.motionPath = record.motionPath;
     this.recommended = record.recommended;
+    this.recommendedForBeginner = record.recommendedForBeginner ?? record.recommended;
+    this.gymEligible = record.gymEligible ?? true;
+    this.contentReviewStatus = record.contentReviewStatus ?? (record.recommended ? 'approved' : 'raw');
+    this.libraryVisible = record.libraryVisible ?? true;
   }
 
   get tip(): string {
@@ -61,14 +78,6 @@ export class Exercise {
   }
 
   get equipmentSetupZh(): string {
-    return `调整${this.equipment}到舒适且稳定的位置，先用轻重量确认动作路径。`;
-  }
-
-  get gymEligible(): boolean {
-    return !HOME_EQUIPMENT.includes(this.equipment);
-  }
-
-  get contentApproved(): boolean {
-    return this.recommended;
+    return this.equipmentSetup;
   }
 }

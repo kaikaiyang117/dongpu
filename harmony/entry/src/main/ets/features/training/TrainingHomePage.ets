@@ -14,6 +14,8 @@ export struct TrainingHomePage {
   @Prop weeklyCompleted: number = 0;
   @Prop workout: ProgramWorkout = new ProgramWorkout('A', '全身训练', 40, []);
   @Prop hasActiveWorkout: boolean = false;
+  @Prop activeWorkoutCode: string = '';
+  @Prop activeWorkoutName: string = '';
   @Prop activeCompletedExercises: number = 0;
   @Prop activeMinutes: number = 0;
   @Prop hasSavedPlan: boolean = false;
@@ -94,7 +96,7 @@ export struct TrainingHomePage {
           .backgroundColor(APP_COLOR_GREEN_DARK)
       }
       .width('100%')
-      Text(`${this.workout.code} · ${this.workout.name}`)
+      Text(`${this.activeWorkoutCode === '' ? this.workout.code : this.activeWorkoutCode} · ${this.activeWorkoutName === '' ? this.workout.name : this.activeWorkoutName}`)
         .width('100%')
         .fontSize(24)
         .fontWeight(FontWeight.Bold)

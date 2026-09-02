@@ -21,7 +21,10 @@ export struct CustomTrainingFlow {
   @Link selectedExerciseIds: string[];
   @Link planItems: PlanItem[];
   @Link customPlanSaved: boolean;
+  @State planError: string = '';
   onStartWorkout: () => void = () => {};
+  onStartSavedWorkout: () => void = () => {};
+  onPlanSaved: () => void = () => {};
   onNavigate: (route: AppRoute) => void = () => {};
 
   private title(): string {
@@ -98,7 +101,7 @@ export struct CustomTrainingFlow {
     }
   }
 
-  private goNext(): void {
+  private async goNext(): Promise<void> {
     if (this.route === AppRoute.CustomBody && this.selectedParts.length > 0) {
       this.onNavigate(AppRoute.CustomExercise);
       return;
@@ -106,9 +109,7 @@ export struct CustomTrainingFlow {
     if (this.route === AppRoute.CustomExercise && this.selectedExerciseIds.length > 0) {
       this.planItems = this.selectedExerciseIds.map((id: string) => new PlanItem(id));
       this.customPlanSaved = false;
-      if (this.planRepository !== undefined) {
-        this.planRepository.saveDraft(this.planItems);
-      }
+      await this.persistDraft();
       this.onNavigate(AppRoute.CustomConfirm);
       return;
     }
@@ -150,6 +151,7 @@ export struct CustomTrainingFlow {
       return new PlanItem(id, sets, repMin, repMax, restSeconds);
     });
     this.customPlanSaved = false;
+    this.persistDraft();
   }
 
   private movePlanItem(id: string, delta: number): void {
@@ -164,20 +166,45 @@ export struct CustomTrainingFlow {
     nextItems.splice(nextIndex, 0, moved);
     this.planItems = nextItems;
     this.customPlanSaved = false;
+    this.persistDraft();
   }
 
   private removePlanItem(id: string): void {
     this.planItems = this.planItems.filter((item: PlanItem) => item.exerciseId !== id);
     this.selectedExerciseIds = this.selectedExerciseIds.filter((exerciseId: string) => exerciseId !== id);
     this.customPlanSaved = false;
+    this.persistDraft();
+  }
+
+  private async persistDraft(): Promise<void> {
+    if (this.planRepository === undefined) {
+      return;
+    }
+    try {
+      if (this.planItems.length === 0) {
+        await this.planRepository.clearDraft();
+        this.planError = '';
+        return;
+      }
+      await this.planRepository.saveDraft(this.planItems);
+      this.planError = '';
+    } catch (_) {
+      this.planError = '计划保存失败，请重试';
+    }
   }
 
   private async saveCustomPlan(): Promise<void> {
     if (this.planRepository === undefined || this.planItems.length === 0) {
       return;
     }
-    await this.planRepository.savePlan(this.planItems);
-    this.customPlanSaved = true;
+    try {
+      await this.planRepository.savePlan(this.planItems);
+      this.customPlanSaved = true;
+      this.planError = '';
+      this.onPlanSaved();
+    } catch (_) {
+      this.planError = '计划保存失败，请重试';
+    }
   }
 
   build() {
@@ -216,13 +243,15 @@ export struct CustomTrainingFlow {
           onMovePlanItem: (id: string, delta: number) => this.movePlanItem(id, delta),
           onEditExercises: () => this.onNavigate(AppRoute.CustomExercise),
           onSavePlan: () => this.saveCustomPlan(),
-          isSaved: this.customPlanSaved
+          isSaved: this.customPlanSaved,
+          errorText: this.planError
         })
       } else {
         TrainingReadyPage({
           exercises: this.exercises,
           planItems: this.planItems,
-          onEditPlan: () => this.onNavigate(AppRoute.CustomConfirm)
+          onEditPlan: () => this.onNavigate(AppRoute.CustomConfirm),
+          onStartWorkout: () => this.onStartSavedWorkout()
         })
       }
 

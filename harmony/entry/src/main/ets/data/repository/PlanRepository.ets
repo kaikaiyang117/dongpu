@@ -28,6 +28,16 @@ export class PlanRepository {
     }
   }
 
+  async getDraftPlan(): Promise<UserWorkoutPlan | undefined> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    return this.getPlanByStatus(store, 'draft');
+  }
+
+  async getSavedPlan(): Promise<UserWorkoutPlan | undefined> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    return this.getPlanByStatus(store, 'saved');
+  }
+
   async saveDraft(items: PlanItem[]): Promise<UserWorkoutPlan> {
     return this.save('draft', items);
   }
@@ -37,6 +47,11 @@ export class PlanRepository {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     await store.executeSql("DELETE FROM user_workout_plan WHERE status = 'draft'");
     return plan;
+  }
+
+  async clearDraft(): Promise<void> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    await store.executeSql("DELETE FROM user_workout_plan WHERE status = 'draft'");
   }
 
   private async save(status: string, items: PlanItem[]): Promise<UserWorkoutPlan> {
@@ -90,6 +105,23 @@ export class PlanRepository {
         return undefined;
       }
       return new UserWorkoutPlan(result.getLong(0), result.getString(1), result.getString(2));
+    } finally {
+      result.close();
+    }
+  }
+
+  private async getPlanByStatus(store: relationalStore.RdbStore, status: string): Promise<UserWorkoutPlan | undefined> {
+    const result: relationalStore.ResultSet = await store.querySql(
+      'SELECT id, name, status FROM user_workout_plan WHERE status = ? ORDER BY updated_at DESC LIMIT 1',
+      [status]
+    );
+    try {
+      if (!result.goToFirstRow()) {
+        return undefined;
+      }
+      const plan: UserWorkoutPlan = new UserWorkoutPlan(result.getLong(0), result.getString(1), result.getString(2));
+      plan.exercises = await this.getExercises(store, plan.id);
+      return plan;
     } finally {
       result.close();
     }

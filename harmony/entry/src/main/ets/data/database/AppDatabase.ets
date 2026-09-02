@@ -95,7 +95,16 @@ export class AppDatabase {
       securityLevel: relationalStore.SecurityLevel.S1
     };
     const store: relationalStore.RdbStore = await relationalStore.getRdbStore(context, config);
+    const currentVersion: number = store.version;
+    if (currentVersion < 1) {
+      await AppDatabase.createSchemaV1(store);
+    }
     store.version = DATABASE_VERSION;
+    AppDatabase.store = store;
+    return store;
+  }
+
+  private static async createSchemaV1(store: relationalStore.RdbStore): Promise<void> {
     for (const sql of SCHEMA) {
       await store.executeSql(sql);
     }
@@ -107,7 +116,5 @@ export class AppDatabase {
       `INSERT OR IGNORE INTO user_program_state (id, next_workout_code, weekly_completed, week_started_at)
        VALUES (1, 'A', 0, 0)`
     );
-    AppDatabase.store = store;
-    return store;
   }
 }
