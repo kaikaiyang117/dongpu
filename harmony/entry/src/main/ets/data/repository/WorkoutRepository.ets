@@ -63,7 +63,8 @@ export class WorkoutRepository {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const result: relationalStore.ResultSet = await store.querySql(
       `SELECT id, workout_code, workout_name_snapshot, source_type, status, phase,
-       current_exercise_index, started_at, completed_at, rest_end_at
+       current_exercise_index, started_at, completed_at, rest_end_at,
+       program_id, program_workout_id, program_version, goal_id
        FROM workout_session WHERE status = 'active' LIMIT 1`
     );
     try {
@@ -73,7 +74,7 @@ export class WorkoutRepository {
       const session: WorkoutSession = new WorkoutSession(
         result.getLong(0), result.getString(1), result.getString(2), result.getString(3), WorkoutStatus.Active,
         this.phaseFromString(result.getString(5)), result.getLong(6), result.getLong(7), result.getLong(8),
-        result.getLong(9)
+        result.getLong(9), [], result.getString(10), result.getString(11), result.getString(12), result.getLong(13)
       );
       session.exercises = await this.getExercises(store, session.id);
       return session;
@@ -86,7 +87,8 @@ export class WorkoutRepository {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const result: relationalStore.ResultSet = await store.querySql(
       `SELECT id, workout_code, workout_name_snapshot, source_type, status, phase,
-       current_exercise_index, started_at, completed_at, rest_end_at
+       current_exercise_index, started_at, completed_at, rest_end_at,
+       program_id, program_workout_id, program_version, goal_id
        FROM workout_session WHERE status = 'completed' ORDER BY completed_at DESC`
     );
     const sessions: WorkoutSession[] = [];
@@ -96,7 +98,8 @@ export class WorkoutRepository {
           sessions.push(new WorkoutSession(
             result.getLong(0), result.getString(1), result.getString(2), result.getString(3),
             WorkoutStatus.Completed, WorkoutPhase.Complete, result.getLong(6), result.getLong(7),
-            result.getLong(8), result.getLong(9)
+            result.getLong(8), result.getLong(9), [], result.getString(10), result.getString(11),
+            result.getString(12), result.getLong(13)
           ));
         } while (result.goToNextRow());
       }
@@ -113,6 +116,11 @@ export class WorkoutRepository {
     return this.startWorkout(workout, 'recommended');
   }
 
+  async startProgramWorkout(workout: ProgramWorkout, programId: string, programWorkoutId: string,
+    programVersion: string, goalId: number): Promise<WorkoutSession> {
+    return this.startWorkout(workout, 'program', programId, programWorkoutId, programVersion, goalId);
+  }
+
   async startCustomWorkout(workout: ProgramWorkout): Promise<WorkoutSession> {
     return this.startAdHocWorkout(workout);
   }
@@ -125,7 +133,8 @@ export class WorkoutRepository {
     return this.startWorkout(workout, 'saved_plan');
   }
 
-  private async startWorkout(workout: ProgramWorkout, sourceType: string): Promise<WorkoutSession> {
+  private async startWorkout(workout: ProgramWorkout, sourceType: string, programId: string = '',
+    programWorkoutId: string = '', programVersion: string = '', goalId: number = 0): Promise<WorkoutSession> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const active: WorkoutSession | undefined = await this.getActiveWorkout();
     if (active !== undefined) {
@@ -143,7 +152,11 @@ export class WorkoutRepository {
         current_exercise_index: 0,
         started_at: Date.now(),
         completed_at: 0,
-        rest_end_at: 0
+        rest_end_at: 0,
+        program_id: programId,
+        program_workout_id: programWorkoutId,
+        program_version: programVersion,
+        goal_id: goalId
       });
       for (let index: number = 0; index < workout.exercises.length; index++) {
         const exercise: ProgramExercise = workout.exercises[index];
@@ -275,6 +288,26 @@ export class WorkoutRepository {
            WHERE id = 1`,
           [session.workoutCode === 'A' ? 'B' : 'A', Date.now()]
         );
+      } else if (session.sourceType === 'program') {
+        const programResult: relationalStore.ResultSet = await store.querySql(
+          'SELECT optional FROM program_workout WHERE id = ?', [session.programWorkoutId]
+        );
+        let isOptional: boolean = false;
+        try {
+          if (programResult.goToFirstRow()) {
+            isOptional = programResult.getLong(0) === 1;
+          }
+        } finally {
+          programResult.close();
+        }
+        if (!isOptional) {
+          await store.executeSql(
+            `UPDATE user_program_state SET weekly_completed = weekly_completed + 1,
+             week_started_at = CASE WHEN weekly_completed = 0 THEN ? ELSE week_started_at END
+             WHERE id = 1`,
+            [Date.now()]
+          );
+        }
       } else {
         await store.executeSql(
           `UPDATE user_program_state SET weekly_completed = weekly_completed + 1,

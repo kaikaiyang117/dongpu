@@ -23,7 +23,12 @@ export struct TrainingHomePage {
   @Prop savedPlanActionCount: number = 0;
   @Prop savedPlanMinutes: number = 0;
   @Prop savedPlanSummary: string = '';
+  @Prop programName: string = '';
+  @Prop programWeek: number = 1;
+  @Prop programWorkouts: ProgramWorkout[] = [];
+  @Prop nextRequiredWorkoutIndex: number = 0;
   onStartRecommended: () => void = () => {};
+  onOpenProgramWorkout: (code: string) => void = (_code: string) => {};
   onResumeWorkout: () => void = () => {};
   onStartCustom: () => void = () => {};
   onStartSavedPlan: () => void = () => {};
@@ -76,6 +81,42 @@ export struct TrainingHomePage {
     .borderRadius(18)
     .backgroundColor(Color.White)
     .border({ width: 1, color: APP_COLOR_LINE })
+  }
+
+  @Builder
+  ProgramCard() {
+    if (this.programWorkouts.length > 0) {
+      Column({ space: 12 }) {
+        Row() {
+          Column({ space: 4 }) {
+            Text(this.programName).fontSize(18).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+            Text(`第 ${this.programWeek} 周 · 按顺序完成必做训练`).fontSize(12).fontColor(APP_COLOR_MUTED)
+          }.alignItems(HorizontalAlign.Start).layoutWeight(1)
+          Text('当前计划').fontSize(12).fontColor(APP_COLOR_GREEN_DARK)
+        }.width('100%')
+        ForEach(this.programWorkouts, (workout: ProgramWorkout, index: number) => {
+          Row() {
+            Text(`${index + 1}`).width(28).fontSize(14).fontWeight(FontWeight.Bold)
+              .fontColor(workout.code === 'optional_arms' ? APP_COLOR_MUTED : APP_COLOR_GREEN_DARK)
+            Column({ space: 3 }) {
+              Text(workout.name).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+              Text(`${workout.exercises.length} 个动作 · 约 ${workout.estimatedMinutes} 分钟`)
+                .fontSize(12).fontColor(APP_COLOR_MUTED)
+            }.alignItems(HorizontalAlign.Start).layoutWeight(1)
+            Text(workout.code === 'optional_arms' ? '可选' : (index < this.nextRequiredWorkoutIndex ? '已完成' :
+              index === this.nextRequiredWorkoutIndex ? '下一项' : '待完成'))
+              .fontSize(12).fontColor(workout.code === 'optional_arms' ? APP_COLOR_MUTED : APP_COLOR_GREEN_DARK)
+          }.width('100%').padding({ top: 8, bottom: 8 })
+        }, (workout: ProgramWorkout) => workout.code)
+        if (this.programWorkouts.find((workout: ProgramWorkout) => workout.code === 'optional_arms') !== undefined) {
+          Button('查看 Optional 训练')
+            .width('100%').height(46).fontSize(14).fontWeight(FontWeight.Bold)
+            .fontColor(APP_COLOR_GREEN_DARK).backgroundColor(APP_COLOR_GREEN_SOFT).borderRadius(14)
+            .onClick(() => this.onOpenProgramWorkout('optional_arms'))
+        }
+      }.alignItems(HorizontalAlign.Start).width('100%').padding(18).borderRadius(18)
+        .backgroundColor(Color.White).border({ width: 1, color: APP_COLOR_LINE })
+    }
   }
 
   @Builder
@@ -201,6 +242,7 @@ export struct TrainingHomePage {
           this.WeeklyProgress()
         } else {
           this.WeeklyProgress()
+          this.ProgramCard()
           this.TodayWorkoutCard()
         }
 

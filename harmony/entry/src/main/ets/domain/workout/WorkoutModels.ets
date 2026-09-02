@@ -85,11 +85,16 @@ export class WorkoutSession {
   startedAt: number;
   completedAt: number;
   restEndAt: number;
+  programId: string;
+  programWorkoutId: string;
+  programVersion: string;
+  goalId: number;
   exercises: WorkoutExerciseRecord[];
 
   constructor(id: number, workoutCode: string, workoutNameSnapshot: string, sourceType: string,
     status: WorkoutStatus, phase: WorkoutPhase, currentExerciseIndex: number, startedAt: number,
-    completedAt: number = 0, restEndAt: number = 0, exercises: WorkoutExerciseRecord[] = []) {
+    completedAt: number = 0, restEndAt: number = 0, exercises: WorkoutExerciseRecord[] = [],
+    programId: string = '', programWorkoutId: string = '', programVersion: string = '', goalId: number = 0) {
     this.id = id;
     this.workoutCode = workoutCode;
     this.workoutNameSnapshot = workoutNameSnapshot;
@@ -100,6 +105,10 @@ export class WorkoutSession {
     this.startedAt = startedAt;
     this.completedAt = completedAt;
     this.restEndAt = restEndAt;
+    this.programId = programId;
+    this.programWorkoutId = programWorkoutId;
+    this.programVersion = programVersion;
+    this.goalId = goalId;
     this.exercises = exercises;
   }
 }

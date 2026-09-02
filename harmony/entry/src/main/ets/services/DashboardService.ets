@@ -93,7 +93,9 @@ export class DashboardService {
       return undefined;
     }
     const state = await this.goalRepository.getActiveProgramState();
-    const workouts: ProgramWorkoutV2[] = await this.programRepository.getWorkouts(state?.programId);
+    const workouts: ProgramWorkoutV2[] = await this.programRepository.getWorkouts(
+      state?.programId === undefined || state.programId === '' ? 'fat_loss_upper_priority_3_4' : state.programId
+    );
     if (workouts.length === 0) {
       return undefined;
     }

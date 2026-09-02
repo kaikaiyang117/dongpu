@@ -11,6 +11,7 @@ import { ProfileRepository } from '../data/repository/ProfileRepository';
 import { SettingsRepository } from '../data/repository/SettingsRepository';
 import { WorkoutRepository } from '../data/repository/WorkoutRepository';
 import { NutritionRepository } from '../data/repository/NutritionRepository';
+import { ProgramRepository } from '../data/repository/ProgramRepository';
 import { DashboardService, DashboardViewModel } from '../services/DashboardService';
 import { ProgramExercise, ProgramWorkout, recommendedWorkout } from '../domain/program/ProgramModels';
 import { WorkoutExerciseRecord, WorkoutPhase, WorkoutSession, WorkoutStatus, ExerciseProgress } from '../domain/workout/WorkoutModels';
@@ -34,7 +35,7 @@ import { NutritionPage } from '../features/nutrition/NutritionPage';
 import { FoodEntryEditorPage } from '../features/nutrition/FoodEntryEditorPage';
 import { Exercise } from '../model/Exercise';
 import { PlanItem } from '../model/WorkoutData';
-import { ActiveProgramState } from '../domain/program/ProgramV2Models';
+import { ActiveProgramState, ProgramWorkoutV2 } from '../domain/program/ProgramV2Models';
 import { OnboardingDraft, UserProfile } from '../domain/profile/ProfileModels';
 import { FitnessGoal } from '../domain/goal/GoalModels';
 import { BodyMeasurement } from '../domain/body/BodyModels';
@@ -63,6 +64,11 @@ export struct AppRoot {
   @State nutritionSummary: NutritionSummary = new NutritionSummary();
   @State nutritionQuickFoods: QuickFood[] = [];
   @State nutritionEntries: FoodEntry[] = [];
+  @State programName: string = '';
+  @State programWeek: number = 1;
+  @State programWorkouts: ProgramWorkout[] = [];
+  @State nextRequiredWorkoutIndex: number = 0;
+  @State previewWorkoutCode: string = '';
   @State customPlanSaved: boolean = false;
   @State libraryFromTab: boolean = false;
   @State selectedParts: string[] = ['chest'];
@@ -79,6 +85,8 @@ export struct AppRoot {
   private goalRepository: GoalRepository | undefined;
   private bodyRepository: BodyRepository | undefined;
   private nutritionRepository: NutritionRepository | undefined;
+  private programRepository: ProgramRepository | undefined;
+  private programWorkoutRecords: ProgramWorkoutV2[] = [];
   private dashboardService: DashboardService | undefined;
   private programCatalogValid: boolean = false;
 
@@ -94,6 +102,7 @@ export struct AppRoot {
       this.goalRepository = new GoalRepository(hostContext);
       this.bodyRepository = new BodyRepository(hostContext);
       this.nutritionRepository = new NutritionRepository(hostContext);
+      this.programRepository = new ProgramRepository(hostContext);
       this.dashboardService = new DashboardService(hostContext);
       this.initializeApp();
     }
@@ -117,6 +126,7 @@ export struct AppRoot {
       this.nextWorkoutCode = programState.nextWorkoutCode;
       this.applyActiveWorkout(activeWorkout);
       if (profile?.onboardingCompleted ?? settings.onboardingCompleted) {
+        await this.loadActiveProgram();
         await this.refreshDashboard();
         this.route = AppRoute.Dashboard;
       } else {
@@ -144,6 +154,81 @@ export struct AppRoot {
     this.nutritionSummary = await this.nutritionRepository.getDailySummary(dayStart, dayEnd);
     this.nutritionQuickFoods = await this.nutritionRepository.getQuickFoods();
     this.nutritionEntries = await this.nutritionRepository.getFoodEntries(dayStart, dayEnd);
+  }
+
+  private async loadActiveProgram(): Promise<void> {
+    if (this.programRepository === undefined) {
+      return;
+    }
+    let state: ActiveProgramState | undefined = await this.programRepository.getActiveProgramState();
+    if (state === undefined && this.goalRepository !== undefined) {
+      const goal: FitnessGoal | undefined = await this.goalRepository.getActiveGoal();
+      if (goal !== undefined) {
+        state = await this.programRepository.saveActiveProgramState(new ActiveProgramState(
+          1, goal.id, 'fat_loss_upper_priority_3_4', '1.0', Date.now(), 1, 0
+        ));
+      }
+    }
+    if (state === undefined) {
+      state = new ActiveProgramState(1, 0, 'fat_loss_upper_priority_3_4', '1.0', Date.now(), 1, 0);
+    }
+    const programId: string = state.programId === '' ? 'fat_loss_upper_priority_3_4' : state.programId;
+    const program = await this.programRepository.getProgram(programId);
+    const records: ProgramWorkoutV2[] = await this.programRepository.getWorkouts(programId);
+    this.programWorkoutRecords = records;
+    this.programWorkouts = records.map((item: ProgramWorkoutV2) => this.toProgramWorkout(item));
+    this.programName = program?.name ?? '';
+    this.programWeek = state.currentWeek;
+    this.nextRequiredWorkoutIndex = state.nextRequiredWorkoutIndex;
+    this.programCatalogValid = this.programWorkouts.length > 0 && this.programWorkouts.every(
+      (workout: ProgramWorkout) => workout.exercises.length > 0 && workout.exercises.every(
+        (item: ProgramExercise) => findExerciseExact(this.exercises, item.exerciseId) !== undefined
+      )
+    );
+  }
+
+  private toProgramWorkout(record: ProgramWorkoutV2): ProgramWorkout {
+    const exercises: ProgramExercise[] = record.exercises.map((item) => {
+      const catalogExercise: Exercise | undefined = findExerciseExact(this.exercises, item.exerciseId);
+      if (catalogExercise === undefined) {
+        return new ProgramExercise(item.exerciseId, item.exerciseId, '', '', '', item.plannedSets,
+          item.repMin, item.repMax, item.restSeconds);
+      }
+      return new ProgramExercise(catalogExercise.id, catalogExercise.name, this.userPartName(catalogExercise),
+        catalogExercise.equipment, catalogExercise.imagePath, item.plannedSets, item.repMin, item.repMax,
+        item.restSeconds);
+    });
+    return new ProgramWorkout(record.code, record.name, record.estimatedMinutes, exercises);
+  }
+
+  private requiredProgramWorkouts(): ProgramWorkout[] {
+    return this.programWorkouts.filter((workout: ProgramWorkout) => workout.code !== 'optional_arms');
+  }
+
+  private nextRequiredProgramWorkout(): ProgramWorkout | undefined {
+    const required: ProgramWorkout[] = this.requiredProgramWorkouts();
+    if (required.length === 0) {
+      return undefined;
+    }
+    return required[Math.min(this.nextRequiredWorkoutIndex, required.length - 1)];
+  }
+
+  private workoutForCode(code: string): ProgramWorkout | undefined {
+    return this.programWorkouts.find((workout: ProgramWorkout) => workout.code === code);
+  }
+
+  private previewWorkout(): ProgramWorkout {
+    return this.workoutForCode(this.previewWorkoutCode) ?? this.nextRequiredProgramWorkout() ?? this.currentWorkout();
+  }
+
+  private openRequiredPreview(): void {
+    this.previewWorkoutCode = this.nextRequiredProgramWorkout()?.code ?? '';
+    this.route = AppRoute.WorkoutPreview;
+  }
+
+  private openProgramPreview(code: string): void {
+    this.previewWorkoutCode = code;
+    this.route = AppRoute.WorkoutPreview;
   }
 
   private defaultMealType(): string {
@@ -238,6 +323,10 @@ export struct AppRoot {
   }
 
   private currentWorkout(): ProgramWorkout {
+    const programWorkout: ProgramWorkout | undefined = this.nextRequiredProgramWorkout();
+    if (programWorkout !== undefined) {
+      return programWorkout;
+    }
     const template: ProgramWorkout = recommendedWorkout(this.nextWorkoutCode);
     const exercises: ProgramExercise[] = template.exercises.map((item: ProgramExercise) => {
       const catalogExercise: Exercise | undefined = findExerciseExact(this.exercises, item.exerciseId);
@@ -348,6 +437,7 @@ export struct AppRoot {
       await this.settingsRepository.completeOnboarding(draft.frequencyMin);
       this.weeklyFrequency = draft.frequencyMin;
       this.selectedFrequency = draft.frequencyMin;
+      await this.loadActiveProgram();
       await this.refreshDashboard();
       this.route = AppRoute.Dashboard;
     } finally {
@@ -373,12 +463,19 @@ export struct AppRoot {
 
   private async startRecommendedWorkout(): Promise<void> {
     if (this.workoutRepository === undefined || this.isSaving || !this.programCatalogValid) {
-      this.operationError = '推荐训练数据校验失败，请更新动作目录';
+      this.operationError = '训练计划数据校验失败，请更新动作目录';
       return;
     }
     this.isSaving = true;
     try {
-      const session: WorkoutSession = await this.workoutRepository.startRecommendedWorkout(this.currentWorkout());
+      const workout: ProgramWorkout = this.previewWorkout();
+      const record: ProgramWorkoutV2 | undefined = this.programWorkoutRecords.find(
+        (item: ProgramWorkoutV2) => item.code === workout.code
+      );
+      const session: WorkoutSession = record !== undefined && this.programRepository !== undefined ?
+        await this.workoutRepository.startProgramWorkout(workout, record.programId, record.id, '1.0',
+          (await this.programRepository.getActiveProgramState())?.goalId ?? 0) :
+        await this.workoutRepository.startRecommendedWorkout(workout);
       this.applyActiveWorkout(session);
       this.openActiveWorkout();
     } finally {
@@ -546,6 +643,10 @@ export struct AppRoot {
     }
     const finished: WorkoutSession = this.activeSession;
     await this.workoutRepository.finishWorkout(finished);
+    if (finished.sourceType === 'program' && this.programRepository !== undefined) {
+      await this.programRepository.advanceAfterCompletion(finished.programWorkoutId);
+      await this.loadActiveProgram();
+    }
     const programState = await this.workoutRepository.getProgramState();
     this.weeklyCompleted = programState.weeklyCompleted;
     this.nextWorkoutCode = programState.nextWorkoutCode;
@@ -651,7 +752,7 @@ export struct AppRoot {
         DashboardPage({
           viewModel: this.dashboard,
           onResumeWorkout: () => this.openActiveWorkout(),
-          onOpenTraining: () => this.route = AppRoute.WorkoutPreview,
+          onOpenTraining: () => this.openRequiredPreview(),
           onOpenNutrition: () => this.openNutrition(),
           onRecordBody: () => this.operationError = '身体记录将在下一阶段开放'
         })
@@ -679,6 +780,10 @@ export struct AppRoot {
           weeklyFrequency: this.weeklyFrequency,
           weeklyCompleted: this.weeklyCompleted,
           workout: this.currentWorkout(),
+          programName: this.programName,
+          programWeek: this.programWeek,
+          programWorkouts: this.programWorkouts,
+          nextRequiredWorkoutIndex: this.nextRequiredWorkoutIndex,
           hasActiveWorkout: this.hasActiveWorkout,
           activeWorkoutCode: this.activeSession?.workoutCode ?? '',
           activeWorkoutName: this.activeSession?.workoutNameSnapshot ?? '',
@@ -691,7 +796,8 @@ export struct AppRoot {
             const ex: Exercise = findExercise(this.exercises, item.exerciseId);
             return ex.name;
           }).join(' · ') + (this.planItems.length > 3 ? ' · …' : ''),
-          onStartRecommended: () => this.route = AppRoute.WorkoutPreview,
+          onStartRecommended: () => this.openRequiredPreview(),
+          onOpenProgramWorkout: (code: string) => this.openProgramPreview(code),
           onResumeWorkout: () => this.openActiveWorkout(),
           onStartCustom: () => this.route = AppRoute.CustomBody,
           onStartSavedPlan: () => this.route = AppRoute.TrainingReady,
@@ -704,7 +810,7 @@ export struct AppRoot {
         BottomNav({ selectedTab: 'training', onSelect: (tab: string) => this.selectTab(tab) })
       } else if (this.route === AppRoute.WorkoutPreview) {
         WorkoutPreviewPage({
-          workout: this.currentWorkout(),
+          workout: this.previewWorkout(),
           isStarting: this.isSaving,
           onBack: () => this.route = AppRoute.TrainingHome,
           onStart: () => this.startRecommendedWorkout()

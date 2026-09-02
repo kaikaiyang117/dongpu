@@ -306,6 +306,17 @@ export class AppDatabase {
       await AppDatabase.migrateV1ToV2(store);
       store.version = DATABASE_VERSION;
     }
+    // Repair stores created by pre-V2 builds whose version was already advanced.
+    for (const sql of V2_SCHEMA) {
+      await store.executeSql(sql);
+    }
+    await AppDatabase.addColumnIfMissing(store, 'workout_session', 'program_id', 'TEXT');
+    await AppDatabase.addColumnIfMissing(store, 'workout_session', 'program_workout_id', 'TEXT');
+    await AppDatabase.addColumnIfMissing(store, 'workout_session', 'program_version', 'TEXT');
+    await AppDatabase.addColumnIfMissing(store, 'workout_session', 'goal_id', 'INTEGER');
+    await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'suggested_weight_kg', 'REAL');
+    // Keep built-in catalog rows available for databases created by an earlier V2 build.
+    await AppDatabase.seedV2(store);
     AppDatabase.store = store;
     return store;
   }

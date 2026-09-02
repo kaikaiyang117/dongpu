@@ -1,5 +1,5 @@
 import { relationalStore } from '@kit.ArkData';
-import { ProgramWorkoutExerciseV2, ProgramWorkoutV2, TrainingProgram } from '../../domain/program/ProgramV2Models';
+import { ActiveProgramState, ProgramWorkoutExerciseV2, ProgramWorkoutV2, TrainingProgram } from '../../domain/program/ProgramV2Models';
 import { AppDatabase } from '../database/AppDatabase';
 
 const DEFAULT_PROGRAM_ID: string = 'fat_loss_upper_priority_3_4';
@@ -52,6 +52,59 @@ export class ProgramRepository {
       workouts.push(workout);
     }
     return workouts;
+  }
+
+  async getActiveProgramState(): Promise<ActiveProgramState | undefined> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    const result: relationalStore.ResultSet = await store.querySql(
+      `SELECT id, goal_id, program_id, program_version, started_at, current_week, next_required_workout_index
+       FROM active_program_state WHERE id = 1`
+    );
+    try {
+      if (!result.goToFirstRow()) {
+        return undefined;
+      }
+      return new ActiveProgramState(
+        result.getLong(0), result.getLong(1), result.getString(2), result.getString(3), result.getLong(4),
+        result.getLong(5), result.getLong(6)
+      );
+    } finally {
+      result.close();
+    }
+  }
+
+  async saveActiveProgramState(state: ActiveProgramState): Promise<ActiveProgramState> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    await store.executeSql(
+      `INSERT OR REPLACE INTO active_program_state
+       (id, goal_id, program_id, program_version, started_at, current_week, next_required_workout_index)
+       VALUES (1, ?, ?, ?, ?, ?, ?)`,
+      [state.goalId, state.programId, state.programVersion, state.startedAt, state.currentWeek,
+        state.nextRequiredWorkoutIndex]
+    );
+    return state;
+  }
+
+  async advanceAfterCompletion(workoutId: string): Promise<void> {
+    const state = await this.getActiveProgramState();
+    if (state === undefined) {
+      return;
+    }
+    const workouts: ProgramWorkoutV2[] = await this.getWorkouts(state.programId);
+    const workout: ProgramWorkoutV2 | undefined = workouts.find((item: ProgramWorkoutV2) => item.id === workoutId);
+    if (workout === undefined || workout.optional) {
+      return;
+    }
+    const required: ProgramWorkoutV2[] = workouts.filter((item: ProgramWorkoutV2) => !item.optional);
+    const completedIndex: number = required.findIndex((item: ProgramWorkoutV2) => item.id === workoutId);
+    if (completedIndex < 0 || completedIndex !== state.nextRequiredWorkoutIndex) {
+      return;
+    }
+    const nextIndex: number = (completedIndex + 1) % required.length;
+    const nextWeek: number = nextIndex === 0 ? state.currentWeek + 1 : state.currentWeek;
+    await this.saveActiveProgramState(new ActiveProgramState(
+      state.id, state.goalId, state.programId, state.programVersion, state.startedAt, nextWeek, nextIndex
+    ));
   }
 
   async getWorkout(workoutId: string): Promise<ProgramWorkoutV2 | undefined> {
