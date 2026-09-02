@@ -1,37 +1,109 @@
 # 动谱
 
-动谱是一款面向 HarmonyOS NEXT 的本地优先新手力量训练助手，帮助第一次走进健身房的用户知道今天练什么、看懂动作并顺手记下训练。
+动谱是一款面向 HarmonyOS NEXT 的**目标驱动型减脂与力量训练执行助手**。
 
-当前项目已进入 HarmonyOS 6 原生实现阶段，开发仍以 `docs/` 中的文档为功能基线：
+它不只是记录训练，而是围绕一个明确目标，把每天真正需要完成的事情收敛为：
 
-- [产品功能规格](docs/PRODUCT_SPEC.md)
-- [开发实现参考](docs/IMPLEMENTATION_REFERENCE.md)
-- [健身小白习惯与需求研究](docs/BEGINNER_RESEARCH.md)
+- 今天吃多少。
+- 蛋白质还差多少。
+- 今天练什么。
+- 步数还差多少。
+- 当前体重趋势是否正常。
 
-## 当前实现
+核心承诺：**打开动谱，就知道今天该吃什么、练什么，以及离目标还差多少。**
+
+## V2 当前产品基线
+
+V2 从原“新手力量训练助手”升级为“减脂 + 力量训练执行系统”。
+
+首个重点使用场景：
+
+```text
+目标：减脂
+训练：每周 3—4 次
+场景：健身房
+偏好：上肢优先，不安排独立腿日，但保留基础腿部训练量
+跟踪：体重 / 热量 / 蛋白质 / 步数 / 力量训练
+```
+
+一级导航：
+
+```text
+今日 / 训练 / 数据 / 我的
+```
+
+## 开发必读
+
+代码 Agent、Codex 或 Claude Code 开工前按以下顺序阅读：
+
+1. [仓库开发规范](AGENTS.md)
+2. [V2 产品功能规格](docs/PRODUCT_SPEC.md)
+3. [V2 数据库设计](docs/DATABASE_DESIGN.md)
+4. [V2 页面结构与交互状态](docs/PAGE_STRUCTURE.md)
+5. [V2 Agent 开发任务拆解](docs/AGENT_IMPLEMENTATION_PLAN.md)
+6. [现有实现参考](docs/IMPLEMENTATION_REFERENCE.md)
+
+若文档存在冲突，以前五项为准。
+
+## 技术基线
 
 - 原生工程：[harmony](harmony)
-- 目标环境：HarmonyOS 6.0.1（API 21）
-- 已实现：选择部位、选择动作、调整组次、确认并开始训练
-- 首批动作：18 个健身房新手动作，均保留上游数据集 `sourceId`
-- 构建状态：ArkTS 类型检查及 HAP 构建通过；真机安装前仍需配置签名
-
-## 当前产品基线
-
-- 产品名：动谱
-- 宣传语：今天练了么？
 - 平台：HarmonyOS NEXT
-- 技术方向：ArkTS + ArkUI + ArkData
+- 目标环境：HarmonyOS 6.0.1（API 21）
+- 技术：ArkTS + ArkUI + ArkData
+- 数据策略：本地优先
 - 首要测试设备：HUAWEI Mate 60 Pro
-- 核心人群：刚开始健身房力量训练的成年人
-- 核心体验：推荐训练快速开练，或按部位和动作自定义计划；训练中动作带教、一键记组
-- 数据策略：本地优先，无网络时仍可完成核心训练记录流程
+- 动作数据保留上游稳定 ID，不使用中文名称作为主键
 
-## 文档约定
+## 现有可复用能力
 
-- `已确定`：可以直接进入设计或开发。
-- `暂定`：当前默认方案，讨论后可调整。
-- `待讨论`：会显著影响范围或体验，开发前需要明确。
-- `MVP`：首个可安装、可完成核心闭环的版本。
-- `P1`：MVP 稳定后优先补充。
-- `暂不做`：当前阶段明确不进入开发范围。
+V1 已经建立的训练执行能力不会推翻，V2 会继续复用并适配：
+
+- 推荐/自定义训练启动。
+- `WorkoutSession`。
+- 动作与组记录。
+- 休息倒计时。
+- active workout 恢复。
+- 动作替换。
+- 训练历史。
+- 本地动作目录与媒体。
+
+V2 的主要重构集中在：
+
+- 新 Onboarding 与 Goal。
+- 今日 Dashboard。
+- 身体数据与 7 日趋势。
+- 简单饮食/蛋白质记录。
+- 3—4 日 Program Engine。
+- 四 Tab 信息架构。
+- AppRoot 业务状态拆分。
+
+## 开发顺序
+
+不要先重做所有 UI。
+
+推荐执行顺序：
+
+```text
+数据库 V2
+→ Repository / Service
+→ Onboarding
+→ Dashboard
+→ Nutrition
+→ Program Engine
+→ 训练执行适配
+→ Progress
+→ Profile
+→ P1 周复盘 / Double Progression
+```
+
+详细任务和验收标准见：
+
+[docs/AGENT_IMPLEMENTATION_PLAN.md](docs/AGENT_IMPLEMENTATION_PLAN.md)
+
+## 历史资料
+
+- [健身小白习惯与需求研究](docs/BEGINNER_RESEARCH.md)
+- [现有实现参考](docs/IMPLEMENTATION_REFERENCE.md)
+
+历史资料可用于理解已有实现，但不得覆盖 V2 产品规格。
