@@ -67,6 +67,31 @@ export class GoalRepository {
     }
   }
 
+  async updateActiveTargets(targetCalories: number, targetProteinG: number, targetSteps: number): Promise<void> {
+    if (targetCalories < 0 || targetProteinG < 0 || targetSteps < 0) {
+      throw new Error('Invalid goal targets');
+    }
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    await store.executeSql(
+      `UPDATE fitness_goal SET target_calories = ?, target_protein_g = ?, target_steps = ?, updated_at = ?
+       WHERE status = 'active'`,
+      [targetCalories, targetProteinG, targetSteps, Date.now()]
+    );
+  }
+
+  async updateActiveTrainingPreference(frequency: number, location: string, dedicatedLegDay: boolean,
+    preferMachines: boolean): Promise<void> {
+    if (frequency < 1 || frequency > 7 || location === '') {
+      throw new Error('Invalid training preference');
+    }
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    await store.executeSql(
+      `UPDATE fitness_goal SET training_frequency_min = ?, training_frequency_max = ?, training_location = ?,
+       dedicated_leg_day = ?, prefer_machines = ?, updated_at = ? WHERE status = 'active'`,
+      [frequency, frequency, location, dedicatedLegDay ? 1 : 0, preferMachines ? 1 : 0, Date.now()]
+    );
+  }
+
   async getActiveProgramState(): Promise<ActiveProgramState | undefined> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const result: relationalStore.ResultSet = await store.querySql(

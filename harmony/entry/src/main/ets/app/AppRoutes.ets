@@ -6,6 +6,7 @@ export enum AppRoute {
   FoodEntryEditor = 'food-entry-editor',
   Progress = 'progress',
   BodyQuickEntry = 'body-quick-entry',
+  Profile = 'profile',
   TrainingHome = 'training-home',
   WorkoutPreview = 'workout-preview',
   Workout = 'workout',

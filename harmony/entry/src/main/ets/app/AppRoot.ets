@@ -52,6 +52,7 @@ export struct AppRoot {
   @State weeklyCompleted: number = 0;
   @State nextWorkoutCode: string = 'A';
   @State weightUnit: string = 'kg';
+  @State activeGoal: FitnessGoal = new FitnessGoal();
   @State isSaving: boolean = false;
   @State hasActiveWorkout: boolean = false;
   @State activeCompletedExercises: number = 0;
@@ -124,6 +125,9 @@ export struct AppRoot {
       this.weeklyFrequency = settings.weeklyFrequency;
       this.selectedFrequency = settings.weeklyFrequency;
       this.weightUnit = settings.weightUnit;
+      if (this.goalRepository !== undefined) {
+        this.activeGoal = await this.goalRepository.getActiveGoal() ?? new FitnessGoal();
+      }
       this.weeklyCompleted = programState.weeklyCompleted;
       this.nextWorkoutCode = programState.nextWorkoutCode;
       this.applyActiveWorkout(activeWorkout);
@@ -454,6 +458,7 @@ export struct AppRoot {
       this.weeklyFrequency = draft.frequencyMin;
       this.selectedFrequency = draft.frequencyMin;
       await this.loadActiveProgram();
+      this.activeGoal = goal;
       await this.refreshDashboard();
       this.route = AppRoute.Dashboard;
     } finally {
@@ -466,6 +471,12 @@ export struct AppRoot {
       return;
     }
     await this.settingsRepository.updateWeeklyFrequency(frequency);
+    if (this.goalRepository !== undefined && this.activeGoal.id > 0) {
+      await this.goalRepository.updateActiveTrainingPreference(frequency, this.activeGoal.trainingLocation,
+        this.activeGoal.dedicatedLegDay, this.activeGoal.preferMachines);
+      this.activeGoal = await this.goalRepository.getActiveGoal() ?? this.activeGoal;
+      await this.refreshDashboard();
+    }
     this.weeklyFrequency = frequency;
   }
 
@@ -475,6 +486,36 @@ export struct AppRoot {
     }
     await this.settingsRepository.updateWeightUnit(unit);
     this.weightUnit = unit;
+  }
+
+  private async saveGoalTargets(targetCalories: number, targetProteinG: number, targetSteps: number): Promise<void> {
+    if (this.goalRepository === undefined || this.isSaving || this.activeGoal.id <= 0) return;
+    this.isSaving = true;
+    try {
+      await this.goalRepository.updateActiveTargets(targetCalories, targetProteinG, targetSteps);
+      this.activeGoal = await this.goalRepository.getActiveGoal() ?? this.activeGoal;
+      await this.refreshDashboard();
+    } catch (_) {
+      this.operationError = '目标保存失败，请检查输入';
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  private async changeTrainingPreference(location: string, dedicatedLegDay: boolean,
+    preferMachines: boolean): Promise<void> {
+    if (this.goalRepository === undefined || this.isSaving || this.activeGoal.id <= 0) return;
+    this.isSaving = true;
+    try {
+      await this.goalRepository.updateActiveTrainingPreference(this.weeklyFrequency, location, dedicatedLegDay,
+        preferMachines);
+      this.activeGoal = await this.goalRepository.getActiveGoal() ?? this.activeGoal;
+      await this.refreshDashboard();
+    } catch (_) {
+      this.operationError = '训练偏好保存失败，请稍后重试';
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   private async startRecommendedWorkout(): Promise<void> {
@@ -711,7 +752,7 @@ export struct AppRoot {
       return;
     }
     if (tab === 'profile') {
-      this.route = AppRoute.Settings;
+      this.route = AppRoute.Profile;
       return;
     }
     this.route = AppRoute.TrainingHome;
@@ -848,14 +889,29 @@ export struct AppRoot {
           onBack: () => this.route = AppRoute.TrainingHome,
           onStart: () => this.startRecommendedWorkout()
         })
-      } else if (this.route === AppRoute.Settings) {
+      } else if (this.route === AppRoute.Settings || this.route === AppRoute.Profile) {
         SettingsPage({
+          title: this.route === AppRoute.Profile ? '我的' : '设置',
           weeklyFrequency: this.weeklyFrequency,
           weightUnit: this.weightUnit,
+          targetCalories: this.activeGoal.targetCalories,
+          targetProteinG: this.activeGoal.targetProteinG,
+          targetSteps: this.activeGoal.targetSteps,
+          trainingLocation: this.activeGoal.trainingLocation,
+          dedicatedLegDay: this.activeGoal.dedicatedLegDay,
+          preferMachines: this.activeGoal.preferMachines,
+          isSaving: this.isSaving,
           onBack: () => this.route = AppRoute.Dashboard,
           onChangeFrequency: (frequency: number) => this.changeWeeklyFrequency(frequency),
-          onChangeWeightUnit: (unit: string) => this.changeWeightUnit(unit)
+          onChangeWeightUnit: (unit: string) => this.changeWeightUnit(unit),
+          onSaveTargets: (calories: number, proteinG: number, steps: number) =>
+            this.saveGoalTargets(calories, proteinG, steps),
+          onChangeTrainingPreference: (location: string, dedicatedLegDay: boolean, preferMachines: boolean) =>
+            this.changeTrainingPreference(location, dedicatedLegDay, preferMachines)
         })
+        if (this.route === AppRoute.Profile) {
+          BottomNav({ selectedTab: 'profile', onSelect: (tab: string) => this.selectTab(tab) })
+        }
       } else if (this.route === AppRoute.Workout && this.activeSession !== undefined) {
         WorkoutPage({
           exercise: this.currentActiveExercise(),

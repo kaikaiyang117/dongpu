@@ -8,11 +8,37 @@ import {
 
 @Component
 export struct SettingsPage {
+  @Prop title: string = '设置';
   @Prop weeklyFrequency: number = 2;
   @Prop weightUnit: string = 'kg';
+  @Prop targetCalories: number = 0;
+  @Prop targetProteinG: number = 0;
+  @Prop targetSteps: number = 0;
+  @Prop trainingLocation: string = 'gym';
+  @Prop dedicatedLegDay: boolean = false;
+  @Prop preferMachines: boolean = true;
+  @Prop isSaving: boolean = false;
+  @State private caloriesText: string = '';
+  @State private proteinText: string = '';
+  @State private stepsText: string = '';
   onBack: () => void = () => {};
   onChangeFrequency: (frequency: number) => void = () => {};
   onChangeWeightUnit: (unit: string) => void = () => {};
+  onSaveTargets: (calories: number, proteinG: number, steps: number) => void =
+    (_calories: number, _proteinG: number, _steps: number) => {};
+  onChangeTrainingPreference: (location: string, dedicatedLegDay: boolean, preferMachines: boolean) => void =
+    (_location: string, _dedicatedLegDay: boolean, _preferMachines: boolean) => {};
+
+  private targetValue(text: string, fallback: number): number {
+    if (text === '') return fallback;
+    const value: number = Number(text);
+    return Number.isFinite(value) && value >= 0 ? value : fallback;
+  }
+
+  private saveTargets(): void {
+    this.onSaveTargets(this.targetValue(this.caloriesText, this.targetCalories),
+      this.targetValue(this.proteinText, this.targetProteinG), this.targetValue(this.stepsText, this.targetSteps));
+  }
 
   @Builder
   ChoiceButton(label: string, selected: boolean, onTap: () => void) {
@@ -54,7 +80,7 @@ export struct SettingsPage {
           .fontColor(APP_COLOR_TEXT)
           .backgroundColor(Color.Transparent)
           .onClick(() => this.onBack())
-        Text('设置')
+        Text(this.title)
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
           .fontSize(19)
@@ -68,6 +94,27 @@ export struct SettingsPage {
       Scroll() {
         Column({ space: 20 }) {
           Column({ space: 13 }) {
+            this.SectionHeader('当前目标')
+            this.InfoRow('目标热量', `${this.targetCalories} kcal`)
+            this.InfoRow('蛋白质目标', `${this.targetProteinG} g`)
+            this.InfoRow('步数目标', `${this.targetSteps} 步`)
+            TextInput({ placeholder: `热量（当前 ${this.targetCalories}）`, text: this.caloriesText })
+              .height(46).fontSize(14).backgroundColor(Color.White).borderRadius(12)
+              .border({ width: 1, color: APP_COLOR_LINE }).onChange((value: string) => this.caloriesText = value)
+            TextInput({ placeholder: `蛋白质（当前 ${this.targetProteinG}）`, text: this.proteinText })
+              .height(46).fontSize(14).backgroundColor(Color.White).borderRadius(12)
+              .border({ width: 1, color: APP_COLOR_LINE }).onChange((value: string) => this.proteinText = value)
+            TextInput({ placeholder: `步数（当前 ${this.targetSteps}）`, text: this.stepsText })
+              .height(46).fontSize(14).backgroundColor(Color.White).borderRadius(12)
+              .border({ width: 1, color: APP_COLOR_LINE }).onChange((value: string) => this.stepsText = value)
+            Button(this.isSaving ? '正在保存…' : '保存目标').width('100%').height(44).fontSize(14)
+              .fontWeight(FontWeight.Bold).fontColor(Color.White).backgroundColor(APP_COLOR_GREEN_DARK)
+              .borderRadius(12).enabled(!this.isSaving).onClick(() => this.saveTargets())
+          }
+          .width('100%').padding(17).borderRadius(18).backgroundColor(Color.White)
+          .border({ width: 1, color: APP_COLOR_LINE })
+
+          Column({ space: 13 }) {
             this.SectionHeader('训练')
             Row() {
               Text('每周训练次数').layoutWeight(1).fontSize(15).fontColor(APP_COLOR_TEXT)
@@ -78,6 +125,25 @@ export struct SettingsPage {
             }
             .width('100%')
             this.InfoRow('训练日提醒', '未开启')
+            Row() {
+              Text('训练地点').layoutWeight(1).fontSize(15).fontColor(APP_COLOR_TEXT)
+              Row({ space: 8 }) {
+                this.ChoiceButton('健身房', this.trainingLocation === 'gym', () =>
+                  this.onChangeTrainingPreference('gym', this.dedicatedLegDay, this.preferMachines))
+                this.ChoiceButton('居家', this.trainingLocation === 'home', () =>
+                  this.onChangeTrainingPreference('home', this.dedicatedLegDay, this.preferMachines))
+              }
+            }.width('100%')
+            Row() {
+              Text('独立腿日').layoutWeight(1).fontSize(15).fontColor(APP_COLOR_TEXT)
+              this.ChoiceButton(this.dedicatedLegDay ? '已开启' : '未开启', this.dedicatedLegDay, () =>
+                this.onChangeTrainingPreference(this.trainingLocation, !this.dedicatedLegDay, this.preferMachines))
+            }.width('100%')
+            Row() {
+              Text('器械优先').layoutWeight(1).fontSize(15).fontColor(APP_COLOR_TEXT)
+              this.ChoiceButton(this.preferMachines ? '已开启' : '未开启', this.preferMachines, () =>
+                this.onChangeTrainingPreference(this.trainingLocation, this.dedicatedLegDay, !this.preferMachines))
+            }.width('100%')
           }
           .width('100%')
           .padding(17)
