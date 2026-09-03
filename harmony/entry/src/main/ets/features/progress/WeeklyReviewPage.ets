@@ -77,6 +77,6 @@ export struct WeeklyReviewPage {
             .borderRadius(16).backgroundColor(APP_COLOR_GREEN_SOFT)
         }.width('100%').padding({ left: 20, right: 20, bottom: 28 })
       }.layoutWeight(1).scrollBar(BarState.Off)
-    }.width('100%').height('100%')
+    }.width('100%').layoutWeight(1)
   }
 }
