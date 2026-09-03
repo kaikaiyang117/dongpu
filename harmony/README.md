@@ -1,31 +1,88 @@
-# 动谱 HarmonyOS 6
+# 动谱 HarmonyOS App
 
 原生 ArkTS / ArkUI 工程，目标系统为 HarmonyOS 6.0.1（API 21）。
 
-## 当前范围
+当前产品是**目标驱动的减脂与力量训练执行助手**，不是旧版“从 1324 个动作中自由组训练”的动作库原型。
 
-- 选择 1—2 个训练部位
-- 从完整的 1324 个动作目录中多选动作
-- 调整每个动作的组数和次数
-- 确认并进入训练准备状态
-- 复用项目内六类部位插画
-- 按 10 个训练部位和 28 类器械浏览 1324 个动作
-- 查看器械调整、动作步骤、新手错误和建议组次，并从详情页加入今日训练
+## 当前主要能力
 
-动作元数据通过 `sourceId` 映射到：
+- V2 Onboarding / V1 用户升级。
+- 当前减脂 Goal。
+- 今日 Dashboard。
+- 体重、腰围和 7 日趋势。
+- 简单饮食与快捷食物。
+- 手动步数记录。
+- 3 次 Required + Optional 第 4 次训练 Program。
+- 推荐训练、自定义训练和保存计划。
+- WorkoutSession / 逐组记录 / Rest。
+- Active workout 重启恢复。
+- 动作替换。
+- Double Progression。
+- 训练历史。
+- Weekly Review。
+- 今日 / 训练 / 数据 / 我的 四个 Tab。
 
-`../assets/vendor/exercises-dataset/data/exercises.json`
+## 工程结构
 
-开发测试包接入了全部 1324 张原始 180×180 缩略图，并从对应 GIF 生成 12 FPS H.264 MP4。列表只加载静态封面，进入详情页后才加载视频，避免大量动作同时占用解码器；详情支持播放/暂停、重播和 0.75× 慢动作，并保留
-`© Gym visual — https://gymvisual.com/` 署名。正式分发前必须另行确认媒体授权。
+```text
+entry/src/main/ets/
+├── app/
+├── components/
+├── data/
+│   ├── database/
+│   └── repository/
+├── domain/
+├── services/
+├── features/
+└── model/
+```
 
-动作目录由 `tools/sync_exercise_catalog.mjs` 生成，视频由 `tools/transcode_exercise_media.sh` 批量转换。新增或更新上游数据时重新运行脚本，不需要修改页面代码或添加资源分支。
+当前代码结构说明见仓库根目录：
 
-相关职责已拆分：`model/Exercise.ets` 定义动作模型，`data/ExerciseCatalog.ets` 负责目录加载与查询，`model/WorkoutData.ets` 只保留训练计划模型。
+```text
+../docs/APP_STRUCTURE.md
+```
+
+做到可用版前的剩余任务见：
+
+```text
+../docs/ROADMAP.md
+```
+
+## 动作目录
+
+动作数据保留上游稳定 ID。
+
+正式入口通过内容审核字段过滤，不应直接把全部原始动作暴露给用户：
+
+```text
+contentReviewStatus
+libraryVisible
+gymEligible
+recommendedForBeginner
+```
+
+用户层训练部位收敛为：
+
+```text
+胸部 / 背部 / 肩部 / 手臂 / 腿部 / 核心
+```
+
+上游动作和媒体仍由现有同步/转换脚本维护。正式分发前必须确认媒体授权和署名要求。
+
+## 数据库
+
+当前数据库版本：3。
+
+数据库详细结构与 migration 约束见：
+
+```text
+../docs/DATABASE_DESIGN.md
+```
+
+不要通过删除数据库解决 migration 问题。
 
 ## 本地构建
-
-工程使用 DevEco Studio 6.0.1 内置的 HarmonyOS 6.0.1 SDK。命令行构建前，工程内 `.sdk/HarmonyOS-6.0.1` 会映射到 IDE 的只读 SDK。
 
 ```bash
 DEVECO_SDK_HOME="$PWD/.sdk" \
@@ -37,8 +94,21 @@ DEVECO_SDK_HOME="$PWD/.sdk" \
   --no-daemon
 ```
 
-构建产物位于：
+构建产物：
 
-`entry/build/default/outputs/default/entry-default-signed.hap`
+```text
+entry/build/default/outputs/default/entry-default-signed.hap
+```
 
-工程已通过 DevEco Studio 自动签名配置在开发设备上运行。签名材料仅保存在本机配置中。
+涉及数据库、训练状态或恢复逻辑的修改，除编译外还必须验证：
+
+```text
+Fresh install
+旧数据库升级
+active workout restart
+rest restart
+finish idempotency
+history intact
+```
+
+开发签名材料仅保存在本机，不提交仓库。
