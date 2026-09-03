@@ -1,114 +1,113 @@
-# 动谱 V2 数据库设计
+# 动谱数据库设计（Current Schema）
 
 | 项目 | 内容 |
 | --- | --- |
-| 版本 | 2.0 |
-| 更新日期 | 2026-09-03 |
+| 当前版本 | 3 |
+| 数据库 | `dongpu.db` |
 | 存储 | HarmonyOS ArkData / relationalStore |
-| 原则 | 本地优先、可迁移、历史快照稳定、规则可演进 |
+| 原则 | 本地优先、迁移安全、历史快照稳定 |
 
-## 1. 设计目标
+## 1. 当前迁移链
 
-V2 数据库必须同时支撑四条数据链路：
+当前代码中的 `DATABASE_VERSION = 3`。
 
-1. **目标链路**：用户是谁、当前目标是什么、每日目标是多少。
-2. **身体链路**：体重、腰围和趋势。
-3. **营养链路**：每日摄入、快捷食物、每日汇总。
-4. **训练链路**：训练计划、场次、动作、组记录和渐进建议。
-
-现有 V1 的训练历史数据不能因升级而丢失。
-
-## 2. 迁移策略
-
-当前 `DATABASE_VERSION = 1`。V2 实现时升级到：
-
-```ts
-const DATABASE_VERSION: number = 2;
-```
-
-数据库初始化流程：
+正式迁移链：
 
 ```text
-version == 0
-  -> createSchemaV1
-  -> migrateV1ToV2
-  -> version = 2
+Fresh install
+V1 schema
+→ migrateV1ToV2
+→ migrateV2ToV3
+→ version 3
 
-version == 1
-  -> migrateV1ToV2
-  -> version = 2
+V1
+→ V2
+→ V3
 
-version >= 2
-  -> 正常打开
+V2
+→ V3
 ```
 
-要求：
+禁止通过删除数据库、DROP 历史表或清空用户数据解决升级问题。
 
-- 所有迁移必须幂等。
-- 不删除 V1 训练记录。
-- 不修改历史 `set_record` 的重量和次数语义。
-- 新增字段尽量使用默认值或 nullable，避免旧数据迁移失败。
-- 每次迁移完成后再设置 `store.version`。
+初始化代码还包含 repair 路径，用于兼容早期开发版本中 schema/version 不完全一致的数据库。后续修改数据库时仍应优先新增正式 migration，而不是只依赖 repair SQL。
 
-## 3. V1 表保留策略
+## 2. 数据单位与时间约定
 
-以下 V1 表继续保留并演进：
+- 数据库中的重量统一存 **kg**。
+- UI 可显示 kg/lb，但转换只发生在 UI/Formatter 边界。
+- `recorded_at`、`started_at`、`completed_at` 等时间使用毫秒时间戳。
+- `daily_activity.date_key` 使用本地日期键，例如 `2026-09-03`。
 
-- `app_settings`
-- `user_program_state`
-- `user_workout_plan`
-- `user_plan_exercise`
-- `workout_session`
-- `workout_exercise_record`
-- `set_record`
+## 3. V1 兼容表
 
-其中 `user_program_state` 后续不再只围绕 A/B 使用；P0 可以继续保留兼容字段，但新 Program 逻辑应由新表管理。
+### app_settings
 
-## 4. 新增表
-
-### 4.1 user_profile
-
-```sql
-CREATE TABLE IF NOT EXISTS user_profile (
-  id INTEGER PRIMARY KEY CHECK (id = 1),
-  height_cm REAL NOT NULL DEFAULT 0,
-  sex TEXT,
-  birth_year INTEGER,
-  onboarding_completed INTEGER NOT NULL DEFAULT 0,
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
-);
+```text
+id
+weekly_frequency
+onboarding_completed
+weight_unit
 ```
 
-约束：
+`onboarding_completed` 为历史兼容字段。V2 readiness 不能只依赖该字段。
 
-- 只存在一行。
-- `sex` 为可选，不参与 MVP 强制流程。
+### user_program_state
 
-### 4.2 fitness_goal
-
-```sql
-CREATE TABLE IF NOT EXISTS fitness_goal (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  goal_type TEXT NOT NULL,
-  start_weight_kg REAL NOT NULL,
-  target_weight_kg REAL NOT NULL,
-  start_date INTEGER NOT NULL,
-  target_calories INTEGER NOT NULL,
-  target_protein_g INTEGER NOT NULL,
-  target_steps INTEGER NOT NULL,
-  training_frequency_min INTEGER NOT NULL,
-  training_frequency_max INTEGER NOT NULL,
-  training_location TEXT NOT NULL,
-  dedicated_leg_day INTEGER NOT NULL DEFAULT 0,
-  prefer_machines INTEGER NOT NULL DEFAULT 0,
-  status TEXT NOT NULL,
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
-);
+```text
+next_workout_code
+weekly_completed
+week_started_at
 ```
 
-`status`：
+这是 legacy 状态。
+
+V2 Dashboard、Weekly Review 和 Program 完成率不能把 `weekly_completed` 当作数据真相，应从 `workout_session` 推导。
+
+### user_workout_plan / user_plan_exercise
+
+继续支持用户自定义训练计划。
+
+## 4. 用户与目标
+
+### user_profile
+
+核心字段：
+
+```text
+height_cm
+sex optional
+birth_year optional
+onboarding_completed
+created_at
+updated_at
+```
+
+当前只允许一个 profile。
+
+### fitness_goal
+
+核心字段：
+
+```text
+goal_type
+start_weight_kg
+target_weight_kg
+start_date
+target_calories
+target_protein_g
+target_steps
+training_frequency_min
+training_frequency_max
+training_location
+dedicated_leg_day
+prefer_machines
+status
+created_at
+updated_at
+```
+
+状态：
 
 ```text
 active
@@ -116,442 +115,261 @@ completed
 archived
 ```
 
-约束：数据库最多只有一个 `active` goal。
+数据库通过 partial unique index 保证最多一个 active goal。
 
-推荐索引：
+当前 V2 产品实际支持 3 次 Required + 可选第 4 次训练。业务层必须统一训练频率语义，不能让相同 UI 选择在不同入口写入不同 min/max 组合。
 
-```sql
-CREATE UNIQUE INDEX IF NOT EXISTS one_active_goal
-ON fitness_goal(status) WHERE status = 'active';
-```
+## 5. 身体数据
 
-### 4.3 body_measurement
-
-```sql
-CREATE TABLE IF NOT EXISTS body_measurement (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  recorded_at INTEGER NOT NULL,
-  weight_kg REAL,
-  waist_cm REAL,
-  body_fat_percent REAL,
-  note TEXT
-);
-```
-
-规则：
-
-- 至少一个指标非空。
-- 体重统一以 kg 保存。
-- 腰围统一以 cm 保存。
-- UI 单位转换只在展示层处理。
-
-索引：
-
-```sql
-CREATE INDEX IF NOT EXISTS body_measurement_by_date
-ON body_measurement(recorded_at DESC);
-```
-
-### 4.4 quick_food
-
-```sql
-CREATE TABLE IF NOT EXISTS quick_food (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  serving_name TEXT NOT NULL,
-  calories REAL NOT NULL,
-  protein_g REAL NOT NULL,
-  carbs_g REAL,
-  fat_g REAL,
-  is_builtin INTEGER NOT NULL DEFAULT 0,
-  is_enabled INTEGER NOT NULL DEFAULT 1,
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
-);
-```
-
-首批内置快捷食物：
-
-- 1 勺乳清蛋白
-- 2 个鸡蛋
-- 250ml 牛奶
-- 200g 鸡胸
-
-不要把品牌写死在业务逻辑里。
-
-### 4.5 food_entry
-
-```sql
-CREATE TABLE IF NOT EXISTS food_entry (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  recorded_at INTEGER NOT NULL,
-  meal_type TEXT NOT NULL,
-  food_name TEXT NOT NULL,
-  serving_name TEXT,
-  servings REAL NOT NULL DEFAULT 1,
-  calories REAL NOT NULL,
-  protein_g REAL NOT NULL,
-  carbs_g REAL,
-  fat_g REAL,
-  quick_food_id INTEGER,
-  created_at INTEGER NOT NULL,
-  FOREIGN KEY(quick_food_id) REFERENCES quick_food(id) ON DELETE SET NULL
-);
-```
-
-`meal_type`：
+### body_measurement
 
 ```text
-breakfast
-lunch
-dinner
-snack
+id
+recorded_at
+weight_kg optional
+waist_cm optional
+body_fat_percent optional
+note optional
 ```
 
-索引：
+趋势计算使用每日代表值和窗口统计，不直接对单次体重波动下结论。
 
-```sql
-CREATE INDEX IF NOT EXISTS food_entry_by_date
-ON food_entry(recorded_at DESC);
-```
+## 6. 营养
 
-### 4.6 daily_activity
-
-```sql
-CREATE TABLE IF NOT EXISTS daily_activity (
-  date_key TEXT PRIMARY KEY,
-  steps INTEGER NOT NULL DEFAULT 0,
-  cardio_minutes INTEGER NOT NULL DEFAULT 0,
-  source TEXT NOT NULL DEFAULT 'manual',
-  updated_at INTEGER NOT NULL
-);
-```
-
-`date_key` 使用本地日期：
+### quick_food
 
 ```text
-YYYY-MM-DD
+name
+serving_name
+calories
+protein_g
+carbs_g optional
+fat_g optional
+is_builtin
+is_enabled
+created_at
+updated_at
 ```
 
-不要直接用 UTC 日期做天级聚合。
+当前内置快捷食物包括乳清蛋白、鸡蛋、牛奶、鸡胸肉。
 
-### 4.7 training_program
-
-```sql
-CREATE TABLE IF NOT EXISTS training_program (
-  id TEXT PRIMARY KEY,
-  version TEXT NOT NULL,
-  name TEXT NOT NULL,
-  goal_type TEXT NOT NULL,
-  duration_weeks INTEGER NOT NULL,
-  min_sessions INTEGER NOT NULL,
-  max_sessions INTEGER NOT NULL,
-  review_status TEXT NOT NULL,
-  is_builtin INTEGER NOT NULL DEFAULT 1
-);
-```
-
-首个内置计划：
+### food_entry
 
 ```text
-id: fat_loss_upper_priority_3_4
-name: 减脂 · 上肢优先 · 3—4练
+recorded_at
+meal_type
+food_name
+serving_name
+servings
+calories
+protein_g
+carbs_g optional
+fat_g optional
+quick_food_id optional
+created_at
 ```
 
-### 4.8 program_workout
+每日营养汇总从 `food_entry` 聚合，不单独维护容易失真的 daily total 表。
 
-```sql
-CREATE TABLE IF NOT EXISTS program_workout (
-  id TEXT PRIMARY KEY,
-  program_id TEXT NOT NULL,
-  code TEXT NOT NULL,
-  name TEXT NOT NULL,
-  focus_text TEXT NOT NULL,
-  order_index INTEGER NOT NULL,
-  optional INTEGER NOT NULL DEFAULT 0,
-  estimated_minutes INTEGER NOT NULL,
-  FOREIGN KEY(program_id) REFERENCES training_program(id) ON DELETE CASCADE
-);
-```
+## 7. 活动
 
-示例：
+### daily_activity
 
 ```text
-push
-pull_posterior
-upper
-optional_arms
+date_key PRIMARY KEY
+steps
+cardio_minutes
+source
+updated_at
 ```
 
-### 4.9 program_workout_exercise
+当前主要支持 manual source。未来接系统健康数据时保留 source 区分。
 
-```sql
-CREATE TABLE IF NOT EXISTS program_workout_exercise (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  workout_id TEXT NOT NULL,
-  exercise_id TEXT NOT NULL,
-  order_index INTEGER NOT NULL,
-  planned_sets INTEGER NOT NULL,
-  rep_min INTEGER NOT NULL,
-  rep_max INTEGER NOT NULL,
-  rest_seconds INTEGER NOT NULL,
-  weight_increment_kg REAL NOT NULL DEFAULT 2.5,
-  FOREIGN KEY(workout_id) REFERENCES program_workout(id) ON DELETE CASCADE
-);
-```
+没有活动记录不等于 0 步；周平均只对有记录日计算。
 
-### 4.10 active_program_state
+## 8. Program
 
-```sql
-CREATE TABLE IF NOT EXISTS active_program_state (
-  id INTEGER PRIMARY KEY CHECK (id = 1),
-  goal_id INTEGER NOT NULL,
-  program_id TEXT NOT NULL,
-  program_version TEXT NOT NULL,
-  started_at INTEGER NOT NULL,
-  current_week INTEGER NOT NULL DEFAULT 1,
-  next_required_workout_index INTEGER NOT NULL DEFAULT 0,
-  FOREIGN KEY(goal_id) REFERENCES fitness_goal(id),
-  FOREIGN KEY(program_id) REFERENCES training_program(id)
-);
-```
-
-`next_required_workout_index` 只推进必做训练。optional workout 不影响它。
-
-## 5. 对现有训练表的 V2 扩展
-
-### 5.1 workout_session 新增字段
-
-建议迁移新增：
-
-```sql
-ALTER TABLE workout_session ADD COLUMN program_id TEXT;
-ALTER TABLE workout_session ADD COLUMN program_workout_id TEXT;
-ALTER TABLE workout_session ADD COLUMN program_version TEXT;
-ALTER TABLE workout_session ADD COLUMN goal_id INTEGER;
-```
-
-SQLite/ArkData 迁移时应逐条检查列是否已存在，或采用项目可用的安全迁移方式。
-
-`source_type` 扩展为：
+### training_program
 
 ```text
-program
-userPlan
-adHoc
-legacyRecommended
+id
+version
+name
+goal_type
+duration_weeks
+min_sessions
+max_sessions
+review_status
+is_builtin
 ```
 
-旧数据继续保留原值。
-
-### 5.2 workout_exercise_record 新增字段
-
-P1 为 Double Progression 增加：
-
-```sql
-ALTER TABLE workout_exercise_record ADD COLUMN suggested_weight_kg REAL;
-```
-
-建议重量是本次启动时的快照，不依赖之后算法变化。
-
-## 6. 是否需要 daily_nutrition 表
-
-P0 不建议增加物化汇总表。
-
-每日热量/蛋白质直接由 `food_entry` 聚合：
-
-```sql
-SELECT
-  SUM(calories),
-  SUM(protein_g),
-  SUM(carbs_g),
-  SUM(fat_g)
-FROM food_entry
-WHERE recorded_at >= ? AND recorded_at < ?;
-```
-
-理由：
-
-- MVP 数据量很小。
-- 避免 food entry 与汇总表不同步。
-- 后续性能真的出现问题再引入 cache/materialized summary。
-
-## 7. Repository 边界
-
-### ProfileRepository
-
-负责：
-
-- 用户基本信息。
-- onboarding 状态。
-
-### GoalRepository
-
-负责：
-
-- active goal。
-- 目标修改。
-- program state。
-
-### BodyRepository
-
-负责：
-
-- 写入体重/腰围。
-- 最近一次测量。
-- 日期区间查询。
-
-### NutritionRepository
-
-负责：
-
-- food entry CRUD。
-- quick food CRUD。
-- 某日营养汇总。
-
-### ActivityRepository
-
-负责：
-
-- 步数写入与查询。
-- 数据来源标记。
-
-### ProgramRepository
-
-负责：
-
-- 内置 program catalog。
-- 当前 program。
-- program workout 模板读取。
-
-### WorkoutRepository
-
-继续负责：
-
-- start workout。
-- active session。
-- complete set。
-- rest。
-- finish workout。
-- history。
-
-不要让 UI 直接执行 SQL。
-
-## 8. Service 层建议
-
-V2 开始增加 service 层，避免把计算逻辑塞进 `AppRoot`。
-
-### DashboardService
-
-聚合今日页所需 ViewModel：
-
-- active goal
-- latest weight
-- weight trend
-- nutrition summary
-- steps
-- today workout
-- checklist
-
-### TrendService
-
-负责：
-
-- 每日代表体重。
-- 7 日平均。
-- 周变化。
-- 趋势状态。
-
-### RecommendationService
-
-P1/P2 负责：
-
-- Double Progression。
-- 蛋白质快捷建议。
-- 未来热量/步数调整建议。
-
-## 9. 7 日平均算法
-
-### 9.1 每日代表体重
-
-对于某个本地日期，当天存在多条 `weight_kg` 时：
-
-- MVP：使用当天最后一条。
-
-### 9.2 当前 7 日窗口
-
-使用“今天及之前 6 个本地日期”。
-
-只有至少 4 个有效体重日时才返回有效平均值。
-
-### 9.3 上一个 7 日窗口
-
-使用之前连续 7 个日期；同样至少需要 4 个有效日。
-
-### 9.4 周变化百分比
+当前内置 Program ID：
 
 ```text
-changeKg = currentAverage - previousAverage
-changePercent = changeKg / previousAverage * 100
+fat_loss_upper_priority_3_4
 ```
 
-UI 可将减重显示为负值，例如 `-0.4 kg`。
+### program_workout
 
-## 10. 数据完整性规则
-
-- 重量不得小于等于 0。
-- 目标体重不得小于合理下限；UI 应做基本校验。
-- 热量和蛋白质不得为负。
-- reps 不得为负。
-- steps 不得为负。
-- active goal 最多一个。
-- active workout 最多一个。
-- draft user plan 最多一个。
-- 删除快捷食物不得删除历史 food entry。
-- 删除自定义计划不得删除历史 workout session。
-
-## 11. 时间处理
-
-所有数据库时间戳继续使用 Unix milliseconds。
-
-天级统计必须通过本地时区边界计算：
+当前 Program 包含：
 
 ```text
-local day start
-local next day start
+push            Required
+pull_posterior  Required
+upper           Required
+optional_arms   Optional
 ```
 
-不要用：
+字段包含：
 
 ```text
-timestamp / 86400000
+id
+program_id
+code
+name
+focus_text
+order_index
+optional
+estimated_minutes
 ```
 
-直接作为用户本地日期，避免时区错误。
+### program_workout_exercise
 
-## 12. V2 初始化种子数据
+```text
+id
+workout_id
+exercise_id
+order_index
+planned_sets
+rep_min
+rep_max
+rest_seconds
+weight_increment_kg
+```
 
-第一次升级/新安装时插入：
+`id` 是 Program 中具体动作槽位的稳定身份，Double Progression 应优先使用该 slot identity，而不是只按 exercise ID 匹配历史。
 
-1. 内置 training program。
-2. program workouts。
-3. program workout exercises。
-4. built-in quick foods。
+### active_program_state
 
-种子操作必须 `INSERT OR IGNORE` 或等价幂等实现。
+```text
+id = 1
+goal_id
+program_id
+program_version
+started_at
+current_week
+next_required_workout_index
+```
 
-## 13. V2 数据库验收
+`next_required_workout_index` 只是 Program cursor，不是“本周是否完成”的事实来源。
 
-Agent 完成数据库阶段后必须验证：
+自然周完成状态应由 completed `workout_session` 推导。
 
-- V1 数据库可以无损升级到 V2。
-- 原训练历史仍能打开。
-- active workout 若升级前存在，升级后仍能恢复。
-- 新增目标可以保存并重启恢复。
-- 体重可写入并读取 7 日范围。
-- 快捷食物可添加为 food entry。
-- program 模板可从数据库完整加载。
-- 同时创建两个 active goal 会被阻止。
-- 同时创建两个 active workout 会被阻止。
+## 9. 训练事实表
 
-不得以“新装可用”替代迁移测试。
+### workout_session
+
+核心字段包含：
+
+```text
+workout_code
+workout_name_snapshot
+source_type
+status
+phase
+current_exercise_index
+started_at
+completed_at
+rest_end_at
+program_id optional
+program_workout_id optional
+program_version optional
+goal_id optional
+```
+
+关键不变量：
+
+- 同时最多一条 active workout。
+- 完成 Program workout 与推进 Program cursor 必须保持一致。
+- finish 操作必须幂等，completed session 不得重复推进 Program。
+
+### workout_exercise_record
+
+核心字段包含：
+
+```text
+session_id
+original_exercise_id
+actual_exercise_id
+exercise_name_snapshot
+part_name_snapshot
+equipment_name_snapshot
+image_path_snapshot
+order_index
+target_sets
+rep_min
+rep_max
+rest_seconds
+completed_sets
+suggested_weight_kg optional
+program_workout_exercise_id optional
+weight_increment_kg
+```
+
+Program 规则必须 snapshot 到 session，避免后续 Program 更新改变历史训练含义。
+
+### set_record
+
+```text
+exercise_record_id
+set_number
+weight
+reps
+completed_at
+```
+
+数据库重量始终为 kg。
+
+做到可用版前，自重动作必须允许合法保存：
+
+```text
+weight = 0
+reps > 0
+```
+
+## 10. 周统计的数据真相
+
+以下指标均从历史事实查询：
+
+```text
+totalWorkoutsThisWeek
+requiredProgramWorkoutsThisWeek
+optionalProgramWorkoutsThisWeek
+nutritionLoggedDays
+activityLoggedDays
+proteinTargetDays
+```
+
+禁止从：
+
+```text
+next_required_workout_index
+weekly_completed
+页面本地状态
+```
+
+推导历史完成事实。
+
+## 11. 下一次数据库修改规则
+
+任何 schema 变化必须：
+
+1. 增加数据库版本号。
+2. 新增独立 migration，例如 `migrateV3ToV4`。
+3. Fresh install 能直接创建最新可用结构。
+4. 旧版本能顺序升级到最新。
+5. 不修改历史 `set_record` 的重量/次数事实。
+6. migration 失败不得静默清空数据库。
+7. 至少验证 Fresh、V1→Latest、V2→Latest、Current restart 四条路径。
+
+当前数据库相关待办见 `docs/ROADMAP.md`。
