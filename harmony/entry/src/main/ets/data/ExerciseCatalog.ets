@@ -35,8 +35,7 @@ export function loadExercises(manager: resourceManager.ResourceManager): Exercis
 
 export function getLibraryExercises(exercises: Exercise[]): Exercise[] {
   return exercises.filter((exercise: Exercise) =>
-    (exercise.contentReviewStatus === 'approved' || exercise.contentReviewStatus === 'reviewed') &&
-      exercise.libraryVisible);
+    exercise.contentReviewStatus === 'approved' && exercise.libraryVisible);
 }
 
 export function getApprovedExercises(exercises: Exercise[]): Exercise[] {

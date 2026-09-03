@@ -1,5 +1,5 @@
 import {
-  APP_COLOR_DRAG_HANDLE,
+  APP_COLOR_DANGER,
   APP_COLOR_GREEN_DARK,
   APP_COLOR_ICON_MUTED,
   APP_COLOR_LINE,
@@ -36,12 +36,14 @@ export struct PlanConfirmPage {
   @Builder
   NumberControl(item: PlanItem, field: string) {
     Row() {
-      Text('−')
-        .width(30)
-        .height(34)
-        .textAlign(TextAlign.Center)
+      Button('−')
+        .width(44)
+        .height(44)
         .fontSize(18)
         .fontColor(APP_COLOR_TEXT)
+        .backgroundColor(Color.Transparent)
+        .stateEffect(true)
+        .accessibilityText('减少')
         .onClick(() => this.onUpdatePlan(item.exerciseId, field, -1))
       Text((field === 'sets' ? item.sets : field === 'repMin' ? item.repMin :
         field === 'repMax' ? item.repMax : item.restSeconds).toString())
@@ -50,88 +52,75 @@ export struct PlanConfirmPage {
         .fontSize(13)
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_TEXT)
-      Text('+')
-        .width(30)
-        .height(34)
-        .textAlign(TextAlign.Center)
+      Button('+')
+        .width(44)
+        .height(44)
         .fontSize(17)
         .fontColor(APP_COLOR_TEXT)
+        .backgroundColor(Color.Transparent)
+        .stateEffect(true)
+        .accessibilityText('增加')
         .onClick(() => this.onUpdatePlan(item.exerciseId, field, 1))
     }
     .width('100%')
-    .height(34)
-    .borderRadius(10)
+    .height(44)
+    .borderRadius(12)
     .backgroundColor(APP_COLOR_STEPPER_SURFACE)
   }
 
   @Builder
-  PlanRow(item: PlanItem, index: number) {
-    Row({ space: 9 }) {
-      Column({ space: 4 }) {
-        Text('▲')
-          .fontSize(10)
-          .fontColor(APP_COLOR_DRAG_HANDLE)
-          .onClick(() => this.onMovePlanItem(item.exerciseId, -1))
-        Text('▼')
-          .fontSize(10)
-          .fontColor(APP_COLOR_DRAG_HANDLE)
-          .onClick(() => this.onMovePlanItem(item.exerciseId, 1))
-      }
-      Text((index + 1).toString().padStart(2, '0'))
-        .width(28)
-        .fontSize(12)
-        .fontWeight(FontWeight.Bold)
-        .fontColor(APP_COLOR_GREEN_DARK)
+  NumberField(item: PlanItem, field: string, label: string) {
+    Column({ space: 5 }) {
+      Text(label).fontSize(11).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
+      this.NumberControl(item, field)
+    }
+    .alignItems(HorizontalAlign.Start)
+    .width('48%')
+  }
 
-      Column({ space: 4 }) {
-        Row() {
+  @Builder
+  PlanRow(item: PlanItem, index: number) {
+    Column({ space: 12 }) {
+      Row({ space: 4 }) {
+        Text((index + 1).toString().padStart(2, '0'))
+          .width(28)
+          .fontSize(12)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(APP_COLOR_GREEN_DARK)
+        Column({ space: 4 }) {
           Text(this.exercise(item.exerciseId).name)
-            .layoutWeight(1)
             .fontSize(15)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)
-          Text('×')
-            .width(28)
-            .height(28)
-            .textAlign(TextAlign.Center)
-            .fontSize(18)
-            .fontColor(APP_COLOR_ICON_MUTED)
-            .onClick(() => this.onRemovePlanItem(item.exerciseId))
-        }
-        Text(this.exercise(item.exerciseId).equipment)
-          .fontSize(11)
-          .fontColor(APP_COLOR_MUTED)
-        Row({ space: 8 }) {
-          Column({ space: 5 }) {
-            Text('组数').fontSize(10).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
-            this.NumberControl(item, 'sets')
-          }
-          .alignItems(HorizontalAlign.Start)
-          .layoutWeight(1)
-          Column({ space: 5 }) {
-            Text('最少次数').fontSize(10).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
-            this.NumberControl(item, 'repMin')
-          }
-          .alignItems(HorizontalAlign.Start)
-          .layoutWeight(1)
-          Column({ space: 5 }) {
-            Text('最多次数').fontSize(10).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
-            this.NumberControl(item, 'repMax')
-          }
-          .alignItems(HorizontalAlign.Start)
-          .layoutWeight(1)
-        }
-        .margin({ top: 8 })
-        Column({ space: 5 }) {
-          Text('休息秒数').fontSize(10).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
-          this.NumberControl(item, 'restSeconds')
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+          Text(this.exercise(item.exerciseId).equipment).fontSize(11).fontColor(APP_COLOR_MUTED)
         }
         .alignItems(HorizontalAlign.Start)
-        .width('100%')
-        .margin({ top: 8 })
-      }
-      .alignItems(HorizontalAlign.Start)
-      .layoutWeight(1)
+        .layoutWeight(1)
+        Button('↑')
+          .width(44).height(44).fontSize(16).fontColor(APP_COLOR_ICON_MUTED)
+          .backgroundColor(Color.Transparent).stateEffect(true).accessibilityText('上移动作')
+          .onClick(() => this.onMovePlanItem(item.exerciseId, -1))
+        Button('↓')
+          .width(44).height(44).fontSize(16).fontColor(APP_COLOR_ICON_MUTED)
+          .backgroundColor(Color.Transparent).stateEffect(true).accessibilityText('下移动作')
+          .onClick(() => this.onMovePlanItem(item.exerciseId, 1))
+        Button() {
+          Image($r('app.media.icon_close')).width(18).height(18).fillColor(APP_COLOR_ICON_MUTED)
+        }
+          .width(44).height(44).backgroundColor(Color.Transparent).stateEffect(true)
+          .accessibilityText('删除动作')
+          .onClick(() => this.onRemovePlanItem(item.exerciseId))
+      }.width('100%')
+      Row({ space: 10 }) {
+        this.NumberField(item, 'sets', '组数')
+        this.NumberField(item, 'repMin', '最少次数')
+      }.width('100%')
+      Row({ space: 10 }) {
+        this.NumberField(item, 'repMax', '最多次数')
+        this.NumberField(item, 'restSeconds', '休息秒数')
+      }.width('100%')
     }
     .width('100%')
     .padding(14)
@@ -184,7 +173,7 @@ export struct PlanConfirmPage {
           Text(this.errorText)
             .width('100%')
             .fontSize(12)
-            .fontColor(Color.Red)
+            .fontColor(APP_COLOR_DANGER)
             .textAlign(TextAlign.Center)
         }
       }

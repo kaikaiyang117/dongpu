@@ -2,6 +2,7 @@ import { APP_COLOR_GREEN_DARK, APP_COLOR_GREEN_SOFT, APP_COLOR_LINE, APP_COLOR_M
 import { NutritionSummary } from '../../domain/nutrition/NutritionModels';
 import { DailyRepresentativeWeight, WaistTrend, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
 import { WorkoutSession } from '../../domain/workout/WorkoutModels';
+import { AppHeader } from '../../components/AppHeader';
 
 class ProgressTab {
   id: string;
@@ -24,7 +25,6 @@ export struct ProgressPage {
   @Prop weeklyAverageCalories: number = 0;
   @Prop weeklyProteinDays: number = 0;
   @State private selectedTab: string = 'weight';
-  onBack: () => void = () => {};
   onOpenReview: () => void = () => {};
 
   private statusText(): string {
@@ -122,17 +122,11 @@ export struct ProgressPage {
 
   build() {
     Column() {
-      Row() {
-        Button('‹').width(48).height(48).fontSize(34).fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent).onClick(() => this.onBack())
-        Text('数据趋势').layoutWeight(1).textAlign(TextAlign.Center).fontSize(19).fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }.width('100%').height(58)
+      AppHeader({ title: '数据趋势' })
       Row({ space: 8 }) {
         ForEach([new ProgressTab('weight', '体重'), new ProgressTab('training', '训练'),
           new ProgressTab('nutrition', '营养')], (tab: ProgressTab) => {
-            Button(tab.label).layoutWeight(1).height(42).fontSize(14).fontWeight(FontWeight.Bold)
+            Button(tab.label).layoutWeight(1).height(44).fontSize(14).fontWeight(FontWeight.Bold)
               .fontColor(this.selectedTab === tab.id ? APP_COLOR_GREEN_DARK : APP_COLOR_MUTED)
               .backgroundColor(this.selectedTab === tab.id ? APP_COLOR_GREEN_SOFT : Color.White).borderRadius(12)
               .onClick(() => this.selectedTab = tab.id)
@@ -147,7 +141,8 @@ export struct ProgressPage {
           } else {
             this.NutritionTab()
           }
-        }.width('100%').padding({ left: 20, right: 20, bottom: 28 })
+        }.width('100%').constraintSize({ minHeight: '100%' })
+          .padding({ left: 20, right: 20, top: 8, bottom: 28 })
       }.layoutWeight(1).scrollBar(BarState.Off)
     }.width('100%').layoutWeight(1)
   }

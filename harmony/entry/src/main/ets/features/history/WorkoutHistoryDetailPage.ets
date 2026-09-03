@@ -5,6 +5,7 @@ import {
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
 import { SetRecord, WorkoutExerciseRecord, WorkoutSession, WorkoutStatus, WorkoutPhase } from '../../domain/workout/WorkoutModels';
+import { AppHeader } from '../../components/AppHeader';
 
 @Component
 export struct WorkoutHistoryDetailPage {
@@ -77,24 +78,7 @@ export struct WorkoutHistoryDetailPage {
 
   build() {
     Column() {
-      Row() {
-        Button('‹')
-          .width(48)
-          .height(48)
-          .fontSize(34)
-          .fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => this.onBack())
-        Text('训练详情')
-          .layoutWeight(1)
-          .textAlign(TextAlign.Center)
-          .fontSize(19)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }
-      .width('100%')
-      .height(56)
+      AppHeader({ title: '训练详情', showBack: true, onBack: () => this.onBack() })
 
       Scroll() {
         Column({ space: 16 }) {

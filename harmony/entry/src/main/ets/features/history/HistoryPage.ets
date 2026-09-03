@@ -46,7 +46,6 @@ export struct HistoryPage {
           .fontColor(APP_COLOR_GREEN_DARK)
       }
       .width('100%')
-      .onClick(() => this.onOpenDetail(session.id))
     }
     .alignItems(HorizontalAlign.Start)
     .width('100%')
@@ -54,6 +53,9 @@ export struct HistoryPage {
     .borderRadius(18)
     .backgroundColor(Color.White)
     .border({ width: 1, color: APP_COLOR_LINE })
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText(`查看 ${session.workoutNameSnapshot} 训练详情`)
+    .onClick(() => this.onOpenDetail(session.id))
   }
 
   build() {

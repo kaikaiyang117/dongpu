@@ -1,10 +1,12 @@
 import {
   APP_COLOR_BG,
+  APP_COLOR_DANGER,
   APP_COLOR_GREEN,
   APP_COLOR_GREEN_DARK,
   APP_COLOR_GREEN_SOFT,
   APP_COLOR_LINE,
   APP_COLOR_MUTED,
+  APP_COLOR_SURFACE_DISABLED,
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
 import { OnboardingDraft } from '../../domain/profile/ProfileModels';
@@ -111,14 +113,15 @@ export struct V2UpgradePage {
           }.width('100%').padding(18).borderRadius(18).backgroundColor(Color.White)
             .border({ width: 1, color: APP_COLOR_LINE })
           if (!this.valid() && (this.heightText !== '' || this.weightText !== '' || this.targetText !== '')) {
-            Text('请确认身高、体重和目标体重').width('100%').fontSize(13).fontColor('#C83B36')
+            Text('请确认身高、体重和目标体重').width('100%').fontSize(13)
+              .fontColor(APP_COLOR_DANGER)
           }
         }.width('100%').padding({ left: 20, right: 20, bottom: 24 })
       }.layoutWeight(1).scrollBar(BarState.Off)
       Column() {
         Button(this.isSaving ? '正在保存…' : '保存并进入今日')
           .width('100%').height(58).fontSize(17).fontWeight(FontWeight.Bold)
-          .fontColor(Color.White).backgroundColor(this.valid() ? APP_COLOR_GREEN : '#D9DDD4')
+          .fontColor(Color.White).backgroundColor(this.valid() ? APP_COLOR_GREEN : APP_COLOR_SURFACE_DISABLED)
           .borderRadius(18).enabled(this.valid()).onClick(() => this.submit())
       }.width('100%').padding({ left: 20, right: 20, bottom: 22 }).backgroundColor(APP_COLOR_BG)
     }.width('100%').height('100%').backgroundColor(APP_COLOR_BG)

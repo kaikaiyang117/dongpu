@@ -9,46 +9,51 @@ export struct AppHeader {
   onBack: () => void = () => {};
   onAction: () => void = () => {};
 
-  build() {
-    Row() {
-      if (this.showBack) {
-        Button() {
-          Text(this.backGlyph)
-            .fontSize(this.backGlyph === '×' ? 25 : 34)
-            .fontColor(APP_COLOR_TEXT)
-            .fontWeight(FontWeight.Medium)
-        }
-        .width(48)
-        .height(48)
-        .backgroundColor(Color.Transparent)
-        .stateEffect(true)
-        .onClick(() => this.onBack())
-      } else {
-        Blank().width(56)
-      }
+  private backIcon(): Resource {
+    return this.backGlyph === '×' ? $r('app.media.icon_close') : $r('app.media.icon_back');
+  }
 
+  build() {
+    Stack({ alignContent: Alignment.Center }) {
       Text(this.title)
-        .layoutWeight(1)
+        .width('100%')
         .textAlign(TextAlign.Center)
         .fontSize(17)
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_TEXT)
-
-      if (this.actionLabel !== '') {
-        Button() {
-          Text(this.actionLabel)
-            .fontSize(13)
-            .fontWeight(FontWeight.Bold)
-            .fontColor(APP_COLOR_GREEN_DARK)
+        .padding({ left: 64, right: 64 })
+      Row() {
+        if (this.showBack) {
+          Button() {
+            Image(this.backIcon()).width(22).height(22).fillColor(APP_COLOR_TEXT)
+          }
+          .width(48)
+          .height(48)
+          .backgroundColor(Color.Transparent)
+          .stateEffect(true)
+          .accessibilityText(this.backGlyph === '×' ? '关闭' : '返回')
+          .onClick(() => this.onBack())
+        } else {
+          Blank().width(48)
         }
-        .width(56)
-        .height(48)
-        .backgroundColor(Color.Transparent)
-        .stateEffect(true)
-        .onClick(() => this.onAction())
-      } else {
-        Blank().width(48)
-      }
+        Blank()
+        if (this.actionLabel !== '') {
+          Button() {
+            Text(this.actionLabel)
+              .fontSize(13)
+              .fontWeight(FontWeight.Bold)
+              .fontColor(APP_COLOR_GREEN_DARK)
+          }
+          .width(56)
+          .height(48)
+          .backgroundColor(Color.Transparent)
+          .stateEffect(true)
+          .accessibilityText(this.actionLabel)
+          .onClick(() => this.onAction())
+        } else {
+          Blank().width(48)
+        }
+      }.width('100%')
     }
     .width('100%')
     .height(54)

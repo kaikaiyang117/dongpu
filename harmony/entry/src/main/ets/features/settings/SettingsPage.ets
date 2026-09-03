@@ -5,10 +5,12 @@ import {
   APP_COLOR_MUTED,
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
+import { AppHeader } from '../../components/AppHeader';
 
 @Component
 export struct SettingsPage {
   @Prop title: string = '设置';
+  @Prop showBack: boolean = true;
   @Prop weeklyFrequency: number = 3;
   @Prop weightUnit: string = 'kg';
   @Prop targetCalories: number = 0;
@@ -46,7 +48,7 @@ export struct SettingsPage {
   @Builder
   ChoiceButton(label: string, selected: boolean, onTap: () => void) {
     Button(label)
-      .height(40)
+      .height(44)
       .fontSize(13)
       .fontWeight(FontWeight.Bold)
       .fontColor(selected ? APP_COLOR_GREEN_DARK : APP_COLOR_MUTED)
@@ -76,24 +78,7 @@ export struct SettingsPage {
 
   build() {
     Column() {
-      Row() {
-        Button('‹')
-          .width(48)
-          .height(48)
-          .fontSize(34)
-          .fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => this.onBack())
-        Text(this.title)
-          .layoutWeight(1)
-          .textAlign(TextAlign.Center)
-          .fontSize(19)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }
-      .width('100%')
-      .height(56)
+      AppHeader({ title: this.title, showBack: this.showBack, onBack: () => this.onBack() })
 
       Scroll() {
         Column({ space: 20 }) {
@@ -118,7 +103,7 @@ export struct SettingsPage {
             TextInput({ placeholder: '手动录入今日步数', text: this.todayStepsText }).height(46).fontSize(14)
               .backgroundColor(Color.White).borderRadius(12).border({ width: 1, color: APP_COLOR_LINE })
               .onChange((value: string) => this.todayStepsText = value)
-            Button('保存今日步数').width('100%').height(42).fontSize(14).fontWeight(FontWeight.Bold)
+            Button('保存今日步数').width('100%').height(44).fontSize(14).fontWeight(FontWeight.Bold)
               .fontColor(APP_COLOR_GREEN_DARK).backgroundColor(APP_COLOR_GREEN_SOFT).borderRadius(12)
               .enabled(!this.isSaving).onClick(() => {
                 const value: number = this.targetValue(this.todayStepsText, this.todaySteps);

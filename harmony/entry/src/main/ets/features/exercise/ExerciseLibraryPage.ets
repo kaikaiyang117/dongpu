@@ -79,23 +79,28 @@ export struct ExerciseLibraryPage {
           .fontColor(this.selectedPartId === part.id ? Color.White : APP_COLOR_TEXT)
       }
     }
-    .width('100%')
-    .height(76)
-    .borderRadius(16)
+    .width(64)
+    .height(64)
+    .borderRadius(14)
     .backgroundColor(this.selectedPartId === part.id ? APP_COLOR_GREEN : APP_COLOR_SECONDARY_SURFACE)
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText(part.name)
+    .accessibilitySelected(this.selectedPartId === part.id)
     .onClick(() => this.onSelectPart(part.id))
   }
 
   @Builder
   EquipmentButton(equipment: string) {
     Button(equipment)
-      .height(36)
+      .height(44)
       .fontSize(11)
       .fontWeight(FontWeight.Bold)
       .fontColor(this.selectedEquipment === equipment ? Color.White : APP_COLOR_TEXT)
       .borderRadius(12)
       .backgroundColor(this.selectedEquipment === equipment ? APP_COLOR_GREEN_DARK : APP_COLOR_SECONDARY_SURFACE)
       .padding({ left: 12, right: 12 })
+      .stateEffect(true)
+      .accessibilitySelected(this.selectedEquipment === equipment)
       .onClick(() => this.onSelectEquipment(equipment))
   }
 
@@ -148,85 +153,79 @@ export struct ExerciseLibraryPage {
     .borderRadius(16)
     .backgroundColor(Color.White)
     .border({ width: 1, color: APP_COLOR_LINE })
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText(`${exercise.name}，${this.partName(userPartId(exercise))}，${exercise.equipment}`)
     .onClick(() => this.onOpenExercise(exercise.id))
   }
 
   build() {
-    Row({ space: 14 }) {
+    Column({ space: 14 }) {
+      Column({ space: 7 }) {
+        Text('先看动作，再开练')
+          .fontSize(25)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(APP_COLOR_TEXT)
+        Text('先选部位，再按器械找动作')
+          .fontSize(13)
+          .fontColor(APP_COLOR_MUTED)
+      }
+      .alignItems(HorizontalAlign.Start)
+      .width('100%')
+
       Scroll() {
-        Column({ space: 8 }) {
-          Text('部位')
-            .fontSize(11)
-            .fontWeight(FontWeight.Bold)
-            .fontColor(APP_COLOR_MUTED)
-            .margin({ bottom: 4 })
+        Row({ space: 8 }) {
           ForEach(BODY_PARTS, (part: BodyPart) => {
             this.PartButton(part)
           }, (part: BodyPart) => part.id)
         }
-        .width('100%')
-        .padding({ bottom: 18 })
+        .height(64)
       }
-      .width(82)
+      .width('100%')
+      .height(64)
+      .scrollable(ScrollDirection.Horizontal)
       .scrollBar(BarState.Off)
 
-      Column({ space: 14 }) {
-        Column({ space: 7 }) {
-          Text('先看动作，再开练')
-            .fontSize(25)
-            .fontWeight(FontWeight.Bold)
-            .fontColor(APP_COLOR_TEXT)
-          Text('先选部位，再按器械找动作')
-            .fontSize(13)
-            .fontColor(APP_COLOR_MUTED)
+      Scroll() {
+        Row({ space: 7 }) {
+          ForEach(this.equipmentOptions(), (equipment: string) => {
+            this.EquipmentButton(equipment)
+          }, (equipment: string) => equipment)
         }
-        .alignItems(HorizontalAlign.Start)
-        .width('100%')
-
-        Scroll() {
-          Row({ space: 7 }) {
-            ForEach(this.equipmentOptions(), (equipment: string) => {
-              this.EquipmentButton(equipment)
-            }, (equipment: string) => equipment)
-          }
-          .height(36)
-        }
-        .width('100%')
-        .height(36)
-        .scrollable(ScrollDirection.Horizontal)
-        .scrollBar(BarState.Off)
-
-        Text(`${this.partName(this.selectedPartId)} · ${this.visibleExercises().length} 个动作 · 共 ${getLibraryExercises(this.exercises).length} 个`)
-          .fontSize(12)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_GREEN_DARK)
-          .width('100%')
-
-        List({ space: 10 }) {
-          ForEach(this.visibleExercises(), (exercise: Exercise) => {
-            ListItem() {
-              this.ExerciseCard(exercise)
-            }
-          }, (exercise: Exercise) => exercise.id)
-        }
-        .width('100%')
-        .padding({ bottom: 12 })
-        .layoutWeight(1)
-        .scrollBar(BarState.Off)
-
-        Text('数据来自 exercises-dataset；示范图 © Gym visual · gymvisual.com')
-          .width('100%')
-          .fontSize(9)
-          .fontColor(APP_COLOR_TEXT_TERTIARY)
-          .lineHeight(14)
-          .textAlign(TextAlign.Center)
-          .padding({ top: 2, bottom: 10 })
+        .height(44)
       }
+      .width('100%')
+      .height(44)
+      .scrollable(ScrollDirection.Horizontal)
+      .scrollBar(BarState.Off)
+
+      Text(`${this.partName(this.selectedPartId)} · ${this.visibleExercises().length} 个动作 · 共 ${getLibraryExercises(this.exercises).length} 个`)
+        .fontSize(12)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(APP_COLOR_GREEN_DARK)
+        .width('100%')
+
+      List({ space: 10 }) {
+        ForEach(this.visibleExercises(), (exercise: Exercise) => {
+          ListItem() {
+            this.ExerciseCard(exercise)
+          }
+        }, (exercise: Exercise) => exercise.id)
+      }
+      .width('100%')
+      .padding({ bottom: 12 })
       .layoutWeight(1)
-      .height('100%')
+      .scrollBar(BarState.Off)
+
+      Text('数据来自 exercises-dataset；示范图 © Gym visual · gymvisual.com')
+        .width('100%')
+        .fontSize(9)
+        .fontColor(APP_COLOR_TEXT_TERTIARY)
+        .lineHeight(14)
+        .textAlign(TextAlign.Center)
+        .padding({ top: 2, bottom: 10 })
     }
     .width('100%')
     .layoutWeight(1)
-    .padding({ left: 12, right: 12, bottom: 4 })
+    .padding({ left: 20, right: 20, top: 8, bottom: 4 })
   }
 }

@@ -24,10 +24,10 @@ import { WorkoutHistoryDetailPage } from '../features/history/WorkoutHistoryDeta
 import { OnboardingPage } from '../features/onboarding/OnboardingPage';
 import { V2UpgradePage } from '../features/onboarding/V2UpgradePage';
 import { SettingsPage } from '../features/settings/SettingsPage';
+import { ProfilePage } from '../features/settings/ProfilePage';
 import { TrainingHomePage } from '../features/training/TrainingHomePage';
 import { ExerciseCompletedPage } from '../features/training/ExerciseCompletedPage';
 import { ExerciseAlternativePage } from '../features/training/ExerciseAlternativePage';
-import { ExitWorkoutPage } from '../features/training/ExitWorkoutPage';
 import { RestPage } from '../features/training/RestPage';
 import { WorkoutCompletePage } from '../features/training/WorkoutCompletePage';
 import { WorkoutPage } from '../features/training/WorkoutPage';
@@ -99,6 +99,7 @@ export struct AppRoot {
   @State libraryPartId: string = 'chest';
   @State libraryEquipment: string = '全部';
   @State detailExerciseId: string = '';
+  @State showBodyEntrySheet: boolean = false;
   private settingsRepository: SettingsRepository | undefined;
   private activityRepository: ActivityRepository | undefined;
   private workoutRepository: WorkoutRepository | undefined;
@@ -113,6 +114,7 @@ export struct AppRoot {
   private onboardingService: OnboardingService | undefined;
   private weeklyReviewService: WeeklyReviewService | undefined;
   private programCatalogValid: boolean = false;
+  private settingsReturnRoute: AppRoute = AppRoute.Profile;
 
   aboutToAppear(): void {
     const hostContext = this.getUIContext().getHostContext();
@@ -370,12 +372,21 @@ export struct AppRoot {
     try {
       await this.bodyRepository.addMeasurement(measurement);
       await this.refreshDashboard();
-      this.route = AppRoute.Dashboard;
+      this.showBodyEntrySheet = false;
     } catch (_) {
       this.operationError = '身体记录保存失败，请检查输入';
     } finally {
       this.isSaving = false;
     }
+  }
+
+  private openBodyEntry(): void {
+    this.showBodyEntrySheet = true;
+  }
+
+  private openSettings(returnRoute: AppRoute): void {
+    this.settingsReturnRoute = returnRoute;
+    this.route = AppRoute.Settings;
   }
 
   private async loadCustomPlan(): Promise<void> {
@@ -888,6 +899,15 @@ export struct AppRoot {
     this.planItems = [...this.planItems, new PlanItem(this.detailExerciseId)];
   }
 
+  @Builder
+  BodyEntrySheetContent() {
+    BodyQuickEntryPage({
+      isSaving: this.isSaving,
+      onBack: () => this.showBodyEntrySheet = false,
+      onSave: (measurement: BodyMeasurement) => this.saveBodyMeasurement(measurement)
+    })
+  }
+
   build() {
     Column() {
       if (this.route === AppRoute.Loading) {
@@ -920,7 +940,7 @@ export struct AppRoot {
           onResumeWorkout: () => this.openActiveWorkout(),
           onOpenTraining: () => this.openRequiredPreview(),
           onOpenNutrition: () => this.openNutrition(),
-          onRecordBody: () => this.route = AppRoute.BodyQuickEntry,
+          onRecordBody: () => this.openBodyEntry(),
           onRecordActivity: () => this.route = AppRoute.Profile
         })
         BottomNav({ selectedTab: 'today', onSelect: (tab: string) => this.selectTab(tab) })
@@ -952,7 +972,6 @@ export struct AppRoot {
           weeklyFrequency: this.weeklyFrequency,
           weeklyAverageCalories: this.weeklyAverageCalories,
           weeklyProteinDays: this.weeklyProteinDays,
-          onBack: () => this.route = AppRoute.Dashboard,
           onOpenReview: () => this.openWeeklyReview()
         })
         BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
@@ -975,12 +994,6 @@ export struct AppRoot {
           onBack: () => this.route = AppRoute.Progress
         })
         BottomNav({ selectedTab: 'progress', onSelect: (tab: string) => this.selectTab(tab) })
-      } else if (this.route === AppRoute.BodyQuickEntry) {
-        BodyQuickEntryPage({
-          isSaving: this.isSaving,
-          onBack: () => this.route = AppRoute.Dashboard,
-          onSave: (measurement: BodyMeasurement) => this.saveBodyMeasurement(measurement)
-        })
       } else if (this.route === AppRoute.TrainingHome) {
         TrainingHomePage({
           weeklyFrequency: this.weeklyFrequency,
@@ -1007,7 +1020,7 @@ export struct AppRoot {
           onResumeWorkout: () => this.openActiveWorkout(),
           onStartCustom: () => this.route = AppRoute.CustomBody,
           onStartSavedPlan: () => this.route = AppRoute.TrainingReady,
-          onOpenSettings: () => this.route = AppRoute.Settings,
+          onOpenSettings: () => this.openSettings(AppRoute.TrainingHome),
           onOpenHistory: () => {
             this.loadHistory();
             this.route = AppRoute.History;
@@ -1021,9 +1034,24 @@ export struct AppRoot {
           onBack: () => this.route = AppRoute.TrainingHome,
           onStart: () => this.startRecommendedWorkout()
         })
-      } else if (this.route === AppRoute.Settings || this.route === AppRoute.Profile) {
+      } else if (this.route === AppRoute.Profile) {
+        ProfilePage({
+          targetWeightKg: this.activeGoal.targetWeightKg,
+          targetCalories: this.activeGoal.targetCalories,
+          targetProteinG: this.activeGoal.targetProteinG,
+          targetSteps: this.activeGoal.targetSteps,
+          latestWeightKg: this.dashboard.latestWeight?.weightKg ?? 0,
+          todaySteps: this.dashboard.activity?.steps ?? 0,
+          weeklyFrequency: this.weeklyFrequency,
+          weightUnit: this.weightUnit,
+          onOpenSettings: () => this.openSettings(AppRoute.Profile),
+          onRecordBody: () => this.openBodyEntry()
+        })
+        BottomNav({ selectedTab: 'profile', onSelect: (tab: string) => this.selectTab(tab) })
+      } else if (this.route === AppRoute.Settings) {
         SettingsPage({
-          title: this.route === AppRoute.Profile ? '我的' : '设置',
+          title: '设置',
+          showBack: true,
           weeklyFrequency: this.weeklyFrequency,
           weightUnit: this.weightUnit,
           targetCalories: this.activeGoal.targetCalories,
@@ -1034,7 +1062,7 @@ export struct AppRoot {
           dedicatedLegDay: this.activeGoal.dedicatedLegDay,
           preferMachines: this.activeGoal.preferMachines,
           isSaving: this.isSaving,
-          onBack: () => this.route = AppRoute.Dashboard,
+          onBack: () => this.route = this.settingsReturnRoute,
           onChangeFrequency: (frequency: number) => this.changeWeeklyFrequency(frequency),
           onChangeWeightUnit: (unit: string) => this.changeWeightUnit(unit),
           onSaveTargets: (calories: number, proteinG: number, steps: number) =>
@@ -1043,9 +1071,6 @@ export struct AppRoot {
             this.changeTrainingPreference(location, dedicatedLegDay, preferMachines),
           onSaveSteps: (steps: number) => this.saveTodaySteps(steps)
         })
-        if (this.route === AppRoute.Profile) {
-          BottomNav({ selectedTab: 'profile', onSelect: (tab: string) => this.selectTab(tab) })
-        }
       } else if (this.route === AppRoute.Workout && this.activeSession !== undefined) {
         WorkoutPage({
           exercise: this.currentActiveExercise(),
@@ -1055,17 +1080,12 @@ export struct AppRoot {
           isSaving: this.isSaving,
           weightUnit: this.weightUnit,
           allExercises: this.exercises,
-          onLeave: () => this.route = AppRoute.ExitWorkout,
+          onReturnHome: () => this.route = AppRoute.TrainingHome,
+          onAbandon: () => this.abandonActiveWorkout(),
           onOpenAlternatives: () => this.route = AppRoute.ExerciseAlternatives,
           onCompleteSet: (weight: number, reps: number) => this.completeActiveSet(
             this.weightUnit === 'lb' ? weight / 2.2046226218 : weight, reps
           )
-        })
-      } else if (this.route === AppRoute.ExitWorkout && this.activeSession !== undefined) {
-        ExitWorkoutPage({
-          onReturnHome: () => this.route = AppRoute.TrainingHome,
-          onContinue: () => this.openActiveWorkout(),
-          onAbandon: () => this.abandonActiveWorkout()
         })
       } else if (this.route === AppRoute.ExerciseAlternatives && this.activeSession !== undefined) {
         ExerciseAlternativePage({
@@ -1171,5 +1191,12 @@ export struct AppRoot {
     .width('100%')
     .height('100%')
     .backgroundColor(APP_COLOR_BG)
+    .bindSheet($$this.showBodyEntrySheet, this.BodyEntrySheetContent(), {
+      height: '720vp',
+      dragBar: true,
+      showClose: false,
+      backgroundColor: APP_COLOR_BG,
+      onDisappear: () => this.showBodyEntrySheet = false
+    })
   }
 }

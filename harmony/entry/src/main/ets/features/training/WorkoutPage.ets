@@ -12,6 +12,7 @@ import {
 import { findExercise } from '../../data/ExerciseCatalog';
 import { Exercise } from '../../model/Exercise';
 import { WorkoutExerciseRecord } from '../../domain/workout/WorkoutModels';
+import { ExitWorkoutPage } from './ExitWorkoutPage';
 
 @Component
 export struct WorkoutPage {
@@ -26,8 +27,10 @@ export struct WorkoutPage {
   @State reps: number = 10;
   @State hasWeight: boolean = false;
   @State showTips: boolean = false;
+  @State showExitSheet: boolean = false;
   @State mediaFailed: boolean = false;
-  onLeave: () => void = () => {};
+  onReturnHome: () => void = () => {};
+  onAbandon: () => void = () => {};
   onOpenAlternatives: () => void = () => {};
   onCompleteSet: (weight: number, reps: number) => void = () => {};
 
@@ -62,13 +65,15 @@ export struct WorkoutPage {
   build() {
     Column() {
       Row() {
-        Button('×')
+        Button() {
+          Image($r('app.media.icon_close')).width(21).height(21).fillColor(APP_COLOR_TEXT)
+        }
           .width(48)
           .height(48)
-          .fontSize(25)
-          .fontColor(APP_COLOR_TEXT)
           .backgroundColor(Color.Transparent)
-          .onClick(() => this.onLeave())
+          .stateEffect(true)
+          .accessibilityText('暂时离开训练')
+          .onClick(() => this.showExitSheet = true)
         Text('训练中')
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
@@ -108,7 +113,7 @@ export struct WorkoutPage {
                   .fontColor(APP_COLOR_MUTED)
               }
               .width('100%')
-              .height(310)
+              .height(210)
               .justifyContent(FlexAlign.Center)
               .borderRadius(14)
               .backgroundColor(APP_COLOR_SECONDARY_SURFACE)
@@ -116,7 +121,7 @@ export struct WorkoutPage {
             } else {
               Image($rawfile(this.exercise.imagePathSnapshot))
                 .width('100%')
-                .height(310)
+                .height(210)
                 .objectFit(ImageFit.Contain)
                 .margin({ top: 8 })
                 .onError(() => this.mediaFailed = true)
@@ -168,81 +173,45 @@ export struct WorkoutPage {
               .padding({ left: 14, right: 14 })
           }
 
-          Column({ space: 7 }) {
-            Text('重量')
-              .width('100%')
-              .fontSize(13)
-              .fontWeight(FontWeight.Bold)
-              .fontColor(APP_COLOR_TEXT)
-            Row() {
-              Button('−')
-                .width(52)
-                .height(52)
-                .fontSize(22)
-                .fontColor(APP_COLOR_GREEN_DARK)
-                .backgroundColor(APP_COLOR_GREEN_SOFT)
-                .stateEffect(true)
-                .onClick(() => this.changeWeight(-this.exercise.weightIncrementKg))
-              Text(this.hasWeight ? `${this.weight.toFixed(1)} ${this.weightUnit}` : '选择重量')
-                .layoutWeight(1)
-                .textAlign(TextAlign.Center)
-                .fontSize(this.hasWeight ? 27 : 17)
-                .fontWeight(FontWeight.Bold)
-                .fontColor(this.hasWeight ? APP_COLOR_TEXT : APP_COLOR_GREEN_DARK)
-              Button('+')
-                .width(52)
-                .height(52)
-                .fontSize(22)
-                .fontColor(APP_COLOR_GREEN_DARK)
-                .backgroundColor(APP_COLOR_GREEN_SOFT)
-                .stateEffect(true)
-                .onClick(() => this.changeWeight(this.exercise.weightIncrementKg))
+          Row({ space: 10 }) {
+            Column({ space: 7 }) {
+              Text('重量').width('100%').fontSize(13).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+              Row() {
+                Button('−')
+                  .width(44).height(48).fontSize(20).fontColor(APP_COLOR_GREEN_DARK)
+                  .backgroundColor(APP_COLOR_GREEN_SOFT).stateEffect(true).accessibilityText('减少重量')
+                  .onClick(() => this.changeWeight(-this.exercise.weightIncrementKg))
+                Text(this.hasWeight ? `${this.weight.toFixed(1)} ${this.weightUnit}` : '选择')
+                  .layoutWeight(1).textAlign(TextAlign.Center).fontSize(this.hasWeight ? 18 : 15)
+                  .fontWeight(FontWeight.Bold).fontColor(this.hasWeight ? APP_COLOR_TEXT : APP_COLOR_GREEN_DARK)
+                  .maxLines(1)
+                Button('+')
+                  .width(44).height(48).fontSize(20).fontColor(APP_COLOR_GREEN_DARK)
+                  .backgroundColor(APP_COLOR_GREEN_SOFT).stateEffect(true).accessibilityText('增加重量')
+                  .onClick(() => this.changeWeight(this.exercise.weightIncrementKg))
+              }.width('100%')
             }
-            .width('100%')
-          }
-          .width('100%')
-          .padding(14)
-          .borderRadius(16)
-          .backgroundColor(Color.White)
-          .border({ width: 1, color: APP_COLOR_LINE })
+            .layoutWeight(1).padding(12).borderRadius(16).backgroundColor(Color.White)
+            .border({ width: 1, color: APP_COLOR_LINE })
 
-          Column({ space: 7 }) {
-            Text('次数')
-              .width('100%')
-              .fontSize(13)
-              .fontWeight(FontWeight.Bold)
-              .fontColor(APP_COLOR_TEXT)
-            Row() {
-              Button('−')
-                .width(52)
-                .height(52)
-                .fontSize(22)
-                .fontColor(APP_COLOR_GREEN_DARK)
-                .backgroundColor(APP_COLOR_GREEN_SOFT)
-                .stateEffect(true)
-                .onClick(() => this.reps = Math.max(1, this.reps - 1))
-              Text(this.reps.toString())
-                .layoutWeight(1)
-                .textAlign(TextAlign.Center)
-                .fontSize(28)
-                .fontWeight(FontWeight.Bold)
-                .fontColor(APP_COLOR_TEXT)
-              Button('+')
-                .width(52)
-                .height(52)
-                .fontSize(22)
-                .fontColor(APP_COLOR_GREEN_DARK)
-                .backgroundColor(APP_COLOR_GREEN_SOFT)
-                .stateEffect(true)
-                .onClick(() => this.reps += 1)
+            Column({ space: 7 }) {
+              Text('次数').width('100%').fontSize(13).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+              Row() {
+                Button('−')
+                  .width(44).height(48).fontSize(20).fontColor(APP_COLOR_GREEN_DARK)
+                  .backgroundColor(APP_COLOR_GREEN_SOFT).stateEffect(true).accessibilityText('减少次数')
+                  .onClick(() => this.reps = Math.max(1, this.reps - 1))
+                Text(this.reps.toString()).layoutWeight(1).textAlign(TextAlign.Center).fontSize(22)
+                  .fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+                Button('+')
+                  .width(44).height(48).fontSize(20).fontColor(APP_COLOR_GREEN_DARK)
+                  .backgroundColor(APP_COLOR_GREEN_SOFT).stateEffect(true).accessibilityText('增加次数')
+                  .onClick(() => this.reps += 1)
+              }.width('100%')
             }
-            .width('100%')
-          }
-          .width('100%')
-          .padding(14)
-          .borderRadius(16)
-          .backgroundColor(Color.White)
-          .border({ width: 1, color: APP_COLOR_LINE })
+            .layoutWeight(1).padding(12).borderRadius(16).backgroundColor(Color.White)
+            .border({ width: 1, color: APP_COLOR_LINE })
+          }.width('100%')
 
           if (this.errorText !== '') {
             Text(this.errorText)
@@ -304,6 +273,28 @@ export struct WorkoutPage {
       dragBar: true,
       backgroundColor: Color.White,
       onDisappear: () => this.showTips = false
+    })
+    .bindSheet($$this.showExitSheet, this.ExitSheetContent(), {
+      height: '430vp',
+      dragBar: true,
+      showClose: false,
+      backgroundColor: Color.White,
+      onDisappear: () => this.showExitSheet = false
+    })
+  }
+
+  @Builder
+  ExitSheetContent() {
+    ExitWorkoutPage({
+      onReturnHome: () => {
+        this.showExitSheet = false;
+        this.onReturnHome();
+      },
+      onContinue: () => this.showExitSheet = false,
+      onAbandon: () => {
+        this.showExitSheet = false;
+        this.onAbandon();
+      }
     })
   }
 

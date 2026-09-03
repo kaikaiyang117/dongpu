@@ -7,6 +7,7 @@ import {
 } from '../../app/AppTheme';
 import { BODY_PARTS, userPartId } from '../../data/ExerciseCatalog';
 import { BodyPart, Exercise } from '../../model/Exercise';
+import { AppHeader } from '../../components/AppHeader';
 
 @Component
 export struct ExerciseAlternativePage {
@@ -62,23 +63,7 @@ export struct ExerciseAlternativePage {
 
   build() {
     Column({ space: 16 }) {
-      Row() {
-        Button('‹')
-          .width(48)
-          .height(48)
-          .fontSize(34)
-          .fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => this.onCancel())
-        Text('替换动作')
-          .layoutWeight(1)
-          .textAlign(TextAlign.Center)
-          .fontSize(19)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }
-      .width('100%')
+      AppHeader({ title: '替换动作', showBack: true, onBack: () => this.onCancel() })
 
       Text('器械被占用了？')
         .width('100%')

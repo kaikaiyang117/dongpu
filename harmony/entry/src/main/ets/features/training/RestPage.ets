@@ -41,6 +41,11 @@ export struct RestPage {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
+  private restProgress(): number {
+    if (this.exercise.restSeconds <= 0) return 0;
+    return Math.max(0, Math.min(100, this.remainingSeconds / this.exercise.restSeconds * 100));
+  }
+
   build() {
     Column({ space: 24 }) {
       Text(this.remainingSeconds > 0 ? '休息' : '休息结束')
@@ -49,21 +54,24 @@ export struct RestPage {
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_TEXT)
 
-      Column({ space: 10 }) {
-        Text(this.timeLabel())
-          .fontSize(58)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_TEXT)
-        Text(this.remainingSeconds > 0 ? '组间休息' : `准备好开始第 ${this.exercise.completedSets + 1} 组`)
-          .fontSize(16)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_GREEN_DARK)
+      Stack({ alignContent: Alignment.Center }) {
+        Progress({ value: this.restProgress(), total: 100, type: ProgressType.Ring })
+          .width(270).height(270).color(APP_COLOR_GREEN)
+          .backgroundColor(APP_COLOR_WARNING_SOFT)
+          .style({ strokeWidth: 8 })
+        Column({ space: 10 }) {
+          Text(this.timeLabel())
+            .fontSize(58)
+            .fontWeight(FontWeight.Bold)
+            .fontColor(APP_COLOR_TEXT)
+          Text(this.remainingSeconds > 0 ? '组间休息' : `准备好开始第 ${this.exercise.completedSets + 1} 组`)
+            .fontSize(16)
+            .fontWeight(FontWeight.Bold)
+            .fontColor(APP_COLOR_GREEN_DARK)
+        }.alignItems(HorizontalAlign.Center)
       }
-      .justifyContent(FlexAlign.Center)
       .width(270)
       .height(270)
-      .borderRadius(135)
-      .border({ width: 8, color: APP_COLOR_GREEN })
       .margin({ top: 38, bottom: 18 })
 
       Text(`${this.exercise.exerciseNameSnapshot} · 第 ${this.exercise.completedSets + 1} 组`)
@@ -103,9 +111,9 @@ export struct RestPage {
         .borderRadius(18)
         .backgroundColor(APP_COLOR_GREEN)
         .onClick(() => this.onFinish())
-      Text('查看动作要点')
-        .fontSize(14)
-        .fontColor(APP_COLOR_GREEN_DARK)
+      Button('查看动作要点')
+        .height(44).fontSize(14).fontColor(APP_COLOR_GREEN_DARK)
+        .backgroundColor(Color.Transparent).stateEffect(true)
         .margin({ bottom: 18 })
         .onClick(() => this.showTips = true)
     }

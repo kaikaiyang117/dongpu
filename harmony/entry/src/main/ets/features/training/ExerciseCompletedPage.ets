@@ -81,9 +81,9 @@ export struct ExerciseCompletedPage {
         .borderRadius(18)
         .backgroundColor(APP_COLOR_GREEN)
         .onClick(() => this.onStartNext())
-      Text('动作要点')
-        .fontSize(14)
-        .fontColor(APP_COLOR_GREEN_DARK)
+      Button('动作要点')
+        .height(44).fontSize(14).fontColor(APP_COLOR_GREEN_DARK)
+        .backgroundColor(Color.Transparent).stateEffect(true)
         .margin({ bottom: 18 })
         .onClick(() => this.showTips = true)
     }

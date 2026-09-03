@@ -56,11 +56,11 @@ export struct CustomTrainingFlow {
   }
 
   private showBack(): boolean {
-    return this.route !== AppRoute.CustomBody;
+    return true;
   }
 
   private backGlyph(): string {
-    return this.route === AppRoute.TrainingReady ? '×' : '‹';
+    return this.route === AppRoute.CustomBody || this.route === AppRoute.TrainingReady ? '×' : '‹';
   }
 
   private headerAction(): string {
@@ -88,6 +88,10 @@ export struct CustomTrainingFlow {
   }
 
   private goBack(): void {
+    if (this.route === AppRoute.CustomBody) {
+      this.onNavigate(AppRoute.TrainingHome);
+      return;
+    }
     if (this.route === AppRoute.TrainingReady) {
       this.onNavigate(AppRoute.CustomConfirm);
       return;

@@ -2,6 +2,7 @@ import { APP_COLOR_GREEN_DARK, APP_COLOR_GREEN_SOFT, APP_COLOR_LINE, APP_COLOR_M
 import { NutritionSummary } from '../../domain/nutrition/NutritionModels';
 import { WaistTrend, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
 import { ExerciseProgress } from '../../domain/workout/WorkoutModels';
+import { AppHeader } from '../../components/AppHeader';
 
 @Component
 export struct WeeklyReviewPage {
@@ -31,13 +32,7 @@ export struct WeeklyReviewPage {
 
   build() {
     Column() {
-      Row() {
-        Button('‹').width(48).height(48).fontSize(34).fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent).onClick(() => this.onBack())
-        Text('本周复盘').layoutWeight(1).textAlign(TextAlign.Center).fontSize(19).fontWeight(FontWeight.Bold)
-          .fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }.width('100%').height(58)
+      AppHeader({ title: '本周复盘', showBack: true, onBack: () => this.onBack() })
       Scroll() {
         Column({ space: 16 }) {
           Column({ space: 4 }) {

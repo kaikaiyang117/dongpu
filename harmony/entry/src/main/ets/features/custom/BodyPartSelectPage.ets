@@ -73,6 +73,9 @@ export struct BodyPartSelectPage {
     .borderRadius(19)
     .backgroundColor(this.isSelected(part.id) ? APP_COLOR_GREEN_SOFT : APP_COLOR_SECONDARY_SURFACE)
     .border({ width: this.isSelected(part.id) ? 1.5 : 0, color: APP_COLOR_GREEN })
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText(part.name)
+    .accessibilitySelected(this.isSelected(part.id))
     .onClick(() => this.onTogglePart(part.id))
   }
 

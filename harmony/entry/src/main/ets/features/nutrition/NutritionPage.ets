@@ -6,6 +6,7 @@ import {
   APP_COLOR_MUTED,
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
+import { AppHeader } from '../../components/AppHeader';
 import { FoodEntry, NutritionSummary, QuickFood } from '../../domain/nutrition/NutritionModels';
 
 @Component
@@ -63,8 +64,10 @@ export struct NutritionPage {
         Text(`${Math.round(food.proteinG)} g 蛋白质`).fontSize(12).fontColor(APP_COLOR_GREEN_DARK)
       }.alignItems(HorizontalAlign.Start)
     }
-    .width('100%').height(94).padding(12).borderRadius(16).backgroundColor(Color.White)
-    .border({ width: 1, color: APP_COLOR_LINE }).onClick(() => this.onQuickAdd(food.id))
+    .width('48%').height(94).padding(12).borderRadius(16).backgroundColor(Color.White)
+    .border({ width: 1, color: APP_COLOR_LINE }).stateEffect(true)
+    .accessibilityText(`快捷记录 ${food.name}`)
+    .margin({ bottom: 10 }).onClick(() => this.onQuickAdd(food.id))
   }
 
   @Builder
@@ -97,13 +100,7 @@ export struct NutritionPage {
 
   build() {
     Column() {
-      Row() {
-        Button('‹').width(48).height(48).fontSize(34).fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent).onClick(() => this.onBack())
-        Text('营养记录').layoutWeight(1).textAlign(TextAlign.Center).fontSize(19)
-          .fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }.width('100%').height(58)
+      AppHeader({ title: '营养记录', showBack: true, onBack: () => this.onBack() })
 
       Scroll() {
         Column({ space: 16 }) {
@@ -116,7 +113,7 @@ export struct NutritionPage {
           if (this.quickFoods.length === 0) {
             Text('暂无快捷食物，请使用手动记录。').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
           } else {
-            Column({ space: 10 }) {
+            Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceBetween }) {
               ForEach(this.quickFoods, (food: QuickFood) => {
                 this.QuickFoodCard(food)
               }, (food: QuickFood) => food.id.toString())

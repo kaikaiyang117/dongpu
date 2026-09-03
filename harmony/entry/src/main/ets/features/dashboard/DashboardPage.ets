@@ -70,7 +70,10 @@ export struct DashboardPage {
       }.width('100%')
     }
     .width('100%').padding(18).borderRadius(20).backgroundColor(Color.White)
-    .border({ width: 1, color: APP_COLOR_LINE }).onClick(() => this.onRecordBody())
+    .border({ width: 1, color: APP_COLOR_LINE })
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText('记录体重')
+    .onClick(() => this.onRecordBody())
   }
 
   @Builder
@@ -124,7 +127,10 @@ export struct DashboardPage {
       }
     }
     .width('100%').padding(18).borderRadius(20).backgroundColor(Color.White)
-    .border({ width: 1, color: APP_COLOR_LINE }).onClick(() => this.onOpenNutrition())
+    .border({ width: 1, color: APP_COLOR_LINE })
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText('打开营养记录')
+    .onClick(() => this.onOpenNutrition())
   }
 
   @Builder
@@ -173,7 +179,10 @@ export struct DashboardPage {
       Text(this.viewModel.goal === undefined ? '目标 --' : `目标 ${this.viewModel.goal.targetSteps} 步`)
         .fontSize(13).fontColor(APP_COLOR_MUTED)
     }.width('100%').padding(18).borderRadius(20).backgroundColor(Color.White)
-      .border({ width: 1, color: APP_COLOR_LINE }).onClick(() => this.onRecordActivity())
+      .border({ width: 1, color: APP_COLOR_LINE })
+      .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+      .accessibilityText('记录今日步数')
+      .onClick(() => this.onRecordActivity())
   }
 
   build() {

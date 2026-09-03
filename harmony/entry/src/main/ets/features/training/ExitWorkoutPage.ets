@@ -20,16 +20,13 @@ export struct ExitWorkoutPage {
         .fontSize(29)
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_TEXT)
-        .margin({ top: 80 })
       Text('训练会自动保存，\n下次打开可以继续。')
         .width('100%')
         .fontSize(16)
         .fontColor(APP_COLOR_MUTED)
         .lineHeight(25)
 
-      Blank()
-
-      Button('返回首页')
+      Button('继续训练')
         .width('100%')
         .height(58)
         .fontSize(17)
@@ -37,8 +34,9 @@ export struct ExitWorkoutPage {
         .fontColor(Color.White)
         .borderRadius(18)
         .backgroundColor(APP_COLOR_GREEN)
-        .onClick(() => this.onReturnHome())
-      Button('继续训练')
+        .stateEffect(true)
+        .onClick(() => this.onContinue())
+      Button('返回首页')
         .width('100%')
         .height(54)
         .fontSize(16)
@@ -47,7 +45,8 @@ export struct ExitWorkoutPage {
         .borderRadius(17)
         .backgroundColor(Color.White)
         .border({ width: 1, color: APP_COLOR_LINE })
-        .onClick(() => this.onContinue())
+        .stateEffect(true)
+        .onClick(() => this.onReturnHome())
       Button(this.abandonArmed ? '再次点击，确认放弃' : '放弃本次训练')
         .width('100%')
         .height(50)
@@ -55,6 +54,7 @@ export struct ExitWorkoutPage {
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_DANGER)
         .backgroundColor(Color.Transparent)
+        .stateEffect(true)
         .onClick(() => {
           if (this.abandonArmed) {
             this.onAbandon();
@@ -62,11 +62,10 @@ export struct ExitWorkoutPage {
             this.abandonArmed = true;
           }
         })
-        .margin({ bottom: 24 })
+        .margin({ bottom: 8 })
     }
     .alignItems(HorizontalAlign.Start)
     .width('100%')
-    .height('100%')
-    .padding({ left: 22, right: 22 })
+    .padding({ left: 22, right: 22, top: 8, bottom: 18 })
   }
 }

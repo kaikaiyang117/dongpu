@@ -1,4 +1,5 @@
 import {
+  APP_COLOR_DANGER,
   APP_COLOR_GREEN,
   APP_COLOR_GREEN_DARK,
   APP_COLOR_GREEN_SOFT,
@@ -6,6 +7,7 @@ import {
   APP_COLOR_MUTED,
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
+import { AppHeader } from '../../components/AppHeader';
 import { FoodEntry } from '../../domain/nutrition/NutritionModels';
 
 @Component
@@ -45,18 +47,19 @@ export struct FoodEntryEditorPage {
   }
 
   @Builder
-  Field(label: string, placeholder: string, value: string, onChange: (value: string) => void) {
+  Field(label: string, placeholder: string, value: string, onChange: (value: string) => void,
+    isHalfWidth: boolean = false) {
     Column({ space: 7 }) {
       Text(label).width('100%').fontSize(13).fontColor(APP_COLOR_MUTED)
       TextInput({ placeholder: placeholder, text: value }).height(50).fontSize(16).backgroundColor(Color.White)
         .borderRadius(13).border({ width: 1, color: APP_COLOR_LINE })
         .onChange((changed: string) => onChange(changed))
-    }.width('100%')
+    }.width(isHalfWidth ? '48%' : '100%')
   }
 
   @Builder
   MealButton(label: string, value: string) {
-    Button(label).layoutWeight(1).height(42).fontSize(13).fontWeight(FontWeight.Bold)
+    Button(label).layoutWeight(1).height(44).fontSize(13).fontWeight(FontWeight.Bold)
       .fontColor(this.mealType === value ? APP_COLOR_GREEN_DARK : APP_COLOR_MUTED)
       .backgroundColor(this.mealType === value ? APP_COLOR_GREEN_SOFT : Color.White).borderRadius(12)
       .border({ width: 1, color: this.mealType === value ? APP_COLOR_GREEN : APP_COLOR_LINE })
@@ -65,13 +68,7 @@ export struct FoodEntryEditorPage {
 
   build() {
     Column() {
-      Row() {
-        Button('‹').width(48).height(48).fontSize(34).fontColor(APP_COLOR_TEXT)
-          .backgroundColor(Color.Transparent).onClick(() => this.onBack())
-        Text('手动添加').layoutWeight(1).textAlign(TextAlign.Center).fontSize(19)
-          .fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
-        Blank().width(48)
-      }.width('100%').height(58)
+      AppHeader({ title: '手动添加', showBack: true, onBack: () => this.onBack() })
       Scroll() {
         Column({ space: 16 }) {
           Text('这顿吃了什么？').width('100%').fontSize(26).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
@@ -86,22 +83,25 @@ export struct FoodEntryEditorPage {
           this.Field('份量单位', '例如：200g', this.servingName, (value: string) => this.servingName = value)
           this.Field('份数', '例如：1', this.servingsText, (value: string) => this.servingsText = value)
           Row({ space: 10 }) {
-            this.Field('热量（kcal）', '0', this.caloriesText, (value: string) => this.caloriesText = value)
-            this.Field('蛋白质（g）', '0', this.proteinText, (value: string) => this.proteinText = value)
+            this.Field('热量（kcal）', '0', this.caloriesText, (value: string) => this.caloriesText = value, true)
+            this.Field('蛋白质（g）', '0', this.proteinText, (value: string) => this.proteinText = value, true)
           }.width('100%')
           Row({ space: 10 }) {
-            this.Field('碳水（g，可选）', '可留空', this.carbsText, (value: string) => this.carbsText = value)
-            this.Field('脂肪（g，可选）', '可留空', this.fatText, (value: string) => this.fatText = value)
+            this.Field('碳水（g，可选）', '可留空', this.carbsText, (value: string) => this.carbsText = value, true)
+            this.Field('脂肪（g，可选）', '可留空', this.fatText, (value: string) => this.fatText = value, true)
           }.width('100%')
           if (!this.valid()) {
-            Text('请填写食物名称、份量、热量和蛋白质。').width('100%').fontSize(13).fontColor('#C83B36')
+            Text('请填写食物名称、份量、热量和蛋白质。').width('100%').fontSize(13)
+              .fontColor(APP_COLOR_DANGER)
           }
         }.width('100%').padding({ left: 20, right: 20, top: 12, bottom: 28 })
       }.layoutWeight(1).scrollBar(BarState.Off)
-      Button(this.isSaving ? '正在保存…' : '保存并返回今日')
-        .width('100%').height(58).margin({ left: 20, right: 20, bottom: 22 }).fontSize(17)
-        .fontWeight(FontWeight.Bold).fontColor(Color.White).borderRadius(18).backgroundColor(APP_COLOR_GREEN)
-        .enabled(!this.isSaving && this.valid()).onClick(() => this.save())
+      Column() {
+        Button(this.isSaving ? '正在保存…' : '保存并返回今日')
+          .width('100%').height(58).fontSize(17)
+          .fontWeight(FontWeight.Bold).fontColor(Color.White).borderRadius(18).backgroundColor(APP_COLOR_GREEN)
+          .enabled(!this.isSaving && this.valid()).onClick(() => this.save())
+      }.width('100%').padding({ left: 20, right: 20, bottom: 22 })
     }.width('100%').height('100%')
   }
 }

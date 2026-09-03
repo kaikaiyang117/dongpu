@@ -113,6 +113,9 @@ export struct ExerciseSelectPage {
     .borderRadius(16)
     .backgroundColor(this.isSelected(exercise.id) ? APP_COLOR_GREEN_SOFT : Color.White)
     .border({ width: 1.5, color: this.isSelected(exercise.id) ? APP_COLOR_GREEN : APP_COLOR_LINE })
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
+    .accessibilityText(exercise.name)
+    .accessibilitySelected(this.isSelected(exercise.id))
     .onClick(() => this.onToggleExercise(exercise.id))
   }
 

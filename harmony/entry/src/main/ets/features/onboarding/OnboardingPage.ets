@@ -1,4 +1,5 @@
 import {
+  APP_COLOR_DANGER,
   APP_COLOR_GREEN,
   APP_COLOR_GREEN_DARK,
   APP_COLOR_GREEN_SOFT,
@@ -132,7 +133,7 @@ export struct OnboardingPage {
       this.Field('目标体重（kg）', '例如 65', this.targetWeightText, (value: string) => this.targetWeightText = value)
       this.Field('腰围（cm，可选）', '可以稍后记录', this.waistText, (value: string) => this.waistText = value)
       if (!this.isValid()) {
-        Text('请填写有效的身高和体重').fontSize(13).fontColor('#C83B36')
+        Text('请填写有效的身高和体重').fontSize(13).fontColor(APP_COLOR_DANGER)
       }
     }.width('100%')
   }
@@ -224,8 +225,11 @@ export struct OnboardingPage {
     Column() {
       Row() {
         if (this.step > 1) {
-          Button('‹').width(48).height(48).fontSize(34).fontColor(APP_COLOR_TEXT)
-            .backgroundColor(Color.Transparent).onClick(() => this.step -= 1)
+          Button() {
+            Image($r('app.media.icon_back')).width(22).height(22).fillColor(APP_COLOR_TEXT)
+          }
+            .width(48).height(48).backgroundColor(Color.Transparent).stateEffect(true)
+            .accessibilityText('返回上一步').onClick(() => this.step -= 1)
         } else {
           Blank().width(48)
         }
