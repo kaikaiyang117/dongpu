@@ -6,6 +6,7 @@ const toolDir = dirname(fileURLToPath(import.meta.url));
 const harmonyDir = dirname(toolDir);
 const projectDir = dirname(harmonyDir);
 const datasetDir = join(projectDir, 'assets/vendor/exercises-dataset');
+const dataDir = join(harmonyDir, 'data');
 const rawfileDir = join(harmonyDir, 'entry/src/main/resources/rawfile');
 const imageDir = join(rawfileDir, 'exercise_images');
 
@@ -45,26 +46,25 @@ const beginnerIds = new Set([
   '0599', '0603', '0818', '0868', '0874', '1299', '1350', '1452', '2287'
 ]);
 
-const preferredNames = {
-  '0017': '辅助引体', '0175': '跪姿绳索卷腹', '0179': '绳索低位夹胸', '0195': '牧师椅绳索弯举',
-  '0200': '绳索下压', '0215': '绳索反向飞鸟', '0577': '坐姿推胸', '0584': '器械侧平举',
-  '0585': '腿屈伸', '0599': '坐姿腿弯举', '0603': '器械推肩', '0818': '高位下拉',
-  '0868': '绳索弯举', '0874': '站姿绳索卷腹', '1299': '上斜推胸', '1350': '坐姿划船',
-  '1452': '器械卷腹', '2287': '腿举'
-};
-
 const source = JSON.parse(await readFile(join(datasetDir, 'data/exercises.json'), 'utf8'));
+const localization = JSON.parse(await readFile(join(dataDir, 'exercise_localization.zh-CN.json'), 'utf8'));
+const metadataOverrides = JSON.parse(await readFile(join(dataDir, 'exercise_metadata_overrides.json'), 'utf8'));
 await mkdir(imageDir, { recursive: true });
 
 const catalog = [];
 for (const item of source) {
+  const localized = localization[item.id];
+  const metadata = metadataOverrides[item.id] ?? {};
   const imageName = parse(item.image).base;
   const motionName = `${parse(item.gif_url).name}.mp4`;
   await cp(join(datasetDir, item.image), join(imageDir, imageName));
   const steps = item.instruction_steps?.zh?.filter(Boolean) ?? [];
   catalog.push({
     id: item.id,
-    name: preferredNames[item.id] ?? item.name,
+    nameEn: item.name,
+    nameZh: localized?.nameZh ?? '',
+    aliasesZh: localized?.aliasesZh ?? [],
+    name: localized?.nameZh ?? item.name,
     partId: item.body_part,
     equipment: equipment[item.equipment] ?? item.equipment,
     target: targets[item.target] ?? item.target,
@@ -73,9 +73,14 @@ for (const item of source) {
     equipmentSetup: `调整${equipment[item.equipment] ?? item.equipment}到舒适且稳定的位置，先用轻重量确认动作路径。`,
     imagePath: `exercise_images/${imageName}`,
     motionPath: `exercise_videos/${motionName}`,
+    difficulty: metadata.difficulty ?? 'unknown',
+    mechanic: metadata.mechanic ?? 'unknown',
+    force: metadata.force ?? 'unknown',
+    movementPattern: metadata.movementPattern ?? 'other',
     recommended: beginnerIds.has(item.id),
     recommendedForBeginner: beginnerIds.has(item.id),
     gymEligible: true,
+    localizationStatus: localized?.status ?? 'raw',
     contentReviewStatus: beginnerIds.has(item.id) ? 'approved' : 'reviewed',
     libraryVisible: true
   });

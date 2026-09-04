@@ -84,7 +84,7 @@ export struct TrainingReadyPage {
                 .width(18)
                 .fontSize(11)
                 .fontColor(APP_COLOR_GREEN_DARK)
-              Text(this.exercise(item.exerciseId).name)
+              Text(this.exercise(item.exerciseId).displayName)
                 .layoutWeight(1)
                 .fontSize(14)
                 .fontWeight(FontWeight.Bold)

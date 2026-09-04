@@ -55,19 +55,19 @@ export class BeginnerProgram {
 }
 
 const WORKOUT_A: ProgramWorkout = new ProgramWorkout('A', '全身训练', 40, [
-  new ProgramExercise('2287', '腿举', '腿部', '固定器械', 'exercise_images/2287-V07qpXy.jpg'),
-  new ProgramExercise('0577', '坐姿推胸', '胸部', '固定器械', 'exercise_images/0577-T0yTjgW.jpg'),
-  new ProgramExercise('0818', '高位下拉', '背部', '龙门架', 'exercise_images/0818-rkg41Fb.jpg'),
-  new ProgramExercise('0599', '坐姿腿弯举', '腿部', '固定器械', 'exercise_images/0599-Zg3XY7P.jpg', 3, 10, 12),
-  new ProgramExercise('1350', '坐姿划船', '背部', '固定器械', 'exercise_images/1350-7I6LNUG.jpg')
+  new ProgramExercise('2287', '', '腿部', '固定器械', 'exercise_images/2287-V07qpXy.jpg'),
+  new ProgramExercise('0577', '', '胸部', '固定器械', 'exercise_images/0577-T0yTjgW.jpg'),
+  new ProgramExercise('0818', '', '背部', '龙门架', 'exercise_images/0818-rkg41Fb.jpg'),
+  new ProgramExercise('0599', '', '腿部', '固定器械', 'exercise_images/0599-Zg3XY7P.jpg', 3, 10, 12),
+  new ProgramExercise('1350', '', '背部', '固定器械', 'exercise_images/1350-7I6LNUG.jpg')
 ]);
 
 const WORKOUT_B: ProgramWorkout = new ProgramWorkout('B', '全身训练', 38, [
-  new ProgramExercise('1299', '上斜推胸', '胸部', '固定器械', 'exercise_images/1299-jHAnWmT.jpg'),
-  new ProgramExercise('0603', '器械推肩', '肩部', '固定器械', 'exercise_images/0603-67n3r98.jpg'),
-  new ProgramExercise('0017', '辅助引体', '背部', '固定器械', 'exercise_images/0017-kiJ4Z2K.jpg'),
-  new ProgramExercise('0585', '腿屈伸', '腿部', '固定器械', 'exercise_images/0585-my33uHU.jpg', 3, 10, 12),
-  new ProgramExercise('1452', '器械卷腹', '核心', '固定器械', 'exercise_images/1452-Wgaz7pm.jpg')
+  new ProgramExercise('1299', '', '胸部', '固定器械', 'exercise_images/1299-jHAnWmT.jpg'),
+  new ProgramExercise('0603', '', '肩部', '固定器械', 'exercise_images/0603-67n3r98.jpg'),
+  new ProgramExercise('0017', '', '背部', '固定器械', 'exercise_images/0017-kiJ4Z2K.jpg'),
+  new ProgramExercise('0585', '', '腿部', '固定器械', 'exercise_images/0585-my33uHU.jpg', 3, 10, 12),
+  new ProgramExercise('1452', '', '核心', '固定器械', 'exercise_images/1452-Wgaz7pm.jpg')
 ]);
 
 export const BEGINNER_PROGRAM: BeginnerProgram = new BeginnerProgram('beginner-ab', '新手全身 A/B', [WORKOUT_A, WORKOUT_B]);

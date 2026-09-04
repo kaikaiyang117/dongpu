@@ -308,7 +308,7 @@ export struct AppRoot {
         return new ProgramExercise(item.exerciseId, item.exerciseId, '', '', '', item.plannedSets,
           item.repMin, item.repMax, item.restSeconds, item.id, item.weightIncrementKg);
       }
-      return new ProgramExercise(catalogExercise.id, catalogExercise.name, this.userPartName(catalogExercise),
+      return new ProgramExercise(catalogExercise.id, catalogExercise.displayName, this.userPartName(catalogExercise),
         catalogExercise.equipment, catalogExercise.imagePath, item.plannedSets, item.repMin, item.repMax,
         item.restSeconds, item.id, item.weightIncrementKg);
     });
@@ -480,7 +480,7 @@ export struct AppRoot {
       }
       return new ProgramExercise(
         catalogExercise.id,
-        catalogExercise.name,
+        catalogExercise.displayName,
         this.userPartName(catalogExercise),
         catalogExercise.equipment,
         catalogExercise.imagePath,
@@ -690,7 +690,7 @@ export struct AppRoot {
     const programExercises: ProgramExercise[] = items.map((item: PlanItem) => {
       const exercise: Exercise = findExercise(this.exercises, item.exerciseId);
       return new ProgramExercise(
-        exercise.id, exercise.name, this.userPartName(exercise), exercise.equipment, exercise.imagePath,
+        exercise.id, exercise.displayName, this.userPartName(exercise), exercise.equipment, exercise.imagePath,
         item.sets, item.repMin, item.repMax, item.restSeconds
       );
     });
@@ -822,7 +822,7 @@ export struct AppRoot {
     }
     const exercise: Exercise = findExercise(this.exercises, exerciseId);
     const replacement: ProgramExercise = new ProgramExercise(
-      exercise.id, exercise.name, this.currentActiveExercise().partNameSnapshot, exercise.equipment,
+      exercise.id, exercise.displayName, this.currentActiveExercise().partNameSnapshot, exercise.equipment,
       exercise.imagePath
     );
     const session: WorkoutSession = await this.workoutRepository.replaceCurrentExercise(this.activeSession,
@@ -1060,7 +1060,7 @@ export struct AppRoot {
           savedPlanMinutes: Math.max(20, this.savedPlanItems.length * 7),
           savedPlanSummary: this.savedPlanItems.slice(0, 3).map((item: PlanItem) => {
             const ex: Exercise = findExercise(this.exercises, item.exerciseId);
-            return ex.name;
+            return ex.displayName;
           }).join(' · ') + (this.planItems.length > 3 ? ' · …' : ''),
           onStartRecommended: () => this.openTodayPlanPreview(),
           onOpenProgramWorkout: (code: string) => this.openProgramPreview(code),
@@ -1207,7 +1207,7 @@ export struct AppRoot {
       } else if (this.route === AppRoute.ExerciseDetail || this.route === AppRoute.ExerciseLibrary) {
         AppHeader({
           title: this.route === AppRoute.ExerciseDetail ?
-            findExercise(this.exercises, this.detailExerciseId).name : '动作',
+            findExercise(this.exercises, this.detailExerciseId).displayName : '动作',
           showBack: !(this.route === AppRoute.ExerciseLibrary && this.libraryFromTab),
           backGlyph: '‹',
           actionLabel: this.route === AppRoute.ExerciseLibrary ? '' : '',

@@ -1,5 +1,6 @@
 import { util } from '@kit.ArkTS';
 import { resourceManager } from '@kit.LocalizationKit';
+import { ExerciseResolver } from '../domain/exercise/ExerciseResolver';
 import { BodyPart, Exercise, ExerciseRecord } from '../model/Exercise';
 
 export const BODY_PARTS: BodyPart[] = [
@@ -89,4 +90,13 @@ export function findExercise(exercises: Exercise[], id: string): Exercise {
 
 export function findExerciseExact(exercises: Exercise[], id: string): Exercise | undefined {
   return exercises.find((exercise: Exercise) => exercise.id === id);
+}
+
+export function searchLibraryExercises(exercises: Exercise[], keyword: string): Exercise[] {
+  const resolver: ExerciseResolver = new ExerciseResolver(getLibraryExercises(exercises));
+  return resolver.search(keyword);
+}
+
+export function resolveExerciseName(exercises: Exercise[], text: string): Exercise | undefined {
+  return new ExerciseResolver(exercises).resolveByName(text);
 }

@@ -34,7 +34,7 @@ export struct ExerciseAlternativePage {
         .objectFit(ImageFit.Contain)
         .borderRadius(14)
         Column({ space: 7 }) {
-          Text(exercise.name)
+          Text(exercise.displayName)
             .fontSize(17)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)

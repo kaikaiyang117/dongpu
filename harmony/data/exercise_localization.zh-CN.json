@@ -1,0 +1,128 @@
+{
+  "0017": {
+    "nameZh": "辅助引体",
+    "aliasesZh": ["辅助引体向上"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0175": {
+    "nameZh": "跪姿绳索卷腹",
+    "aliasesZh": ["绳索跪姿卷腹"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0179": {
+    "nameZh": "低位绳索夹胸",
+    "aliasesZh": ["绳索低位夹胸", "站姿绳索夹胸"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0195": {
+    "nameZh": "绳索牧师弯举",
+    "aliasesZh": ["牧师椅绳索弯举"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0200": {
+    "nameZh": "绳索下压",
+    "aliasesZh": ["绳索三头下压"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0215": {
+    "nameZh": "坐姿绳索反向飞鸟",
+    "aliasesZh": ["绳索反向飞鸟", "坐姿绳索后束飞鸟"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0577": {
+    "nameZh": "器械坐姿推胸",
+    "aliasesZh": ["坐姿推胸", "器械推胸"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0584": {
+    "nameZh": "器械侧平举",
+    "aliasesZh": ["器械侧举"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0585": {
+    "nameZh": "腿屈伸",
+    "aliasesZh": ["器械腿屈伸"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0599": {
+    "nameZh": "坐姿腿弯举",
+    "aliasesZh": ["器械腿弯举", "腿弯举"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0603": {
+    "nameZh": "器械推肩",
+    "aliasesZh": ["坐姿器械推肩", "器械肩推"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0818": {
+    "nameZh": "高位下拉",
+    "aliasesZh": ["绳索高位下拉", "宽握高位下拉", "对握高位下拉"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0868": {
+    "nameZh": "绳索弯举",
+    "aliasesZh": ["绳索二头弯举"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "0874": {
+    "nameZh": "站姿绳索卷腹",
+    "aliasesZh": ["绳索站姿卷腹"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "1299": {
+    "nameZh": "上斜器械推胸",
+    "aliasesZh": ["上斜推胸", "上斜器械卧推"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "1350": {
+    "nameZh": "坐姿划船",
+    "aliasesZh": ["器械坐姿划船", "坐姿器械划船"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "1452": {
+    "nameZh": "器械卷腹",
+    "aliasesZh": ["坐姿器械卷腹"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "2287": {
+    "nameZh": "腿举",
+    "aliasesZh": ["器械腿举", "单腿举"],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  }
+}

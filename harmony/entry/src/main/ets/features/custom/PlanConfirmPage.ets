@@ -88,7 +88,7 @@ export struct PlanConfirmPage {
           .fontWeight(FontWeight.Bold)
           .fontColor(APP_COLOR_GREEN_DARK)
         Column({ space: 4 }) {
-          Text(this.exercise(item.exerciseId).name)
+          Text(this.exercise(item.exerciseId).displayName)
             .fontSize(15)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)

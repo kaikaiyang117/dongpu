@@ -1,0 +1,20 @@
+{
+  "0017": { "difficulty": "beginner", "mechanic": "compound", "force": "pull", "movementPattern": "vertical_pull" },
+  "0175": { "difficulty": "beginner", "mechanic": "isolation", "force": "mixed", "movementPattern": "core_flexion" },
+  "0179": { "difficulty": "beginner", "mechanic": "isolation", "force": "push", "movementPattern": "horizontal_push" },
+  "0195": { "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "movementPattern": "other" },
+  "0200": { "difficulty": "beginner", "mechanic": "isolation", "force": "push", "movementPattern": "other" },
+  "0215": { "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "movementPattern": "other" },
+  "0577": { "difficulty": "beginner", "mechanic": "compound", "force": "push", "movementPattern": "horizontal_push" },
+  "0584": { "difficulty": "beginner", "mechanic": "isolation", "force": "push", "movementPattern": "other" },
+  "0585": { "difficulty": "beginner", "mechanic": "isolation", "force": "push", "movementPattern": "other" },
+  "0599": { "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "movementPattern": "other" },
+  "0603": { "difficulty": "beginner", "mechanic": "compound", "force": "push", "movementPattern": "vertical_push" },
+  "0818": { "difficulty": "beginner", "mechanic": "compound", "force": "pull", "movementPattern": "vertical_pull" },
+  "0868": { "difficulty": "beginner", "mechanic": "isolation", "force": "pull", "movementPattern": "other" },
+  "0874": { "difficulty": "beginner", "mechanic": "isolation", "force": "mixed", "movementPattern": "core_flexion" },
+  "1299": { "difficulty": "beginner", "mechanic": "compound", "force": "push", "movementPattern": "horizontal_push" },
+  "1350": { "difficulty": "beginner", "mechanic": "compound", "force": "pull", "movementPattern": "horizontal_pull" },
+  "1452": { "difficulty": "beginner", "mechanic": "isolation", "force": "mixed", "movementPattern": "core_flexion" },
+  "2287": { "difficulty": "beginner", "mechanic": "compound", "force": "push", "movementPattern": "squat" }
+}

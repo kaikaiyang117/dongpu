@@ -8,7 +8,7 @@ import {
   APP_COLOR_TEXT,
   APP_COLOR_TEXT_TERTIARY
 } from '../../app/AppTheme';
-import { BODY_PARTS, exerciseMatchesPart, getLibraryExercises, userPartId } from '../../data/ExerciseCatalog';
+import { BODY_PARTS, exerciseMatchesPart, getLibraryExercises, searchLibraryExercises, userPartId } from '../../data/ExerciseCatalog';
 import { BodyPart, Exercise } from '../../model/Exercise';
 
 @Component
@@ -16,6 +16,7 @@ export struct ExerciseLibraryPage {
   @Prop exercises: Exercise[] = [];
   @Prop selectedPartId: string = 'chest';
   @Prop selectedEquipment: string = '全部';
+  @State searchKeyword: string = '';
   onSelectPart: (id: string) => void = () => {};
   onSelectEquipment: (equipment: string) => void = () => {};
   onOpenExercise: (id: string) => void = () => {};
@@ -45,7 +46,7 @@ export struct ExerciseLibraryPage {
   }
 
   private visibleExercises(): Exercise[] {
-    return getLibraryExercises(this.exercises).filter((exercise: Exercise) => {
+    return searchLibraryExercises(this.exercises, this.searchKeyword).filter((exercise: Exercise) => {
       return exerciseMatchesPart(exercise, this.selectedPartId) &&
         (this.selectedEquipment === '全部' || exercise.equipment === this.selectedEquipment);
     });
@@ -115,7 +116,7 @@ export struct ExerciseLibraryPage {
 
       Column({ space: 7 }) {
         Row({ space: 7 }) {
-          Text(exercise.name)
+          Text(exercise.displayName)
             .fontSize(16)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)
@@ -154,7 +155,7 @@ export struct ExerciseLibraryPage {
     .backgroundColor(Color.White)
     .border({ width: 1, color: APP_COLOR_LINE })
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
-    .accessibilityText(`${exercise.name}，${this.partName(userPartId(exercise))}，${exercise.equipment}`)
+    .accessibilityText(`${exercise.displayName}，${this.partName(userPartId(exercise))}，${exercise.equipment}`)
     .onClick(() => this.onOpenExercise(exercise.id))
   }
 
@@ -171,6 +172,12 @@ export struct ExerciseLibraryPage {
       }
       .alignItems(HorizontalAlign.Start)
       .width('100%')
+
+      TextInput({ placeholder: '搜索中文名、别名、英文名、器械或肌群', text: this.searchKeyword })
+        .height(46)
+        .fontSize(14)
+        .backgroundColor(Color.White)
+        .onChange((value: string) => this.searchKeyword = value)
 
       Scroll() {
         Row({ space: 8 }) {

@@ -131,7 +131,7 @@ export struct RestPage {
   @Builder
   TipsContent() {
     Column({ space: 18 }) {
-      Text(this.tipsExercise().name)
+      Text(this.tipsExercise().displayName)
         .width('100%')
         .fontSize(22)
         .fontWeight(FontWeight.Bold)

@@ -13,7 +13,7 @@ import {
   APP_PAGE_MARGIN
 } from '../../app/AppTheme';
 import { PageHero } from '../../components/PageHero';
-import { BODY_PARTS, exerciseMatchesPart, getApprovedExercises } from '../../data/ExerciseCatalog';
+import { BODY_PARTS, exerciseMatchesPart, searchLibraryExercises } from '../../data/ExerciseCatalog';
 import { BodyPart, Exercise } from '../../model/Exercise';
 
 @Component
@@ -21,6 +21,7 @@ export struct ExerciseSelectPage {
   @Prop exercises: Exercise[] = [];
   @Prop selectedParts: string[] = [];
   @Prop selectedExerciseIds: string[] = [];
+  @State searchKeyword: string = '';
   onToggleExercise: (id: string) => void = () => {};
 
   private partName(id: string): string {
@@ -48,7 +49,7 @@ export struct ExerciseSelectPage {
   }
 
   private visibleExercises(): Exercise[] {
-    return getApprovedExercises(this.exercises).filter((exercise: Exercise) =>
+    return searchLibraryExercises(this.exercises, this.searchKeyword).filter((exercise: Exercise) =>
       this.selectedParts.some((partId: string) => exerciseMatchesPart(exercise, partId)));
   }
 
@@ -72,7 +73,7 @@ export struct ExerciseSelectPage {
 
       Column({ space: 5 }) {
         Row({ space: 7 }) {
-          Text(exercise.name)
+          Text(exercise.displayName)
             .fontSize(15)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)
@@ -114,7 +115,7 @@ export struct ExerciseSelectPage {
     .backgroundColor(this.isSelected(exercise.id) ? APP_COLOR_GREEN_SOFT : Color.White)
     .border({ width: 1.5, color: this.isSelected(exercise.id) ? APP_COLOR_GREEN : APP_COLOR_LINE })
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.98 })
-    .accessibilityText(exercise.name)
+    .accessibilityText(exercise.displayName)
     .accessibilitySelected(this.isSelected(exercise.id))
     .onClick(() => this.onToggleExercise(exercise.id))
   }
@@ -127,6 +128,14 @@ export struct ExerciseSelectPage {
           title: '选择今天的动作',
           subtitle: '新手建议每个部位选择 2—3 个动作'
         })
+      }
+
+      ListItem() {
+        TextInput({ placeholder: '搜索中文名、别名、英文名、器械或肌群', text: this.searchKeyword })
+          .height(46)
+          .fontSize(14)
+          .backgroundColor(Color.White)
+          .onChange((value: string) => this.searchKeyword = value)
       }
 
       ListItem() {
