@@ -51,9 +51,45 @@ const localization = JSON.parse(await readFile(join(dataDir, 'exercise_localizat
 const metadataOverrides = JSON.parse(await readFile(join(dataDir, 'exercise_metadata_overrides.json'), 'utf8'));
 await mkdir(imageDir, { recursive: true });
 
+const localizationStatuses = new Set(['raw', 'auto', 'reviewed', 'approved']);
+
+function readLocalization(item) {
+  const localized = localization[item.id];
+  if (localized === undefined) {
+    return { nameZh: '', aliasesZh: [], status: 'raw' };
+  }
+  if (localized.nameZh !== undefined && typeof localized.nameZh !== 'string') {
+    throw new Error(`Invalid nameZh for ${item.id}: expected string`);
+  }
+  if (localized.aliasesZh !== undefined && !Array.isArray(localized.aliasesZh)) {
+    throw new Error(`Invalid aliasesZh for ${item.id}: expected array`);
+  }
+  const nameZh = (localized.nameZh ?? '').trim();
+  const aliasesZh = localized.aliasesZh ?? [];
+  const normalizedAliases = new Set();
+  for (const alias of aliasesZh) {
+    if (typeof alias !== 'string' || alias.trim().length === 0) {
+      throw new Error(`Invalid empty alias for ${item.id}`);
+    }
+    const normalizedAlias = alias.trim();
+    if (normalizedAlias === nameZh) {
+      throw new Error(`Alias duplicates nameZh for ${item.id}: ${normalizedAlias}`);
+    }
+    if (normalizedAliases.has(normalizedAlias)) {
+      throw new Error(`Duplicate alias for ${item.id}: ${normalizedAlias}`);
+    }
+    normalizedAliases.add(normalizedAlias);
+  }
+  const status = localized.status ?? 'raw';
+  if (!localizationStatuses.has(status)) {
+    throw new Error(`Invalid localizationStatus for ${item.id}: ${status}`);
+  }
+  return { nameZh, aliasesZh: aliasesZh.map((alias) => alias.trim()), status };
+}
+
 const catalog = [];
 for (const item of source) {
-  const localized = localization[item.id];
+  const localized = readLocalization(item);
   const metadata = metadataOverrides[item.id] ?? {};
   const imageName = parse(item.image).base;
   const motionName = `${parse(item.gif_url).name}.mp4`;
@@ -62,9 +98,9 @@ for (const item of source) {
   catalog.push({
     id: item.id,
     nameEn: item.name,
-    nameZh: localized?.nameZh ?? '',
-    aliasesZh: localized?.aliasesZh ?? [],
-    name: localized?.nameZh ?? item.name,
+    nameZh: localized.nameZh,
+    aliasesZh: localized.aliasesZh,
+    name: localized.nameZh.length > 0 ? localized.nameZh : item.name,
     partId: item.body_part,
     equipment: equipment[item.equipment] ?? item.equipment,
     target: targets[item.target] ?? item.target,
@@ -77,10 +113,12 @@ for (const item of source) {
     mechanic: metadata.mechanic ?? 'unknown',
     force: metadata.force ?? 'unknown',
     movementPattern: metadata.movementPattern ?? 'other',
+    variantTags: metadata.variantTags ?? [],
+    replacementGroup: metadata.replacementGroup ?? '',
     recommended: beginnerIds.has(item.id),
     recommendedForBeginner: beginnerIds.has(item.id),
     gymEligible: true,
-    localizationStatus: localized?.status ?? 'raw',
+    localizationStatus: localized.status,
     contentReviewStatus: beginnerIds.has(item.id) ? 'approved' : 'reviewed',
     libraryVisible: true
   });

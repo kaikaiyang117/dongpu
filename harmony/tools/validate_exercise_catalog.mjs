@@ -1,10 +1,13 @@
 import { access, readFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const harmonyDir = resolve(new URL('..', import.meta.url).pathname);
+const toolDir = dirname(fileURLToPath(import.meta.url));
+const harmonyDir = resolve(toolDir, '..');
 const projectDir = resolve(harmonyDir, '..');
 const datasetDir = join(projectDir, 'assets/vendor/exercises-dataset');
 const rawfileDir = join(harmonyDir, 'entry/src/main/resources/rawfile');
+const generatedPath = join(harmonyDir, 'data/generated/exercise_localization_candidates.zh-CN.json');
 
 const source = JSON.parse(await readFile(join(datasetDir, 'data/exercises.json'), 'utf8'));
 const localization = JSON.parse(await readFile(join(harmonyDir, 'data/exercise_localization.zh-CN.json'), 'utf8'));
@@ -20,27 +23,65 @@ const movementPatterns = new Set([
   'mobility', 'other'
 ]);
 const statuses = new Set(['raw', 'auto', 'reviewed', 'approved']);
+const variantTags = new Set([
+  'wide_grip', 'narrow_grip', 'underhand_grip', 'overhand_grip', 'neutral_grip', 'single_arm',
+  'double_arm', 'single_leg', 'double_leg', 'incline', 'decline', 'flat', 'standing', 'seated',
+  'kneeling', 'bent_over', 'assisted', 'weighted', 'paused', 'explosive', 'other'
+]);
+const variantAliasTokens = [
+  '单臂', '双臂', '单腿', '双腿', '宽握', '窄握', '反手', '正手', '对握', '上斜', '下斜',
+  '平板', '跪姿', '站姿', '坐姿', '俯身', '辅助', '负重', '暂停', '爆发'
+];
 const sourceIds = new Set(source.map((item) => item.id));
 const catalogIds = new Set(catalog.map((item) => item.id));
 
+function normalize(value) {
+  return String(value ?? '').trim().toLocaleLowerCase().replace(/\s+/g, '');
+}
+
+function distinctIds(ids) {
+  return [...new Set(ids)];
+}
+
 const invalidLocalizationIds = Object.keys(localization).filter((id) => !sourceIds.has(id));
 const invalidMetadataIds = Object.keys(metadata).filter((id) => !sourceIds.has(id));
+const malformedLocalization = [];
+for (const [id, item] of Object.entries(localization)) {
+  if (item.nameZh !== undefined && typeof item.nameZh !== 'string') {
+    malformedLocalization.push(`${id}:nameZh`);
+  }
+  if (item.aliasesZh !== undefined && (!Array.isArray(item.aliasesZh) ||
+    item.aliasesZh.some((alias) => typeof alias !== 'string' || alias.trim().length === 0))) {
+    malformedLocalization.push(`${id}:aliasesZh`);
+  }
+}
 const approvedWithoutName = Object.entries(localization)
   .filter(([, item]) => item.status === 'approved' && !item.nameZh?.trim())
   .map(([id]) => id);
 const invalidEnums = [];
 const missingMedia = [];
-const duplicateNames = new Map();
+const primaryNameIndex = new Map();
+const aliasIndex = new Map();
+const englishNameIndex = new Map();
+
+function addIndex(index, key, id) {
+  if (!key) return;
+  const ids = index.get(key) ?? [];
+  ids.push(id);
+  index.set(key, ids);
+}
 
 for (const item of catalog) {
   if (!difficulties.has(item.difficulty) || !mechanics.has(item.mechanic) || !forces.has(item.force) ||
-    !movementPatterns.has(item.movementPattern) || !statuses.has(item.localizationStatus)) {
+    !movementPatterns.has(item.movementPattern) || !statuses.has(item.localizationStatus) ||
+    (item.variantTags ?? []).some((tag) => !variantTags.has(tag)) ||
+    (item.replacementGroup !== undefined && typeof item.replacementGroup !== 'string')) {
     invalidEnums.push(item.id);
   }
-  if (item.nameZh?.trim()) {
-    const ids = duplicateNames.get(item.nameZh) ?? [];
-    ids.push(item.id);
-    duplicateNames.set(item.nameZh, ids);
+  addIndex(primaryNameIndex, normalize(item.nameZh), item.id);
+  addIndex(englishNameIndex, normalize(item.nameEn), item.id);
+  for (const alias of item.aliasesZh ?? []) {
+    addIndex(aliasIndex, normalize(alias), item.id);
   }
   for (const path of [item.imagePath, item.motionPath]) {
     try {
@@ -51,12 +92,60 @@ for (const item of catalog) {
   }
 }
 
-const duplicateNameEntries = [...duplicateNames.entries()].filter(([, ids]) => ids.length > 1);
+const duplicatePrimaryNameZh = [...primaryNameIndex.entries()]
+  .map(([name, ids]) => ({ name, ids: distinctIds(ids) }))
+  .filter((entry) => entry.ids.length > 1);
+const aliasToPrimaryConflicts = [];
+for (const [alias, ids] of aliasIndex.entries()) {
+  const aliasIds = distinctIds(ids);
+  const primaryIds = distinctIds(primaryNameIndex.get(alias) ?? []);
+  const conflictingIds = primaryIds.filter((id) => !aliasIds.includes(id));
+  if (conflictingIds.length > 0) {
+    aliasToPrimaryConflicts.push({ alias, aliasIds, primaryIds: conflictingIds });
+  }
+}
+const aliasToAliasConflicts = [...aliasIndex.entries()]
+  .map(([alias, ids]) => ({ alias, ids: distinctIds(ids) }))
+  .filter((entry) => entry.ids.length > 1);
+const englishNameConflicts = [...englishNameIndex.entries()]
+  .map(([name, ids]) => ({ name, ids: distinctIds(ids) }))
+  .filter((entry) => entry.ids.length > 1);
+const possibleVariantAlias = [];
+for (const item of catalog) {
+  for (const alias of item.aliasesZh ?? []) {
+    const token = variantAliasTokens.find((candidate) => alias.includes(candidate) && !item.nameZh.includes(candidate));
+    if (token !== undefined) {
+      possibleVariantAlias.push({ id: item.id, nameZh: item.nameZh, alias, token });
+    }
+  }
+}
+
+let generated = {};
+try {
+  generated = JSON.parse(await readFile(generatedPath, 'utf8'));
+} catch (_) {
+  generated = {};
+}
+const unknownTokenEntries = Object.values(generated).filter((item) => (item.unknownTokens ?? []).length > 0);
+
 const counts = { approved: 0, reviewed: 0, auto: 0, raw: 0 };
 for (const item of catalog) {
-  counts[item.localizationStatus] += 1;
+  if (counts[item.localizationStatus] !== undefined) counts[item.localizationStatus] += 1;
 }
+const missingCatalogIds = source.filter((item) => !catalogIds.has(item.id)).map((item) => item.id);
 const englishFallback = catalog.filter((item) => !item.nameZh?.trim()).length;
+const errors = {
+  invalidLocalizationIds,
+  invalidMetadataIds,
+  malformedLocalization,
+  approvedWithoutName,
+  invalidEnums,
+  missingMedia,
+  missingCatalogIds,
+  duplicatePrimaryNameZh,
+  aliasToPrimaryConflicts,
+  aliasToAliasConflicts
+};
 
 console.log(`总动作数：${source.length}`);
 console.log(`中文动作数：${catalog.filter((item) => item.nameZh?.trim()).length}`);
@@ -64,14 +153,19 @@ console.log(`approved：${counts.approved}`);
 console.log(`reviewed：${counts.reviewed}`);
 console.log(`auto：${counts.auto}`);
 console.log(`raw：${counts.raw}`);
-console.log(`重复中文名称：${duplicateNameEntries.length}`);
+console.log(`重复中文主名称：${duplicatePrimaryNameZh.length}`);
+console.log(`alias-primary 冲突：${aliasToPrimaryConflicts.length}`);
+console.log(`alias-alias 冲突：${aliasToAliasConflicts.length}`);
+console.log(`英文原名冲突（warning）：${englishNameConflicts.length}`);
+console.log(`疑似 variant alias：${possibleVariantAlias.length}`);
+console.log(`unknown tokens：${unknownTokenEntries.length}`);
 console.log(`无法匹配动作：${invalidLocalizationIds.length + invalidMetadataIds.length}`);
 console.log(`仍显示英文动作：${englishFallback}`);
 
-const missingCatalogIds = source.filter((item) => !catalogIds.has(item.id)).map((item) => item.id);
-if (invalidLocalizationIds.length || invalidMetadataIds.length || approvedWithoutName.length || invalidEnums.length ||
-  missingMedia.length || catalog.length !== source.length || missingCatalogIds.length) {
-  console.error(JSON.stringify({ invalidLocalizationIds, invalidMetadataIds, approvedWithoutName, invalidEnums, missingMedia,
-    missingCatalogIds }, null, 2));
+const hasErrors = Object.values(errors).some((entries) => entries.length > 0) || catalog.length !== source.length;
+if (hasErrors) {
+  console.error(JSON.stringify({ ...errors, catalogLength: catalog.length, sourceLength: source.length }, null, 2));
   process.exitCode = 1;
+} else {
+  console.log('exercise catalog validation: PASS');
 }

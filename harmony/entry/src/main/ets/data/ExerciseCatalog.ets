@@ -1,6 +1,6 @@
 import { util } from '@kit.ArkTS';
 import { resourceManager } from '@kit.LocalizationKit';
-import { ExerciseResolver } from '../domain/exercise/ExerciseResolver';
+import { ExerciseResolutionResult, ExerciseResolver } from '../domain/exercise/ExerciseResolver';
 import { BodyPart, Exercise, ExerciseRecord } from '../model/Exercise';
 
 export const BODY_PARTS: BodyPart[] = [
@@ -35,23 +35,26 @@ export function loadExercises(manager: resourceManager.ResourceManager): Exercis
 }
 
 export function getLibraryExercises(exercises: Exercise[]): Exercise[] {
-  return exercises.filter((exercise: Exercise) =>
-    exercise.contentReviewStatus === 'approved' && exercise.libraryVisible);
+  return exercises.filter(isUserVisibleExercise);
 }
 
 export function getApprovedExercises(exercises: Exercise[]): Exercise[] {
-  return exercises.filter((exercise: Exercise) => exercise.contentReviewStatus === 'approved' &&
-    exercise.libraryVisible);
+  return exercises.filter(isUserVisibleExercise);
 }
 
 export function getBeginnerRecommendedExercises(exercises: Exercise[]): Exercise[] {
-  return exercises.filter((exercise: Exercise) => exercise.contentReviewStatus === 'approved' &&
-    exercise.gymEligible && exercise.recommendedForBeginner);
+  return exercises.filter((exercise: Exercise) => isUserVisibleExercise(exercise) &&
+    exercise.localizationStatus === 'approved' && exercise.gymEligible && exercise.recommendedForBeginner);
 }
 
 export function getGymEligibleApprovedExercises(exercises: Exercise[]): Exercise[] {
-  return exercises.filter((exercise: Exercise) => exercise.contentReviewStatus === 'approved' &&
-    exercise.gymEligible);
+  return exercises.filter((exercise: Exercise) => isUserVisibleExercise(exercise) && exercise.gymEligible);
+}
+
+export function isUserVisibleExercise(exercise: Exercise): boolean {
+  const localizationReady: boolean = exercise.localizationStatus === 'reviewed' ||
+    exercise.localizationStatus === 'approved';
+  return exercise.contentReviewStatus === 'approved' && localizationReady && exercise.libraryVisible;
 }
 
 export function exerciseMatchesPart(exercise: Exercise, userPartId: string): boolean {
@@ -98,5 +101,9 @@ export function searchLibraryExercises(exercises: Exercise[], keyword: string): 
 }
 
 export function resolveExerciseName(exercises: Exercise[], text: string): Exercise | undefined {
+  return new ExerciseResolver(exercises).resolveUniqueByName(text);
+}
+
+export function resolveExerciseNameResult(exercises: Exercise[], text: string): ExerciseResolutionResult {
   return new ExerciseResolver(exercises).resolveByName(text);
 }

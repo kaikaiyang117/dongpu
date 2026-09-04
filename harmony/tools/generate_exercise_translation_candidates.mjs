@@ -10,59 +10,117 @@ const source = JSON.parse(await readFile(join(datasetDir, 'data/exercises.json')
 const terms = JSON.parse(await readFile(join(harmonyDir, 'data/exercise_terms.zh-CN.json'), 'utf8'));
 const outputDir = join(harmonyDir, 'data/generated');
 
-const rules = [
-  [/^cable kneeling crunch/i, () => '跪姿绳索卷腹'],
-  [/^cable standing crunch/i, () => '站姿绳索卷腹'],
-  [/^cable .*pushdown/i, () => '绳索下压'],
-  [/^cable .*fly/i, () => '绳索夹胸'],
-  [/^cable .*curl/i, () => '绳索弯举'],
-  [/^cable .*rear lateral raise/i, () => '绳索反向飞鸟'],
-  [/^lever incline chest press/i, () => '上斜器械推胸'],
-  [/^lever chest press/i, () => '器械推胸'],
-  [/^lever lateral raise/i, () => '器械侧平举'],
-  [/^lever leg extension/i, () => '腿屈伸'],
-  [/^lever seated leg curl/i, () => '坐姿腿弯举'],
-  [/^lever seated crunch/i, () => '器械卷腹'],
-  [/^lever seated row/i, () => '坐姿划船'],
-  [/^lever shoulder press/i, () => '器械推肩'],
-  [/^lever .*leg press/i, () => '腿举'],
-  [/^assisted pull-up/i, () => '辅助引体'],
-  [/lat pulldown/i, () => '高位下拉'],
-  [/bench press/i, () => '卧推'],
-  [/chest press/i, () => '推胸'],
-  [/deadlift/i, () => '硬拉'],
-  [/squat/i, () => '深蹲'],
-  [/lunge/i, () => '弓步'],
-  [/crunch/i, () => '卷腹'],
-  [/plank/i, () => '平板支撑'],
-  [/row/i, () => '划船'],
-  [/curl/i, () => '弯举'],
-  [/pushdown/i, () => '下压'],
-  [/lateral raise/i, () => '侧平举']
-];
+function normalizeName(value) {
+  return value.toLocaleLowerCase().replace(/[-_/]+/g, ' ').replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
 
-function candidateFor(item) {
-  const rule = rules.find(([pattern]) => pattern.test(item.name));
-  if (rule !== undefined) {
-    return { candidate: rule[1](), confidence: 0.82, reason: '基于动作结构与器械术语的确定性候选规则' };
+function escaped(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function entriesFor(category) {
+  return Object.entries(terms[category] ?? {})
+    .map(([phrase, translation]) => ({ phrase: normalizeName(phrase), translation }))
+    .sort((left, right) => right.phrase.length - left.phrase.length);
+}
+
+const categories = ['equipment', 'position', 'laterality', 'angle', 'grip', 'modifier', 'movement'];
+const entries = Object.fromEntries(categories.map((category) => [category, entriesFor(category)]));
+const stopWords = new Set([
+  'a', 'an', 'and', 'at', 'by', 'for', 'from', 'in', 'of', 'on', 'the', 'to', 'using', 'with',
+  'attachment', 'attachments', 'handle', 'handles', 'machine', 'version', 'style'
+]);
+
+function consumeCategory(working, category) {
+  const matches = [];
+  let remaining = working;
+  for (const entry of entries[category]) {
+    const pattern = new RegExp(`(?:^|\\s)${escaped(entry.phrase)}(?=\\s|$)`, 'g');
+    if (pattern.test(remaining)) {
+      matches.push(entry);
+      remaining = remaining.replace(pattern, ' ');
+    }
   }
-  const matchedTerm = Object.keys(terms).find((term) => item.name.toLocaleLowerCase().includes(term));
-  if (matchedTerm !== undefined) {
-    return { candidate: terms[matchedTerm], confidence: 0.55, reason: `命中术语参考：${matchedTerm}` };
+  return { remaining: remaining.replace(/\s+/g, ' ').trim(), matches };
+}
+
+function firstMatch(matches) {
+  return matches[0];
+}
+
+function parseExerciseName(nameEn) {
+  let remaining = normalizeName(nameEn);
+  const parsedMatches = {};
+  for (const category of categories) {
+    const result = consumeCategory(remaining, category);
+    remaining = result.remaining;
+    parsedMatches[category] = result.matches;
   }
-  return { candidate: '', confidence: 0.1, reason: '缺少足够结构信息，保留为空供审核' };
+
+  const unknownTokens = remaining.split(' ').filter((token) => token.length > 0 && !stopWords.has(token));
+  const movementMatches = parsedMatches.movement;
+  const movement = firstMatch(movementMatches);
+  const parsed = {};
+  for (const category of categories) {
+    const match = firstMatch(parsedMatches[category]);
+    if (match !== undefined) {
+      parsed[category] = parsedMatches[category].length === 1
+        ? match.phrase
+        : parsedMatches[category].map((item) => item.phrase).join(' + ');
+    }
+  }
+
+  if (movement === undefined) {
+    return {
+      candidate: '',
+      confidence: 0.1,
+      parsed,
+      unknownTokens,
+      reason: '未识别到可靠的主体动作，保留为空供审核'
+    };
+  }
+
+  const prefixCategories = ['equipment', 'angle', 'grip', 'laterality', 'position', 'modifier'];
+  const prefix = prefixCategories
+    .flatMap((category) => parsedMatches[category].map((match) => match.translation))
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .join('');
+  const movementText = movementMatches.map((match) => match.translation).join('');
+  const candidate = `${prefix}${movementText}`;
+  const structureCount = prefixCategories.reduce((count, category) => count + parsedMatches[category].length, 0);
+  let confidence = 0.65;
+  if (unknownTokens.length === 0) {
+    if (movementMatches.length > 1) confidence = structureCount > 0 ? 0.98 : 0.9;
+    else if (structureCount >= 2) confidence = 0.96;
+    else if (structureCount === 1) confidence = 0.9;
+  } else if (structureCount > 0) {
+    confidence = 0.78;
+  } else if (movementMatches.length > 1) {
+    confidence = 0.72;
+  }
+  const reason = unknownTokens.length === 0
+    ? `已解析${structureCount > 0 ? '器械/姿势/动作修饰与' : ''}主体动作`
+    : `主体动作明确，但有未识别词：${unknownTokens.join('、')}`;
+  return { candidate, confidence, parsed, unknownTokens, reason };
 }
 
 const candidates = {};
 for (const item of source) {
-  const result = candidateFor(item);
+  const result = parseExerciseName(item.name);
   candidates[item.id] = {
+    id: item.id,
     nameEn: item.name,
     candidate: result.candidate,
-    aliases: [],
     confidence: result.confidence,
+    parsed: result.parsed,
+    unknownTokens: result.unknownTokens,
     reason: result.reason,
-    status: 'auto'
+    aliases: [],
+    status: 'auto',
+    reviewDecision: 'pending',
+    reviewedName: '',
+    reviewNote: ''
   };
 }
 

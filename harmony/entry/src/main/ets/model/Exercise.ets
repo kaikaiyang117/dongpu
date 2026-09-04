@@ -16,6 +16,28 @@ export type ExerciseForce = 'push' | 'pull' | 'static' | 'mixed' | 'unknown';
 export type MovementPattern = 'horizontal_push' | 'vertical_push' | 'horizontal_pull' | 'vertical_pull' |
   'squat' | 'hinge' | 'lunge' | 'carry' | 'core_flexion' | 'core_rotation' |
   'core_anti_extension' | 'core_anti_rotation' | 'cardio' | 'mobility' | 'other';
+export type ExerciseVariantTag =
+  | 'wide_grip'
+  | 'narrow_grip'
+  | 'underhand_grip'
+  | 'overhand_grip'
+  | 'neutral_grip'
+  | 'single_arm'
+  | 'double_arm'
+  | 'single_leg'
+  | 'double_leg'
+  | 'incline'
+  | 'decline'
+  | 'flat'
+  | 'standing'
+  | 'seated'
+  | 'kneeling'
+  | 'bent_over'
+  | 'assisted'
+  | 'weighted'
+  | 'paused'
+  | 'explosive'
+  | 'other';
 
 export interface ExerciseRecord {
   id: string;
@@ -39,6 +61,8 @@ export interface ExerciseRecord {
   mechanic?: ExerciseMechanic;
   force?: ExerciseForce;
   movementPattern?: MovementPattern;
+  variantTags?: ExerciseVariantTag[];
+  replacementGroup?: string;
   contentReviewStatus?: ContentReviewStatus;
   libraryVisible?: boolean;
 }
@@ -67,6 +91,8 @@ export class Exercise {
   mechanic: ExerciseMechanic;
   force: ExerciseForce;
   movementPattern: MovementPattern;
+  variantTags: ExerciseVariantTag[];
+  replacementGroup: string;
   contentReviewStatus: ContentReviewStatus;
   libraryVisible: boolean;
 
@@ -92,6 +118,8 @@ export class Exercise {
     this.mechanic = record.mechanic ?? 'unknown';
     this.force = record.force ?? 'unknown';
     this.movementPattern = record.movementPattern ?? 'other';
+    this.variantTags = record.variantTags ?? [];
+    this.replacementGroup = record.replacementGroup ?? '';
     this.contentReviewStatus = record.contentReviewStatus ?? (record.recommended ? 'approved' : 'raw');
     this.libraryVisible = record.libraryVisible ?? true;
   }

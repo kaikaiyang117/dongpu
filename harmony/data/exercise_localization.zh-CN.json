@@ -8,14 +8,14 @@
   },
   "0175": {
     "nameZh": "跪姿绳索卷腹",
-    "aliasesZh": ["绳索跪姿卷腹"],
+    "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0179": {
     "nameZh": "低位绳索夹胸",
-    "aliasesZh": ["绳索低位夹胸", "站姿绳索夹胸"],
+    "aliasesZh": ["绳索低位夹胸"],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
@@ -36,7 +36,7 @@
   },
   "0215": {
     "nameZh": "坐姿绳索反向飞鸟",
-    "aliasesZh": ["绳索反向飞鸟", "坐姿绳索后束飞鸟"],
+    "aliasesZh": ["绳索反向飞鸟"],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
@@ -71,14 +71,14 @@
   },
   "0603": {
     "nameZh": "器械推肩",
-    "aliasesZh": ["坐姿器械推肩", "器械肩推"],
+    "aliasesZh": ["器械肩推"],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0818": {
     "nameZh": "高位下拉",
-    "aliasesZh": ["绳索高位下拉", "宽握高位下拉", "对握高位下拉"],
+    "aliasesZh": ["绳索高位下拉"],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
@@ -92,35 +92,35 @@
   },
   "0874": {
     "nameZh": "站姿绳索卷腹",
-    "aliasesZh": ["绳索站姿卷腹"],
+    "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "1299": {
     "nameZh": "上斜器械推胸",
-    "aliasesZh": ["上斜推胸", "上斜器械卧推"],
+    "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "1350": {
     "nameZh": "坐姿划船",
-    "aliasesZh": ["器械坐姿划船", "坐姿器械划船"],
+    "aliasesZh": ["器械划船"],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "1452": {
     "nameZh": "器械卷腹",
-    "aliasesZh": ["坐姿器械卷腹"],
+    "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "2287": {
     "nameZh": "腿举",
-    "aliasesZh": ["器械腿举", "单腿举"],
+    "aliasesZh": ["器械腿举"],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""

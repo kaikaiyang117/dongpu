@@ -187,3 +187,18 @@ When a current-state document becomes wrong, update or replace it instead of add
 Keep signing configuration local.
 
 Review upstream exercise catalog/media licensing and retain required attribution before distribution.
+
+## Exercise Catalog Quality Gate
+
+Exercise catalog changes require, in order:
+
+```text
+node harmony/tools/generate_exercise_translation_candidates.mjs
+node harmony/tools/sync_exercise_catalog.mjs
+node harmony/tools/validate_exercise_catalog.mjs
+HarmonyOS debug build
+```
+
+Machine-generated localization is never automatically marked `approved`. `aliasesZh` must contain
+only same-exercise synonyms, never biomechanically distinct variants. Ambiguous exercise names must
+not be resolved by returning the first match; callers must handle the resolver's `ambiguous` result.

@@ -1,17 +1,69 @@
 {
-  "bench press": "卧推",
-  "chest press": "推胸",
-  "pulldown": "下拉",
-  "row": "划船",
-  "curl": "弯举",
-  "pushdown": "下压",
-  "fly": "飞鸟/夹胸",
-  "lateral raise": "侧平举",
-  "front raise": "前平举",
-  "shrug": "耸肩",
-  "squat": "深蹲",
-  "deadlift": "硬拉",
-  "lunge": "弓步",
-  "crunch": "卷腹",
-  "plank": "平板支撑"
+  "equipment": {
+    "band": "弹力带",
+    "barbell": "杠铃",
+    "dumbbell": "哑铃",
+    "cable": "绳索",
+    "rope": "绳索",
+    "lever": "器械",
+    "smith": "史密斯机",
+    "body weight": "自重"
+  },
+  "position": {
+    "standing": "站姿",
+    "seated": "坐姿",
+    "kneeling": "跪姿",
+    "lying": "仰卧",
+    "bent over": "俯身"
+  },
+  "laterality": {
+    "single arm": "单臂",
+    "one arm": "单臂",
+    "single leg": "单腿",
+    "one leg": "单腿",
+    "alternating": "交替"
+  },
+  "angle": {
+    "incline": "上斜",
+    "decline": "下斜"
+  },
+  "grip": {
+    "wide grip": "宽握",
+    "narrow grip": "窄握",
+    "underhand": "反手",
+    "overhand": "正手",
+    "neutral grip": "对握"
+  },
+  "movement": {
+    "squat row": "深蹲划船",
+    "split squat": "分腿蹲",
+    "bench press": "卧推",
+    "chest press": "推胸",
+    "shoulder press": "推肩",
+    "lat pulldown": "高位下拉",
+    "pulldown": "下拉",
+    "seated row": "坐姿划船",
+    "leg press": "腿举",
+    "leg extension": "腿屈伸",
+    "leg curl": "腿弯举",
+    "lateral raise": "侧平举",
+    "front raise": "前平举",
+    "deadlift": "硬拉",
+    "lunge": "弓步",
+    "crunch": "卷腹",
+    "plank": "平板支撑",
+    "row": "划船",
+    "curl": "弯举",
+    "pushdown": "下压",
+    "fly": "飞鸟"
+  },
+  "modifier": {
+    "stiff leg": "直腿",
+    "straight leg": "直腿",
+    "rear": "后束",
+    "reverse": "反向",
+    "assisted": "辅助",
+    "weighted": "负重",
+    "paused": "暂停"
+  }
 }
