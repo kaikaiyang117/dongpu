@@ -194,6 +194,8 @@ Exercise catalog changes require, in order:
 
 ```text
 node harmony/tools/generate_exercise_translation_candidates.mjs
+node harmony/tools/report_exercise_unknown_tokens.mjs
+node harmony/tools/promote_exercise_localization_reviews.mjs
 node harmony/tools/sync_exercise_catalog.mjs
 node harmony/tools/validate_exercise_catalog.mjs
 HarmonyOS debug build
@@ -202,3 +204,6 @@ HarmonyOS debug build
 Machine-generated localization is never automatically marked `approved`. `aliasesZh` must contain
 only same-exercise synonyms, never biomechanically distinct variants. Ambiguous exercise names must
 not be resolved by returning the first match; callers must handle the resolver's `ambiguous` result.
+Candidate generation must never overwrite `harmony/data/exercise_localization_reviews.zh-CN.json`.
+Recommendation, content review and library visibility are maintained in
+`harmony/data/exercise_metadata_overrides.json`, not inferred from a hard-coded ID set.

@@ -38,6 +38,30 @@ export type ExerciseVariantTag =
   | 'paused'
   | 'explosive'
   | 'other';
+export type ReplacementGroup =
+  | 'horizontal_chest_press'
+  | 'incline_chest_press'
+  | 'chest_fly'
+  | 'vertical_shoulder_press'
+  | 'shoulder_raise'
+  | 'rear_delt_fly'
+  | 'vertical_back_pull'
+  | 'horizontal_back_pull'
+  | 'biceps_curl'
+  | 'triceps_extension'
+  | 'quad_extension'
+  | 'hamstring_curl'
+  | 'leg_press'
+  | 'squat'
+  | 'hinge'
+  | 'lunge'
+  | 'core_flexion'
+  | 'core_anti_extension'
+  | 'core_rotation'
+  | 'carry'
+  | 'cardio'
+  | 'mobility'
+  | 'other';
 
 export interface ExerciseRecord {
   id: string;
@@ -62,7 +86,7 @@ export interface ExerciseRecord {
   force?: ExerciseForce;
   movementPattern?: MovementPattern;
   variantTags?: ExerciseVariantTag[];
-  replacementGroup?: string;
+  replacementGroup?: ReplacementGroup;
   contentReviewStatus?: ContentReviewStatus;
   libraryVisible?: boolean;
 }
@@ -92,7 +116,7 @@ export class Exercise {
   force: ExerciseForce;
   movementPattern: MovementPattern;
   variantTags: ExerciseVariantTag[];
-  replacementGroup: string;
+  replacementGroup: ReplacementGroup;
   contentReviewStatus: ContentReviewStatus;
   libraryVisible: boolean;
 
@@ -119,7 +143,7 @@ export class Exercise {
     this.force = record.force ?? 'unknown';
     this.movementPattern = record.movementPattern ?? 'other';
     this.variantTags = record.variantTags ?? [];
-    this.replacementGroup = record.replacementGroup ?? '';
+    this.replacementGroup = record.replacementGroup ?? 'other';
     this.contentReviewStatus = record.contentReviewStatus ?? (record.recommended ? 'approved' : 'raw');
     this.libraryVisible = record.libraryVisible ?? true;
   }

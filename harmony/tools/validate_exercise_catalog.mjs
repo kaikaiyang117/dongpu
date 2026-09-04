@@ -28,6 +28,12 @@ const variantTags = new Set([
   'double_arm', 'single_leg', 'double_leg', 'incline', 'decline', 'flat', 'standing', 'seated',
   'kneeling', 'bent_over', 'assisted', 'weighted', 'paused', 'explosive', 'other'
 ]);
+const replacementGroups = new Set([
+  'horizontal_chest_press', 'incline_chest_press', 'chest_fly', 'vertical_shoulder_press',
+  'shoulder_raise', 'rear_delt_fly', 'vertical_back_pull', 'horizontal_back_pull', 'biceps_curl',
+  'triceps_extension', 'quad_extension', 'hamstring_curl', 'leg_press', 'squat', 'hinge', 'lunge',
+  'core_flexion', 'core_anti_extension', 'core_rotation', 'carry', 'cardio', 'mobility', 'other'
+]);
 const variantAliasTokens = [
   '单臂', '双臂', '单腿', '双腿', '宽握', '窄握', '反手', '正手', '对握', '上斜', '下斜',
   '平板', '跪姿', '站姿', '坐姿', '俯身', '辅助', '负重', '暂停', '爆发'
@@ -59,6 +65,7 @@ const approvedWithoutName = Object.entries(localization)
   .filter(([, item]) => item.status === 'approved' && !item.nameZh?.trim())
   .map(([id]) => id);
 const invalidEnums = [];
+const approvedMetadataMissing = [];
 const missingMedia = [];
 const primaryNameIndex = new Map();
 const aliasIndex = new Map();
@@ -75,8 +82,16 @@ for (const item of catalog) {
   if (!difficulties.has(item.difficulty) || !mechanics.has(item.mechanic) || !forces.has(item.force) ||
     !movementPatterns.has(item.movementPattern) || !statuses.has(item.localizationStatus) ||
     (item.variantTags ?? []).some((tag) => !variantTags.has(tag)) ||
-    (item.replacementGroup !== undefined && typeof item.replacementGroup !== 'string')) {
+    !replacementGroups.has(item.replacementGroup)) {
     invalidEnums.push(item.id);
+  }
+  if (item.localizationStatus === 'approved' &&
+    (item.difficulty === 'unknown' || item.mechanic === 'unknown' || item.force === 'unknown' ||
+      !Array.isArray(item.variantTags) || !replacementGroups.has(item.replacementGroup) ||
+      typeof item.recommended !== 'boolean' || typeof item.recommendedForBeginner !== 'boolean' ||
+      typeof item.gymEligible !== 'boolean' || item.contentReviewStatus !== 'approved' ||
+      item.libraryVisible !== true)) {
+    approvedMetadataMissing.push(item.id);
   }
   addIndex(primaryNameIndex, normalize(item.nameZh), item.id);
   addIndex(englishNameIndex, normalize(item.nameEn), item.id);
@@ -139,6 +154,7 @@ const errors = {
   invalidMetadataIds,
   malformedLocalization,
   approvedWithoutName,
+  approvedMetadataMissing,
   invalidEnums,
   missingMedia,
   missingCatalogIds,

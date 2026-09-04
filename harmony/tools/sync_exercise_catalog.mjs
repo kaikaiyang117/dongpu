@@ -41,11 +41,6 @@ const cautions = {
   waist: '保持呼吸，用核心控制动作，不要拉扯颈部或过度弯腰。'
 };
 
-const beginnerIds = new Set([
-  '0017', '0175', '0179', '0195', '0200', '0215', '0577', '0584', '0585',
-  '0599', '0603', '0818', '0868', '0874', '1299', '1350', '1452', '2287'
-]);
-
 const source = JSON.parse(await readFile(join(datasetDir, 'data/exercises.json'), 'utf8'));
 const localization = JSON.parse(await readFile(join(dataDir, 'exercise_localization.zh-CN.json'), 'utf8'));
 const metadataOverrides = JSON.parse(await readFile(join(dataDir, 'exercise_metadata_overrides.json'), 'utf8'));
@@ -114,13 +109,13 @@ for (const item of source) {
     force: metadata.force ?? 'unknown',
     movementPattern: metadata.movementPattern ?? 'other',
     variantTags: metadata.variantTags ?? [],
-    replacementGroup: metadata.replacementGroup ?? '',
-    recommended: beginnerIds.has(item.id),
-    recommendedForBeginner: beginnerIds.has(item.id),
-    gymEligible: true,
+    replacementGroup: metadata.replacementGroup ?? 'other',
+    recommended: metadata.recommended ?? false,
+    recommendedForBeginner: metadata.recommendedForBeginner ?? false,
+    gymEligible: metadata.gymEligible ?? true,
     localizationStatus: localized.status,
-    contentReviewStatus: beginnerIds.has(item.id) ? 'approved' : 'reviewed',
-    libraryVisible: true
+    contentReviewStatus: metadata.contentReviewStatus ?? 'raw',
+    libraryVisible: metadata.libraryVisible ?? false
   });
 }
 

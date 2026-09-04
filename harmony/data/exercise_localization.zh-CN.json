@@ -1,7 +1,258 @@
 {
+  "1001": {
+    "nameZh": "弹力带单腿分腿蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带单腿分腿蹲"
+  },
+  "1002": {
+    "nameZh": "弹力带仰卧直腿举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "仰卧直腿举变式"
+  },
+  "1004": {
+    "nameZh": "弹力带深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带深蹲"
+  },
+  "1005": {
+    "nameZh": "弹力带站姿卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "站姿弹力带卷腹"
+  },
+  "1008": {
+    "nameZh": "弹力带登阶",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带登阶"
+  },
+  "1009": {
+    "nameZh": "弹力带直腿硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带直腿硬拉"
+  },
+  "1011": {
+    "nameZh": "弹力带坐姿转体",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "坐姿弹力带转体"
+  },
+  "1013": {
+    "nameZh": "反手弹力带下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "反手纳入名称"
+  },
+  "1017": {
+    "nameZh": "弹力带Y平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带Y字平举"
+  },
+  "1299": {
+    "nameZh": "上斜器械推胸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "1323": {
+    "nameZh": "窄握绳索坐姿划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索握法变式"
+  },
+  "1350": {
+    "nameZh": "坐姿划船",
+    "aliasesZh": [
+      "器械划船"
+    ],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "1371": {
+    "nameZh": "杠铃坐姿提踵",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "坐姿杠铃小腿提踵"
+  },
+  "1372": {
+    "nameZh": "杠铃站姿提踵",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "站姿杠铃小腿提踵"
+  },
+  "1375": {
+    "nameZh": "绳索站姿提踵",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索站姿小腿提踵"
+  },
+  "1376": {
+    "nameZh": "绳索单腿站姿提踵",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单腿绳索提踵"
+  },
+  "1409": {
+    "nameZh": "杠铃臀桥",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃臀桥"
+  },
+  "1432": {
+    "nameZh": "站姿辅助引体向上",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "站姿辅助引体"
+  },
+  "1435": {
+    "nameZh": "杠铃低杠深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "低杠位深蹲"
+  },
+  "1436": {
+    "nameZh": "杠铃高杠深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "高杠位深蹲"
+  },
+  "1452": {
+    "nameZh": "器械卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "1459": {
+    "nameZh": "哑铃罗马尼亚硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃罗马尼亚硬拉"
+  },
+  "1630": {
+    "nameZh": "窄握绳索弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "窄握绳索弯举"
+  },
+  "1722": {
+    "nameZh": "绳索过头臂屈伸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "高位绳索过头三头伸展"
+  },
+  "1723": {
+    "nameZh": "单臂绳索下压",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂绳索三头下压"
+  },
+  "1760": {
+    "nameZh": "哑铃高脚杯深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "高脚杯深蹲"
+  },
+  "2135": {
+    "nameZh": "负重平板支撑",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "负重抗伸展支撑"
+  },
+  "2137": {
+    "nameZh": "哑铃阿诺德推举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "保留 Arnold 变式身份"
+  },
+  "2144": {
+    "nameZh": "坐姿绳索推胸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "坐姿绳索推胸"
+  },
+  "2287": {
+    "nameZh": "器械交替单腿腿举",
+    "aliasesZh": [
+      "器械腿举"
+    ],
+    "status": "approved",
+    "source": "dongpu-curated",
+    "note": ""
+  },
+  "2330": {
+    "nameZh": "全程绳索高位下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "全程动作范围纳入名称"
+  },
+  "2616": {
+    "nameZh": "V把绳索下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "V把垂直下拉"
+  },
+  "2796": {
+    "nameZh": "哑铃登阶弓步",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "登阶弓步复合动作"
+  },
+  "2963": {
+    "nameZh": "悬垂举腿",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "船长椅直腿举"
+  },
+  "3563": {
+    "nameZh": "单臂绳索下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂纳入名称"
+  },
   "0017": {
     "nameZh": "辅助引体",
-    "aliasesZh": ["辅助引体向上"],
+    "aliasesZh": [
+      "辅助引体向上"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
@@ -15,77 +266,101 @@
   },
   "0179": {
     "nameZh": "低位绳索夹胸",
-    "aliasesZh": ["绳索低位夹胸"],
+    "aliasesZh": [
+      "绳索低位夹胸"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0195": {
     "nameZh": "绳索牧师弯举",
-    "aliasesZh": ["牧师椅绳索弯举"],
+    "aliasesZh": [
+      "牧师椅绳索弯举"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0200": {
     "nameZh": "绳索下压",
-    "aliasesZh": ["绳索三头下压"],
+    "aliasesZh": [
+      "绳索三头下压"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0215": {
     "nameZh": "坐姿绳索反向飞鸟",
-    "aliasesZh": ["绳索反向飞鸟"],
+    "aliasesZh": [
+      "绳索反向飞鸟"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0577": {
     "nameZh": "器械坐姿推胸",
-    "aliasesZh": ["坐姿推胸", "器械推胸"],
+    "aliasesZh": [
+      "坐姿推胸",
+      "器械推胸"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0584": {
     "nameZh": "器械侧平举",
-    "aliasesZh": ["器械侧举"],
+    "aliasesZh": [
+      "器械侧举"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0585": {
     "nameZh": "腿屈伸",
-    "aliasesZh": ["器械腿屈伸"],
+    "aliasesZh": [
+      "器械腿屈伸"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0599": {
     "nameZh": "坐姿腿弯举",
-    "aliasesZh": ["器械腿弯举", "腿弯举"],
+    "aliasesZh": [
+      "器械腿弯举",
+      "腿弯举"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0603": {
     "nameZh": "器械推肩",
-    "aliasesZh": ["器械肩推"],
+    "aliasesZh": [
+      "器械肩推"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0818": {
-    "nameZh": "高位下拉",
-    "aliasesZh": ["绳索高位下拉"],
+    "nameZh": "对握高位下拉",
+    "aliasesZh": [
+      "绳索高位下拉"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
   },
   "0868": {
     "nameZh": "绳索弯举",
-    "aliasesZh": ["绳索二头弯举"],
+    "aliasesZh": [
+      "绳索二头弯举"
+    ],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
@@ -97,32 +372,767 @@
     "source": "dongpu-curated",
     "note": ""
   },
-  "1299": {
-    "nameZh": "上斜器械推胸",
+  "0025": {
+    "nameZh": "杠铃卧推",
+    "aliasesZh": [
+      "杠铃胸推"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "胸部平板杠铃推举"
+  },
+  "0047": {
+    "nameZh": "上斜杠铃卧推",
     "aliasesZh": [],
     "status": "approved",
-    "source": "dongpu-curated",
-    "note": ""
+    "source": "dongpu-review:agent",
+    "note": "上斜角度纳入主名称"
   },
-  "1350": {
-    "nameZh": "坐姿划船",
-    "aliasesZh": ["器械划船"],
-    "status": "approved",
-    "source": "dongpu-curated",
-    "note": ""
-  },
-  "1452": {
-    "nameZh": "器械卷腹",
+  "0033": {
+    "nameZh": "下斜杠铃卧推",
     "aliasesZh": [],
     "status": "approved",
-    "source": "dongpu-curated",
-    "note": ""
+    "source": "dongpu-review:agent",
+    "note": "下斜角度纳入主名称"
   },
-  "2287": {
-    "nameZh": "腿举",
-    "aliasesZh": ["器械腿举"],
+  "0122": {
+    "nameZh": "宽握杠铃卧推",
+    "aliasesZh": [],
     "status": "approved",
-    "source": "dongpu-curated",
-    "note": ""
+    "source": "dongpu-review:agent",
+    "note": "宽握是动作身份差异"
+  },
+  "0289": {
+    "nameZh": "哑铃卧推",
+    "aliasesZh": [
+      "哑铃胸推"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "常用哑铃水平推"
+  },
+  "0314": {
+    "nameZh": "上斜哑铃卧推",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "上斜角度纳入主名称"
+  },
+  "0301": {
+    "nameZh": "下斜哑铃卧推",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "下斜角度纳入主名称"
+  },
+  "0308": {
+    "nameZh": "哑铃飞鸟",
+    "aliasesZh": [
+      "哑铃夹胸"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "胸部孤立动作"
+  },
+  "0319": {
+    "nameZh": "上斜哑铃飞鸟",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "上斜角度纳入主名称"
+  },
+  "0151": {
+    "nameZh": "绳索卧推",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索水平推"
+  },
+  "0169": {
+    "nameZh": "上斜绳索卧推",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "上斜角度纳入主名称"
+  },
+  "0171": {
+    "nameZh": "上斜绳索夹胸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索上斜飞鸟"
+  },
+  "0227": {
+    "nameZh": "站姿绳索夹胸",
+    "aliasesZh": [
+      "站姿绳索飞鸟"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "站姿和绳索夹胸纳入名称"
+  },
+  "0251": {
+    "nameZh": "双杠臂屈伸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "胸部双杠臂屈伸"
+  },
+  "0279": {
+    "nameZh": "下斜俯卧撑",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "下斜角度纳入主名称"
+  },
+  "0027": {
+    "nameZh": "杠铃俯身划船",
+    "aliasesZh": [
+      "杠铃划船"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "背部水平拉"
+  },
+  "0064": {
+    "nameZh": "单臂杠铃俯身划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂和俯身纳入名称"
+  },
+  "0049": {
+    "nameZh": "上斜杠铃划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "上斜角度纳入名称"
+  },
+  "0073": {
+    "nameZh": "杠铃上拉",
+    "aliasesZh": [
+      "杠铃直臂上拉"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "背部上拉动作"
+  },
+  "0150": {
+    "nameZh": "绳索侧向下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "侧向下拉变式"
+  },
+  "0198": {
+    "nameZh": "绳索下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索垂直拉"
+  },
+  "0180": {
+    "nameZh": "绳索低位坐姿划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "低位和坐姿纳入名称"
+  },
+  "0861": {
+    "nameZh": "绳索坐姿划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索水平拉"
+  },
+  "0214": {
+    "nameZh": "单臂交替绳索坐姿划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂交替纳入名称"
+  },
+  "0218": {
+    "nameZh": "宽握绳索坐姿划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "宽握纳入名称"
+  },
+  "0245": {
+    "nameZh": "反手绳索下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "反手纳入名称"
+  },
+  "0238": {
+    "nameZh": "绳索直臂下压",
+    "aliasesZh": [
+      "绳索直臂下拉"
+    ],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "直臂下压"
+  },
+  "0015": {
+    "nameZh": "窄握辅助引体向上",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "窄握和辅助纳入名称"
+  },
+  "0970": {
+    "nameZh": "弹力带辅助引体向上",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带辅助引体"
+  },
+  "0974": {
+    "nameZh": "窄握弹力带下拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "窄握纳入名称"
+  },
+  "0041": {
+    "nameZh": "杠铃前平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃前平举"
+  },
+  "0091": {
+    "nameZh": "坐姿杠铃推举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "坐姿杠铃肩上推举"
+  },
+  "0105": {
+    "nameZh": "站姿杠铃布拉德福德推举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "保留 Bradford 变式身份"
+  },
+  "0123": {
+    "nameZh": "宽握杠铃直立划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "宽握直立划船"
+  },
+  "0162": {
+    "nameZh": "绳索前平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索前平举"
+  },
+  "0178": {
+    "nameZh": "绳索侧平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索侧平举"
+  },
+  "0192": {
+    "nameZh": "单臂绳索侧平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂侧平举"
+  },
+  "0219": {
+    "nameZh": "绳索推肩",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索肩部推举"
+  },
+  "0246": {
+    "nameZh": "绳索直立划船",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索直立划船"
+  },
+  "0310": {
+    "nameZh": "哑铃前平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃前平举"
+  },
+  "0334": {
+    "nameZh": "哑铃侧平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃侧平举"
+  },
+  "0355": {
+    "nameZh": "单臂哑铃侧平举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂侧平举"
+  },
+  "0359": {
+    "nameZh": "单臂哑铃反向飞鸟",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "带支撑单臂反向飞鸟"
+  },
+  "0361": {
+    "nameZh": "单臂哑铃推肩",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂哑铃肩推"
+  },
+  "0031": {
+    "nameZh": "杠铃弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃肱二头肌弯举"
+  },
+  "0080": {
+    "nameZh": "杠铃反向弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "反向握杠铃弯举"
+  },
+  "0070": {
+    "nameZh": "杠铃牧师椅弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "牧师椅杠铃弯举"
+  },
+  "0113": {
+    "nameZh": "站姿宽握杠铃弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "宽握杠铃弯举"
+  },
+  "0057": {
+    "nameZh": "仰卧杠铃臂屈伸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "仰卧杠铃肱三头肌伸展"
+  },
+  "0092": {
+    "nameZh": "坐姿杠铃过头臂屈伸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "坐姿过头三头伸展"
+  },
+  "0109": {
+    "nameZh": "站姿杠铃过头臂屈伸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "站姿过头三头伸展"
+  },
+  "0165": {
+    "nameZh": "绳索锤式弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索锤式弯举"
+  },
+  "0190": {
+    "nameZh": "单臂绳索弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单臂绳索弯举"
+  },
+  "0201": {
+    "nameZh": "直杆绳索下压",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "直杆附件绳索下压"
+  },
+  "0206": {
+    "nameZh": "绳索反向弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "反向握绳索弯举"
+  },
+  "0860": {
+    "nameZh": "绳索后踢",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索肱三头肌后踢"
+  },
+  "0032": {
+    "nameZh": "杠铃硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃髋主导硬拉"
+  },
+  "0085": {
+    "nameZh": "杠铃罗马尼亚硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "罗马尼亚硬拉变式"
+  },
+  "0044": {
+    "nameZh": "杠铃早安式",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "早安式髋铰链"
+  },
+  "0054": {
+    "nameZh": "杠铃弓步",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃弓步"
+  },
+  "0042": {
+    "nameZh": "杠铃前蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "前蹲变式"
+  },
+  "0043": {
+    "nameZh": "杠铃深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃全程深蹲"
+  },
+  "0068": {
+    "nameZh": "单腿杠铃深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单腿深蹲变式"
+  },
+  "0099": {
+    "nameZh": "单腿杠铃分腿蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "单腿分腿蹲"
+  },
+  "0114": {
+    "nameZh": "杠铃登阶",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠铃登阶"
+  },
+  "0157": {
+    "nameZh": "绳索硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索髋主导硬拉"
+  },
+  "0300": {
+    "nameZh": "哑铃硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃硬拉"
+  },
+  "0336": {
+    "nameZh": "哑铃弓步",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃弓步"
+  },
+  "0410": {
+    "nameZh": "哑铃单腿分腿蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃单腿分腿蹲"
+  },
+  "0413": {
+    "nameZh": "哑铃深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃深蹲"
+  },
+  "0432": {
+    "nameZh": "哑铃直腿硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "哑铃直腿硬拉"
+  },
+  "0760": {
+    "nameZh": "史密斯机腿举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "史密斯机腿举"
+  },
+  "0770": {
+    "nameZh": "史密斯机深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "史密斯机深蹲"
+  },
+  "0752": {
+    "nameZh": "史密斯机硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "史密斯机硬拉"
+  },
+  "0001": {
+    "nameZh": "四分之三仰卧起坐",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "保留四分之三幅度"
+  },
+  "0011": {
+    "nameZh": "辅助悬垂举膝",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "辅助悬垂举膝"
+  },
+  "0014": {
+    "nameZh": "辅助俄罗斯转体",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "辅助俄罗斯转体"
+  },
+  "0972": {
+    "nameZh": "弹力带自行车卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带自行车卷腹"
+  },
+  "0979": {
+    "nameZh": "弹力带水平Pallof推",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "水平抗旋转推"
+  },
+  "0981": {
+    "nameZh": "弹力带折刀仰卧起坐",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带折刀式仰卧起坐"
+  },
+  "0212": {
+    "nameZh": "绳索坐姿卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "坐姿绳索卷腹"
+  },
+  "0873": {
+    "nameZh": "绳索反向卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索反向卷腹"
+  },
+  "0243": {
+    "nameZh": "绳索转体",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "绳索躯干旋转"
+  },
+  "0271": {
+    "nameZh": "健身球卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "稳定球卷腹"
+  },
+  "0276": {
+    "nameZh": "死虫",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "死虫核心稳定动作"
+  },
+  "0277": {
+    "nameZh": "下斜卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "下斜角度卷腹"
+  },
+  "0464": {
+    "nameZh": "转体平板支撑",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "带转体的平板支撑"
+  },
+  "0475": {
+    "nameZh": "悬垂直腿举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "悬垂直腿举"
+  },
+  "0687": {
+    "nameZh": "俄罗斯转体",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "俄罗斯转体"
+  },
+  "0735": {
+    "nameZh": "仰卧起坐",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "第二版仰卧起坐"
+  },
+  "0826": {
+    "nameZh": "双杠悬垂举腿",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "双杠上的直腿举"
+  },
+  "0832": {
+    "nameZh": "负重卷腹",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "负重卷腹"
+  },
+  "0846": {
+    "nameZh": "负重俄罗斯转体",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "负重俄罗斯转体"
+  },
+  "0578": {
+    "nameZh": "器械硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "杠杆器械硬拉"
+  },
+  "0586": {
+    "nameZh": "器械俯卧腿弯举",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "器械俯卧腿弯举"
+  },
+  "0605": {
+    "nameZh": "器械站姿提踵",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "器械站姿小腿提踵"
+  },
+  "0750": {
+    "nameZh": "史密斯机箱式深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "史密斯机箱式深蹲"
+  },
+  "0768": {
+    "nameZh": "史密斯机单腿分腿蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "史密斯机单腿分腿蹲"
+  },
+  "0811": {
+    "nameZh": "六角杠铃硬拉",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "陷阱杠硬拉"
+  },
+  "0534": {
+    "nameZh": "壶铃高脚杯深蹲",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "壶铃高脚杯深蹲"
+  },
+  "0551": {
+    "nameZh": "壶铃土耳其起立",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "壶铃土耳其起立深蹲式"
+  },
+  "0997": {
+    "nameZh": "弹力带推肩",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带肩部推举"
+  },
+  "0993": {
+    "nameZh": "弹力带反向飞鸟",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "弹力带后束飞鸟"
+  },
+  "0207": {
+    "nameZh": "反手绳索下压",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "反手握绳索三头下压"
+  },
+  "0185": {
+    "nameZh": "仰卧绳索飞鸟",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "仰卧绳索夹胸"
+  },
+  "0302": {
+    "nameZh": "下斜哑铃飞鸟",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "下斜角度哑铃飞鸟"
+  },
+  "0170": {
+    "nameZh": "健身球上斜绳索夹胸",
+    "aliasesZh": [],
+    "status": "approved",
+    "source": "dongpu-review:agent",
+    "note": "健身球支撑的上斜绳索夹胸"
   }
 }

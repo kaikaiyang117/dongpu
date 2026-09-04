@@ -115,12 +115,7 @@ for (const item of source) {
     confidence: result.confidence,
     parsed: result.parsed,
     unknownTokens: result.unknownTokens,
-    reason: result.reason,
-    aliases: [],
-    status: 'auto',
-    reviewDecision: 'pending',
-    reviewedName: '',
-    reviewNote: ''
+    reason: result.reason
   };
 }
 
