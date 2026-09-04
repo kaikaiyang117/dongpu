@@ -39,7 +39,13 @@ import { BodyQuickEntryPage } from '../features/progress/BodyQuickEntryPage';
 import { WeeklyReviewPage } from '../features/progress/WeeklyReviewPage';
 import { Exercise } from '../model/Exercise';
 import { PlanItem } from '../model/WorkoutData';
-import { ActiveProgramState, ProgramWorkoutV2 } from '../domain/program/ProgramV2Models';
+import {
+  ActiveProgramState,
+  ProgramWeekStatus,
+  ProgramWorkoutV2,
+  TodayTrainingPlan,
+  TodayTrainingState
+} from '../domain/program/ProgramV2Models';
 import { OnboardingDraft, UserProfile } from '../domain/profile/ProfileModels';
 import { FitnessGoal } from '../domain/goal/GoalModels';
 import { BodyMeasurement } from '../domain/body/BodyModels';
@@ -48,6 +54,9 @@ import { DailyActivity } from '../domain/activity/ActivityModels';
 import { OnboardingService } from '../services/OnboardingService';
 import { WeeklyReviewService, WeeklyReviewViewModel } from '../services/WeeklyReviewService';
 import { TrendService } from '../services/TrendService';
+import { ProgramService } from '../services/ProgramService';
+import { TodayPlanService } from '../services/TodayPlanService';
+import { inputToKg } from '../utils/WeightUnit';
 
 @Component
 export struct AppRoot {
@@ -82,6 +91,8 @@ export struct AppRoot {
   @State upgradeWeightKg: number = 0;
   @State upgradeFrequency: number = 3;
   @State dashboard: DashboardViewModel = new DashboardViewModel();
+  @State todayPlan: TodayTrainingPlan = new TodayTrainingPlan();
+  @State programWeekStatus: ProgramWeekStatus = new ProgramWeekStatus();
   @State nutritionSummary: NutritionSummary = new NutritionSummary();
   @State nutritionQuickFoods: QuickFood[] = [];
   @State nutritionEntries: FoodEntry[] = [];
@@ -111,6 +122,8 @@ export struct AppRoot {
   private programRepository: ProgramRepository | undefined;
   private programWorkoutRecords: ProgramWorkoutV2[] = [];
   private dashboardService: DashboardService | undefined;
+  private programService: ProgramService | undefined;
+  private todayPlanService: TodayPlanService | undefined;
   private onboardingService: OnboardingService | undefined;
   private weeklyReviewService: WeeklyReviewService | undefined;
   private programCatalogValid: boolean = false;
@@ -130,7 +143,9 @@ export struct AppRoot {
       this.bodyRepository = new BodyRepository(hostContext);
       this.nutritionRepository = new NutritionRepository(hostContext);
       this.programRepository = new ProgramRepository(hostContext);
-      this.dashboardService = new DashboardService(hostContext);
+      this.todayPlanService = new TodayPlanService(hostContext);
+      this.programService = new ProgramService(hostContext);
+      this.dashboardService = new DashboardService(hostContext, this.todayPlanService);
       this.onboardingService = new OnboardingService(hostContext);
       this.weeklyReviewService = new WeeklyReviewService(hostContext);
       this.initializeApp();
@@ -148,7 +163,11 @@ export struct AppRoot {
       legacyOnboardingCompleted = settings.onboardingCompleted;
       const profile: UserProfile | undefined = await this.profileRepository.getProfile();
       const programState = await this.workoutRepository.getProgramState();
-      const activeWorkout: WorkoutSession | undefined = await this.workoutRepository.getActiveWorkout();
+      let activeWorkout: WorkoutSession | undefined = await this.workoutRepository.getActiveWorkout();
+      if (activeWorkout !== undefined && activeWorkout.phase === WorkoutPhase.Complete) {
+        await this.workoutRepository.finishWorkout(activeWorkout);
+        activeWorkout = await this.workoutRepository.getActiveWorkout();
+      }
       this.applyActiveWorkout(activeWorkout);
       await this.loadCustomPlan();
       this.weeklyFrequency = settings.weeklyFrequency === 4 ? 4 : 3;
@@ -196,11 +215,16 @@ export struct AppRoot {
 
   private async normalizeV2GoalFrequency(): Promise<void> {
     if (this.goalRepository === undefined || this.activeGoal.id <= 0) return;
-    if (this.activeGoal.trainingFrequencyMin === 3 || this.activeGoal.trainingFrequencyMin === 4) return;
-    await this.goalRepository.updateActiveTrainingPreference(3, this.activeGoal.trainingLocation,
+    if (this.activeGoal.trainingFrequencyMin === 3 &&
+      (this.activeGoal.trainingFrequencyMax === 3 || this.activeGoal.trainingFrequencyMax === 4)) {
+      this.weeklyFrequency = this.activeGoal.trainingFrequencyMax;
+      return;
+    }
+    await this.goalRepository.updateActiveTrainingPreference(this.activeGoal.trainingFrequencyMax >= 4 ? 4 : 3,
+      this.activeGoal.trainingLocation,
       this.activeGoal.dedicatedLegDay, this.activeGoal.preferMachines);
     this.activeGoal = await this.goalRepository.getActiveGoal() ?? this.activeGoal;
-    this.weeklyFrequency = 3;
+    this.weeklyFrequency = this.activeGoal.trainingFrequencyMax;
   }
 
   private async refreshDashboard(): Promise<void> {
@@ -208,6 +232,10 @@ export struct AppRoot {
       return;
     }
     this.dashboard = await this.dashboardService.load();
+    this.todayPlan = this.dashboard.todayPlan;
+    if (this.programService !== undefined) {
+      this.programWeekStatus = await this.programService.loadWeekStatus();
+    }
     await this.refreshWeeklyReviewStats();
   }
 
@@ -309,6 +337,14 @@ export struct AppRoot {
 
   private openRequiredPreview(): void {
     this.previewWorkoutCode = this.nextRequiredProgramWorkout()?.code ?? '';
+    this.route = AppRoute.WorkoutPreview;
+  }
+
+  private openTodayPlanPreview(): void {
+    if (this.todayPlan.state !== TodayTrainingState.Required && this.todayPlan.state !== TodayTrainingState.Optional) {
+      return;
+    }
+    this.previewWorkoutCode = this.todayPlan.workout?.code ?? '';
     this.route = AppRoute.WorkoutPreview;
   }
 
@@ -530,13 +566,18 @@ export struct AppRoot {
       const calories: number = OnboardingService.caloriesForWeight(draft.currentWeightKg, draft.frequencyMax);
       const protein: number = OnboardingService.proteinForWeight(draft.currentWeightKg);
       const existingProfile: UserProfile | undefined = await this.profileRepository.getProfile();
+      const existingGoal: FitnessGoal | undefined = await this.goalRepository.getActiveGoal();
+      const latestMeasurement: BodyMeasurement | undefined = await this.bodyRepository.getLatestMeasurement();
       const profile: UserProfile = new UserProfile(1, draft.heightCm, existingProfile?.sex ?? '',
         existingProfile?.birthYear ?? 0, false, existingProfile?.createdAt ?? now, now);
       await this.profileRepository.saveProfile(profile);
-      await this.bodyRepository.addMeasurement(new BodyMeasurement(0, now, draft.currentWeightKg, draft.waistCm,
-        0, 'onboarding'));
+      if (latestMeasurement === undefined || latestMeasurement.note !== 'onboarding' ||
+        latestMeasurement.weightKg !== draft.currentWeightKg || latestMeasurement.waistCm !== draft.waistCm) {
+        await this.bodyRepository.addMeasurement(new BodyMeasurement(0, now, draft.currentWeightKg, draft.waistCm,
+          0, 'onboarding'));
+      }
       const goal: FitnessGoal = await this.goalRepository.saveActiveGoal(new FitnessGoal(
-        0, draft.goalType, draft.currentWeightKg, draft.targetWeightKg, now, calories, protein, 8000,
+        existingGoal?.id ?? 0, draft.goalType, draft.currentWeightKg, draft.targetWeightKg, now, calories, protein, 8000,
         draft.frequencyMin, draft.frequencyMax, draft.trainingLocation, draft.dedicatedLegDay,
         draft.preferMachines, 'active', now, now
       ));
@@ -544,9 +585,9 @@ export struct AppRoot {
         1, goal.id, 'fat_loss_upper_priority_3_4', '1.0', now, 1, 0
       ));
       await this.profileRepository.setOnboardingCompleted(true);
-      await this.settingsRepository.completeOnboarding(draft.frequencyMin);
-      this.weeklyFrequency = draft.frequencyMin;
-      this.selectedFrequency = draft.frequencyMin;
+      await this.settingsRepository.completeOnboarding(draft.frequencyMax);
+      this.weeklyFrequency = draft.frequencyMax;
+      this.selectedFrequency = draft.frequencyMax;
       await this.loadActiveProgram();
       this.activeGoal = goal;
       await this.refreshDashboard();
@@ -812,7 +853,7 @@ export struct AppRoot {
     this.completedSession = finished;
     this.applyActiveWorkout(undefined);
     await this.loadHistory();
-    await this.refreshWeeklyReviewStats();
+    await this.refreshDashboard();
     this.route = AppRoute.WorkoutComplete;
   }
 
@@ -903,6 +944,7 @@ export struct AppRoot {
   BodyEntrySheetContent() {
     BodyQuickEntryPage({
       isSaving: this.isSaving,
+      weightUnit: this.weightUnit,
       onBack: () => this.showBodyEntrySheet = false,
       onSave: (measurement: BodyMeasurement) => this.saveBodyMeasurement(measurement)
     })
@@ -938,7 +980,8 @@ export struct AppRoot {
         DashboardPage({
           viewModel: this.dashboard,
           onResumeWorkout: () => this.openActiveWorkout(),
-          onOpenTraining: () => this.openRequiredPreview(),
+          onOpenTraining: () => this.openTodayPlanPreview(),
+          weightUnit: this.weightUnit,
           onOpenNutrition: () => this.openNutrition(),
           onRecordBody: () => this.openBodyEntry(),
           onRecordActivity: () => this.route = AppRoute.Profile
@@ -970,6 +1013,7 @@ export struct AppRoot {
           sessions: this.historySessions,
           weeklyCompleted: this.weeklyCompleted,
           weeklyFrequency: this.weeklyFrequency,
+          weightUnit: this.weightUnit,
           weeklyAverageCalories: this.weeklyAverageCalories,
           weeklyProteinDays: this.weeklyProteinDays,
           onOpenReview: () => this.openWeeklyReview()
@@ -982,6 +1026,7 @@ export struct AppRoot {
           nutrition: this.dashboard.nutrition,
           weeklyCompleted: this.weeklyCompleted,
           weeklyFrequency: this.weeklyFrequency,
+          weightUnit: this.weightUnit,
           proteinDays: this.weeklyProteinDays,
           nutritionLoggedDays: this.weeklyNutritionLoggedDays,
           averageCalories: this.weeklyAverageCalories,
@@ -1002,11 +1047,13 @@ export struct AppRoot {
           programName: this.programName,
           programWeek: this.programWeek,
           programWorkouts: this.programWorkouts,
-          nextRequiredWorkoutIndex: this.nextRequiredWorkoutIndex,
+          programWeekStatus: this.programWeekStatus,
+          todayPlan: this.todayPlan,
           hasActiveWorkout: this.hasActiveWorkout,
           activeWorkoutCode: this.activeSession?.workoutCode ?? '',
           activeWorkoutName: this.activeSession?.workoutNameSnapshot ?? '',
           activeCompletedExercises: this.activeCompletedExercises,
+          activeTotalExercises: this.activeSession?.exercises.length ?? 0,
           activeMinutes: this.activeMinutes,
           hasSavedPlan: this.customPlanSaved,
           savedPlanActionCount: this.savedPlanItems.length,
@@ -1015,7 +1062,7 @@ export struct AppRoot {
             const ex: Exercise = findExercise(this.exercises, item.exerciseId);
             return ex.name;
           }).join(' · ') + (this.planItems.length > 3 ? ' · …' : ''),
-          onStartRecommended: () => this.openRequiredPreview(),
+          onStartRecommended: () => this.openTodayPlanPreview(),
           onOpenProgramWorkout: (code: string) => this.openProgramPreview(code),
           onResumeWorkout: () => this.openActiveWorkout(),
           onStartCustom: () => this.route = AppRoute.CustomBody,
@@ -1084,7 +1131,7 @@ export struct AppRoot {
           onAbandon: () => this.abandonActiveWorkout(),
           onOpenAlternatives: () => this.route = AppRoute.ExerciseAlternatives,
           onCompleteSet: (weight: number, reps: number) => this.completeActiveSet(
-            this.weightUnit === 'lb' ? weight / 2.2046226218 : weight, reps
+            inputToKg(weight, this.weightUnit), reps
           )
         })
       } else if (this.route === AppRoute.ExerciseAlternatives && this.activeSession !== undefined) {

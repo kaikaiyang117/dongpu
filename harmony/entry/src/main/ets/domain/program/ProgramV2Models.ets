@@ -96,3 +96,68 @@ export class ActiveProgramState {
     this.nextRequiredWorkoutIndex = nextRequiredWorkoutIndex;
   }
 }
+
+export enum TodayTrainingState {
+  Active = 'active',
+  Required = 'required',
+  Optional = 'optional',
+  Recovery = 'recovery',
+  Completed = 'completed'
+}
+
+export class TodayTrainingPlan {
+  state: TodayTrainingState;
+  workout: ProgramWorkoutV2 | undefined;
+  title: string;
+  subtitle: string;
+  reason: string;
+
+  constructor(state: TodayTrainingState = TodayTrainingState.Recovery,
+    workout: ProgramWorkoutV2 | undefined = undefined, title: string = '', subtitle: string = '', reason: string = '') {
+    this.state = state;
+    this.workout = workout;
+    this.title = title;
+    this.subtitle = subtitle;
+    this.reason = reason;
+  }
+}
+
+export type ProgramWorkoutWeekState =
+  'completed' | 'next' | 'pending' | 'optional' | 'optional_completed';
+
+export class ProgramWorkoutWeekItem {
+  workout: ProgramWorkoutV2;
+  state: ProgramWorkoutWeekState;
+
+  constructor(workout: ProgramWorkoutV2 = new ProgramWorkoutV2(), state: ProgramWorkoutWeekState = 'pending') {
+    this.workout = workout;
+    this.state = state;
+  }
+}
+
+export class ProgramWeekStatus {
+  requiredCompleted: number;
+  requiredTarget: number;
+  optionalCompleted: boolean;
+  items: ProgramWorkoutWeekItem[];
+
+  constructor(requiredCompleted: number = 0, requiredTarget: number = 3, optionalCompleted: boolean = false,
+    items: ProgramWorkoutWeekItem[] = []) {
+    this.requiredCompleted = requiredCompleted;
+    this.requiredTarget = requiredTarget;
+    this.optionalCompleted = optionalCompleted;
+    this.items = items;
+  }
+}
+
+export class ProgramWorkoutCompletion {
+  programWorkoutId: string;
+  completedAt: number;
+  optional: boolean;
+
+  constructor(programWorkoutId: string = '', completedAt: number = 0, optional: boolean = false) {
+    this.programWorkoutId = programWorkoutId;
+    this.completedAt = completedAt;
+    this.optional = optional;
+  }
+}

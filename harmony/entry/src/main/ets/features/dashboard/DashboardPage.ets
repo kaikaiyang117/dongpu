@@ -8,22 +8,29 @@ import {
 } from '../../app/AppTheme';
 import { DashboardChecklistItem, DashboardViewModel } from '../../services/DashboardService';
 import { WeightTrendStatus } from '../../domain/progress/ProgressModels';
+import { TodayTrainingState } from '../../domain/program/ProgramV2Models';
+import { formatWeight, formatWeightChange } from '../../utils/WeightUnit';
 
 @Component
 export struct DashboardPage {
   @Prop viewModel: DashboardViewModel = new DashboardViewModel();
+  @Prop weightUnit: string = 'kg';
   onResumeWorkout: () => void = () => {};
   onOpenTraining: () => void = () => {};
   onOpenNutrition: () => void = () => {};
   onRecordBody: () => void = () => {};
   onRecordActivity: () => void = () => {};
 
+  private formatWeight(kg: number): string {
+    return formatWeight(kg, this.weightUnit);
+  }
+
   private trendText(): string {
     const trend = this.viewModel.weightTrend;
     if (trend.status === WeightTrendStatus.Insufficient) {
       return '数据积累中';
     }
-    return `${trend.changeKg > 0 ? '+' : ''}${trend.changeKg.toFixed(1)} kg · ${trend.changePercent > 0 ? '+' : ''}${trend.changePercent.toFixed(1)}% / 7日`;
+    return `${formatWeightChange(trend.changeKg, this.weightUnit)} · ${trend.changePercent > 0 ? '+' : ''}${trend.changePercent.toFixed(1)}% / 7日`;
   }
 
   private statusText(): string {
@@ -36,7 +43,7 @@ export struct DashboardPage {
 
   private latestWeightText(): string {
     return this.viewModel.latestWeight === undefined ? '记录第一笔体重' :
-      `${this.viewModel.latestWeight.weightKg.toFixed(1)} kg`;
+      this.formatWeight(this.viewModel.latestWeight.weightKg);
   }
 
   private checklistCount(): number {
@@ -58,7 +65,7 @@ export struct DashboardPage {
         }.alignItems(HorizontalAlign.Start)
         Blank()
         Column({ space: 5 }) {
-          Text(this.viewModel.goal === undefined ? '--' : `${this.viewModel.goal.targetWeightKg.toFixed(1)} kg`)
+        Text(this.viewModel.goal === undefined ? '--' : this.formatWeight(this.viewModel.goal.targetWeightKg))
             .fontSize(24).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
           Text('目标体重').fontSize(12).fontColor(APP_COLOR_MUTED)
         }.alignItems(HorizontalAlign.End)
@@ -147,12 +154,20 @@ export struct DashboardPage {
           .stateEffect(true)
           .onClick(() => this.onResumeWorkout())
       }.width('100%').padding(20).borderRadius(20).backgroundColor(APP_COLOR_GREEN)
+    } else if (this.viewModel.todayPlan.state === TodayTrainingState.Completed ||
+      this.viewModel.todayPlan.state === TodayTrainingState.Recovery) {
+      Column({ space: 8 }) {
+        Text(this.viewModel.todayPlan.title).fontSize(14).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
+        Text(this.viewModel.todayPlan.subtitle).fontSize(25).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+        Text(this.viewModel.todayPlan.reason).fontSize(14).fontColor(APP_COLOR_MUTED)
+      }.width('100%').padding(18).borderRadius(20).backgroundColor(APP_COLOR_GREEN_SOFT)
     } else if (this.viewModel.todayWorkout !== undefined) {
       Column({ space: 10 }) {
-        Text('今日训练').fontSize(14).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
-        Text(this.viewModel.todayWorkout.name).fontSize(25).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+        Text(this.viewModel.todayPlan.title).fontSize(14).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_MUTED)
+        Text(this.viewModel.todayPlan.subtitle).fontSize(25).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
         Text(`${this.viewModel.todayWorkout.exercises.length} 个动作 · 约 ${this.viewModel.todayWorkout.estimatedMinutes} 分钟`)
           .fontSize(14).fontColor(APP_COLOR_MUTED)
+        Text(this.viewModel.todayPlan.reason).fontSize(13).fontColor(APP_COLOR_MUTED)
         Button('开始训练').width('100%').height(52).fontSize(16).fontWeight(FontWeight.Bold)
           .fontColor(Color.White).borderRadius(16).backgroundColor(APP_COLOR_GREEN)
           .stateEffect(true)

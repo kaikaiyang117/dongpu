@@ -2,16 +2,16 @@ import { ActivityRepository } from '../data/repository/ActivityRepository';
 import { BodyRepository } from '../data/repository/BodyRepository';
 import { GoalRepository } from '../data/repository/GoalRepository';
 import { NutritionRepository } from '../data/repository/NutritionRepository';
-import { ProgramRepository } from '../data/repository/ProgramRepository';
 import { WorkoutRepository } from '../data/repository/WorkoutRepository';
 import { DailyActivity } from '../domain/activity/ActivityModels';
 import { BodyMeasurement } from '../domain/body/BodyModels';
 import { FitnessGoal } from '../domain/goal/GoalModels';
 import { NutritionSummary } from '../domain/nutrition/NutritionModels';
-import { ProgramWorkoutV2 } from '../domain/program/ProgramV2Models';
+import { ProgramWorkoutV2, TodayTrainingPlan, TodayTrainingState } from '../domain/program/ProgramV2Models';
 import { WaistTrend, WeightTrend } from '../domain/progress/ProgressModels';
 import { WorkoutSession } from '../domain/workout/WorkoutModels';
 import { TrendService } from './TrendService';
+import { TodayPlanService } from './TodayPlanService';
 
 export class DashboardChecklistItem {
   key: string;
@@ -35,12 +35,14 @@ export class DashboardViewModel {
   todayWorkout: ProgramWorkoutV2 | undefined;
   checklist: DashboardChecklistItem[];
   activeWorkout: WorkoutSession | undefined;
+  todayPlan: TodayTrainingPlan;
 
   constructor(goal: FitnessGoal | undefined = undefined, latestWeight: BodyMeasurement | undefined = undefined,
     weightTrend: WeightTrend = new WeightTrend(), waistTrend: WaistTrend = new WaistTrend(),
     nutrition: NutritionSummary = new NutritionSummary(),
     activity: DailyActivity | undefined = undefined, todayWorkout: ProgramWorkoutV2 | undefined = undefined,
-    checklist: DashboardChecklistItem[] = [], activeWorkout: WorkoutSession | undefined = undefined) {
+    checklist: DashboardChecklistItem[] = [], activeWorkout: WorkoutSession | undefined = undefined,
+    todayPlan: TodayTrainingPlan = new TodayTrainingPlan()) {
     this.goal = goal;
     this.latestWeight = latestWeight;
     this.weightTrend = weightTrend;
@@ -50,6 +52,7 @@ export class DashboardViewModel {
     this.todayWorkout = todayWorkout;
     this.checklist = checklist;
     this.activeWorkout = activeWorkout;
+    this.todayPlan = todayPlan;
   }
 }
 
@@ -58,16 +61,16 @@ export class DashboardService {
   private bodyRepository: BodyRepository;
   private nutritionRepository: NutritionRepository;
   private activityRepository: ActivityRepository;
-  private programRepository: ProgramRepository;
   private workoutRepository: WorkoutRepository;
+  private todayPlanService: TodayPlanService;
 
-  constructor(context: Context) {
+  constructor(context: Context, todayPlanService: TodayPlanService | undefined = undefined) {
     this.goalRepository = new GoalRepository(context);
     this.bodyRepository = new BodyRepository(context);
     this.nutritionRepository = new NutritionRepository(context);
     this.activityRepository = new ActivityRepository(context);
-    this.programRepository = new ProgramRepository(context);
     this.workoutRepository = new WorkoutRepository(context);
+    this.todayPlanService = todayPlanService ?? new TodayPlanService(context);
   }
 
   async load(now: Date = new Date()): Promise<DashboardViewModel> {
@@ -83,33 +86,14 @@ export class DashboardService {
       dayStart.getTime(), dayEnd.getTime());
     const activity: DailyActivity | undefined = await this.activityRepository.get(dateKey);
     const activeWorkout: WorkoutSession | undefined = await this.workoutRepository.getActiveWorkout();
-    const todayWorkout: ProgramWorkoutV2 | undefined = await this.loadTodayWorkout(goal);
+    const todayPlan: TodayTrainingPlan = await this.todayPlanService.load(now);
+    const todayWorkout: ProgramWorkoutV2 | undefined = todayPlan.workout;
     const weightTrend: WeightTrend = TrendService.calculateWeightTrend(measurements, now);
     const waistTrend: WaistTrend = TrendService.calculateWaistTrend(measurements, now);
-    const programState = await this.goalRepository.getActiveProgramState();
-    const workoutDone: boolean = goal !== undefined && programState !== undefined ?
-      await this.workoutRepository.hasCompletedRequiredToday(dayStart.getTime(), dayEnd.getTime(), goal.id,
-        programState.programId) : false;
     const checklist: DashboardChecklistItem[] = this.buildChecklist(goal, latestWeight, dayStart, nutrition, activity,
-      workoutDone);
+      todayPlan.state === TodayTrainingState.Completed);
     return new DashboardViewModel(goal, latestWeight, weightTrend, waistTrend, nutrition, activity, todayWorkout, checklist,
-      activeWorkout);
-  }
-
-  private async loadTodayWorkout(goal: FitnessGoal | undefined): Promise<ProgramWorkoutV2 | undefined> {
-    if (goal === undefined) {
-      return undefined;
-    }
-    const state = await this.goalRepository.getActiveProgramState();
-    const workouts: ProgramWorkoutV2[] = await this.programRepository.getWorkouts(
-      state?.programId === undefined || state.programId === '' ? 'fat_loss_upper_priority_3_4' : state.programId
-    );
-    if (workouts.length === 0) {
-      return undefined;
-    }
-    const required = workouts.filter((workout: ProgramWorkoutV2) => !workout.optional);
-    const index: number = state?.nextRequiredWorkoutIndex ?? 0;
-    return required[index % required.length];
+      activeWorkout, todayPlan);
   }
 
   private buildChecklist(goal: FitnessGoal | undefined, latestWeight: BodyMeasurement | undefined, dayStart: Date,

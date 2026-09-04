@@ -9,6 +9,7 @@ import {
   WorkoutSession,
   WorkoutStatus
 } from '../../domain/workout/WorkoutModels';
+import { ProgramWorkoutCompletion } from '../../domain/program/ProgramV2Models';
 import { AppDatabase } from '../database/AppDatabase';
 
 export class WorkoutRepository {
@@ -130,6 +131,32 @@ export class WorkoutRepository {
     }
   }
 
+  async getCompletedProgramWorkouts(startAt: number, endAt: number, goalId: number,
+    programId: string): Promise<ProgramWorkoutCompletion[]> {
+    const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
+    const result: relationalStore.ResultSet = await store.querySql(
+      `SELECT ws.program_workout_id, ws.completed_at, pw.optional
+       FROM workout_session ws
+       JOIN program_workout pw ON pw.id = ws.program_workout_id
+       WHERE ws.status = 'completed' AND ws.source_type = 'program'
+         AND ws.completed_at >= ? AND ws.completed_at < ?
+         AND ws.goal_id = ? AND ws.program_id = ?
+       ORDER BY ws.completed_at ASC`,
+      [startAt, endAt, goalId, programId]
+    );
+    const completions: ProgramWorkoutCompletion[] = [];
+    try {
+      if (result.goToFirstRow()) {
+        do {
+          completions.push(new ProgramWorkoutCompletion(result.getString(0), result.getLong(1), result.getLong(2) === 1));
+        } while (result.goToNextRow());
+      }
+    } finally {
+      result.close();
+    }
+    return completions;
+  }
+
   async startRecommendedWorkout(workout: ProgramWorkout): Promise<WorkoutSession> {
     return this.startWorkout(workout, 'recommended');
   }
@@ -211,6 +238,9 @@ export class WorkoutRepository {
   async completeSet(session: WorkoutSession, weight: number, reps: number): Promise<WorkoutSession> {
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const exercise: WorkoutExerciseRecord = session.exercises[session.currentExerciseIndex];
+    if (weight < 0 || reps <= 0 || exercise.completedSets >= exercise.targetSets) {
+      throw new Error('Invalid set values');
+    }
     const nextCompletedSets: number = exercise.completedSets + 1;
     const isExerciseComplete: boolean = nextCompletedSets >= exercise.targetSets;
     const isWorkoutComplete: boolean = isExerciseComplete &&

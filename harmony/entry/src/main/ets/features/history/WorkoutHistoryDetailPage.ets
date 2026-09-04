@@ -6,6 +6,7 @@ import {
 } from '../../app/AppTheme';
 import { SetRecord, WorkoutExerciseRecord, WorkoutSession, WorkoutStatus, WorkoutPhase } from '../../domain/workout/WorkoutModels';
 import { AppHeader } from '../../components/AppHeader';
+import { formatWeight } from '../../utils/WeightUnit';
 
 @Component
 export struct WorkoutHistoryDetailPage {
@@ -26,13 +27,6 @@ export struct WorkoutHistoryDetailPage {
   private setCount(): number {
     return this.session.exercises.reduce((total: number, exercise: WorkoutExerciseRecord) =>
       total + exercise.setRecords.length, 0);
-  }
-
-  private formatWeight(kg: number): string {
-    if (this.weightUnit === 'lb') {
-      return `${(kg * 2.2046226218).toFixed(1)} lb`;
-    }
-    return `${kg.toFixed(1)} kg`;
   }
 
   @Builder
@@ -56,7 +50,7 @@ export struct WorkoutHistoryDetailPage {
             .fontSize(13)
             .fontColor(APP_COLOR_MUTED)
             .width(60)
-          Text(this.formatWeight(record.weight))
+          Text(formatWeight(record.weight, this.weightUnit))
             .fontSize(14)
             .fontWeight(FontWeight.Bold)
             .fontColor(APP_COLOR_TEXT)

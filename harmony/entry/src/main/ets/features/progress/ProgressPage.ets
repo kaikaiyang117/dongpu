@@ -3,6 +3,7 @@ import { NutritionSummary } from '../../domain/nutrition/NutritionModels';
 import { DailyRepresentativeWeight, WaistTrend, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
 import { WorkoutSession } from '../../domain/workout/WorkoutModels';
 import { AppHeader } from '../../components/AppHeader';
+import { formatWeight, formatWeightChange } from '../../utils/WeightUnit';
 
 class ProgressTab {
   id: string;
@@ -22,6 +23,7 @@ export struct ProgressPage {
   @Prop sessions: WorkoutSession[] = [];
   @Prop weeklyCompleted: number = 0;
   @Prop weeklyFrequency: number = 3;
+  @Prop weightUnit: string = 'kg';
   @Prop weeklyAverageCalories: number = 0;
   @Prop weeklyProteinDays: number = 0;
   @State private selectedTab: string = 'weight';
@@ -39,12 +41,12 @@ export struct ProgressPage {
     Column({ space: 14 }) {
       Row() {
         Column({ space: 4 }) {
-          Text(this.trend.currentAverageKg > 0 ? `${this.trend.currentAverageKg.toFixed(1)} kg` : '--')
+          Text(this.trend.currentAverageKg > 0 ? formatWeight(this.trend.currentAverageKg, this.weightUnit) : '--')
             .fontSize(30).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
           Text('当前 7 日平均').fontSize(13).fontColor(APP_COLOR_MUTED)
         }.alignItems(HorizontalAlign.Start).layoutWeight(1)
         Column({ space: 4 }) {
-          Text(this.trend.changeKg === 0 ? '--' : `${this.trend.changeKg > 0 ? '+' : ''}${this.trend.changeKg.toFixed(1)} kg · ${this.trend.changePercent > 0 ? '+' : ''}${this.trend.changePercent.toFixed(1)}%`)
+          Text(this.trend.changeKg === 0 ? '--' : `${formatWeightChange(this.trend.changeKg, this.weightUnit)} · ${this.trend.changePercent > 0 ? '+' : ''}${this.trend.changePercent.toFixed(1)}%`)
             .fontSize(22).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_GREEN_DARK)
           Text(this.statusText()).fontSize(13).fontColor(APP_COLOR_MUTED)
         }.alignItems(HorizontalAlign.End)
@@ -52,14 +54,14 @@ export struct ProgressPage {
       if (this.trend.status === WeightTrendStatus.Insufficient) {
         Text('至少记录 4 天体重后显示 7 日趋势。').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
       } else {
-        Text(`上一周期 ${this.trend.previousAverageKg.toFixed(1)} kg · 当前周期 ${this.trend.currentAverageKg.toFixed(1)} kg`)
+        Text(`上一周期 ${formatWeight(this.trend.previousAverageKg, this.weightUnit)} · 当前周期 ${formatWeight(this.trend.currentAverageKg, this.weightUnit)}`)
           .width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
       }
       Text('每日代表值').width('100%').fontSize(16).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
       ForEach(this.trend.dailyWeights.slice(-30).reverse(), (item: DailyRepresentativeWeight) => {
         Row() {
           Text(item.dateKey).fontSize(13).fontColor(APP_COLOR_MUTED).layoutWeight(1)
-          Text(`${item.weightKg.toFixed(1)} kg`).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+          Text(formatWeight(item.weightKg, this.weightUnit)).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
         }.width('100%').padding({ top: 9, bottom: 9 })
       }, (item: DailyRepresentativeWeight) => item.dateKey)
       if (this.waistTrend.hasData) {

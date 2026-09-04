@@ -321,9 +321,9 @@ export class AppDatabase {
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'suggested_weight_kg', 'REAL');
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'program_workout_exercise_id', 'INTEGER');
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'weight_increment_kg', 'REAL NOT NULL DEFAULT 2.5');
-    await AppDatabase.backfillV3(store);
-    // Keep built-in catalog rows available for databases created by an earlier V2 build.
+    // Keep built-in catalog rows available before the history backfill maps slot identities.
     await AppDatabase.seedV2(store);
+    await AppDatabase.backfillV3(store);
     AppDatabase.store = store;
     return store;
   }
@@ -357,6 +357,7 @@ export class AppDatabase {
   private static async migrateV2ToV3(store: relationalStore.RdbStore): Promise<void> {
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'program_workout_exercise_id', 'INTEGER');
     await AppDatabase.addColumnIfMissing(store, 'workout_exercise_record', 'weight_increment_kg', 'REAL NOT NULL DEFAULT 2.5');
+    await AppDatabase.seedV2(store);
     await AppDatabase.backfillV3(store);
   }
 

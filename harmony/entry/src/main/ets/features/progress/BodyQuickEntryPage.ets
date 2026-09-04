@@ -1,10 +1,12 @@
 import { APP_COLOR_GREEN, APP_COLOR_LINE, APP_COLOR_MUTED, APP_COLOR_TEXT } from '../../app/AppTheme';
 import { BodyMeasurement } from '../../domain/body/BodyModels';
 import { AppHeader } from '../../components/AppHeader';
+import { inputToKg } from '../../utils/WeightUnit';
 
 @Component
 export struct BodyQuickEntryPage {
   @Prop isSaving: boolean = false;
+  @Prop weightUnit: string = 'kg';
   @State private weightText: string = '';
   @State private waistText: string = '';
   onBack: () => void = () => {};
@@ -18,7 +20,7 @@ export struct BodyQuickEntryPage {
   private save(): void {
     const weight: number = this.value(this.weightText);
     if (weight <= 0 || this.isSaving) return;
-    this.onSave(new BodyMeasurement(0, Date.now(), weight, this.value(this.waistText), 0, 'quick'));
+    this.onSave(new BodyMeasurement(0, Date.now(), inputToKg(weight, this.weightUnit), this.value(this.waistText), 0, 'quick'));
   }
 
   build() {
@@ -27,8 +29,8 @@ export struct BodyQuickEntryPage {
       Column({ space: 16 }) {
         Text('记录今天的状态').width('100%').fontSize(27).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
         Text('体重必填，腰围可选。保存后趋势和今日页会立即更新。').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
-        Text('体重（kg）').width('100%').fontSize(13).fontColor(APP_COLOR_MUTED)
-        TextInput({ placeholder: '例如：82.0', text: this.weightText }).height(54).fontSize(18)
+        Text(`体重（${this.weightUnit}）`).width('100%').fontSize(13).fontColor(APP_COLOR_MUTED)
+        TextInput({ placeholder: this.weightUnit === 'lb' ? '例如：180.8' : '例如：82.0', text: this.weightText }).height(54).fontSize(18)
           .backgroundColor(Color.White).borderRadius(14).border({ width: 1, color: APP_COLOR_LINE })
           .onChange((value: string) => this.weightText = value)
         Text('腰围（cm，可选）').width('100%').fontSize(13).fontColor(APP_COLOR_MUTED)

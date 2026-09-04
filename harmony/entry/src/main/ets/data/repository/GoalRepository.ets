@@ -30,11 +30,28 @@ export class GoalRepository {
 
   async saveActiveGoal(goal: FitnessGoal): Promise<FitnessGoal> {
     if (goal.startWeightKg <= 0 || goal.targetWeightKg <= 0 || goal.targetCalories < 0 ||
-      goal.targetProteinG < 0 || goal.targetSteps < 0) {
+      goal.targetProteinG < 0 || goal.targetSteps < 0 || goal.trainingFrequencyMin !== 3 ||
+      (goal.trainingFrequencyMax !== 3 && goal.trainingFrequencyMax !== 4)) {
       throw new Error('Invalid goal values');
     }
     const store: relationalStore.RdbStore = await AppDatabase.getStore(this.context);
     const now: number = Date.now();
+    if (goal.id > 0) {
+      await store.executeSql(
+        `UPDATE fitness_goal SET goal_type = ?, start_weight_kg = ?, target_weight_kg = ?, start_date = ?,
+         target_calories = ?, target_protein_g = ?, target_steps = ?, training_frequency_min = ?,
+         training_frequency_max = ?, training_location = ?, dedicated_leg_day = ?, prefer_machines = ?,
+         status = 'active', updated_at = ? WHERE id = ?`,
+        [goal.goalType, goal.startWeightKg, goal.targetWeightKg, goal.startDate > 0 ? goal.startDate : now,
+          goal.targetCalories, goal.targetProteinG, goal.targetSteps, goal.trainingFrequencyMin,
+          goal.trainingFrequencyMax, goal.trainingLocation, goal.dedicatedLegDay ? 1 : 0,
+          goal.preferMachines ? 1 : 0, now, goal.id]
+      );
+      return new FitnessGoal(goal.id, goal.goalType, goal.startWeightKg, goal.targetWeightKg,
+        goal.startDate > 0 ? goal.startDate : now, goal.targetCalories, goal.targetProteinG, goal.targetSteps,
+        goal.trainingFrequencyMin, goal.trainingFrequencyMax, goal.trainingLocation, goal.dedicatedLegDay,
+        goal.preferMachines, 'active', goal.createdAt > 0 ? goal.createdAt : now, now);
+    }
     store.beginTransaction();
     try {
       await store.executeSql('UPDATE fitness_goal SET status = \'archived\', updated_at = ? WHERE status = \'active\'',
@@ -88,7 +105,7 @@ export class GoalRepository {
     await store.executeSql(
       `UPDATE fitness_goal SET training_frequency_min = ?, training_frequency_max = ?, training_location = ?,
        dedicated_leg_day = ?, prefer_machines = ?, updated_at = ? WHERE status = 'active'`,
-      [frequency, frequency, location, dedicatedLegDay ? 1 : 0, preferMachines ? 1 : 0, Date.now()]
+      [3, frequency, location, dedicatedLegDay ? 1 : 0, preferMachines ? 1 : 0, Date.now()]
     );
   }
 

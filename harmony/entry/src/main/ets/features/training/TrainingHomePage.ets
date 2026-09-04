@@ -7,6 +7,7 @@ import {
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
 import { ProgramWorkout } from '../../domain/program/ProgramModels';
+import { ProgramWeekStatus, ProgramWorkoutWeekItem, TodayTrainingPlan, TodayTrainingState } from '../../domain/program/ProgramV2Models';
 
 @Component
 export struct TrainingHomePage {
@@ -17,6 +18,7 @@ export struct TrainingHomePage {
   @Prop activeWorkoutCode: string = '';
   @Prop activeWorkoutName: string = '';
   @Prop activeCompletedExercises: number = 0;
+  @Prop activeTotalExercises: number = 0;
   @Prop activeMinutes: number = 0;
   @Prop hasSavedPlan: boolean = false;
   @Prop savedPlanName: string = '我的计划';
@@ -26,7 +28,8 @@ export struct TrainingHomePage {
   @Prop programName: string = '';
   @Prop programWeek: number = 1;
   @Prop programWorkouts: ProgramWorkout[] = [];
-  @Prop nextRequiredWorkoutIndex: number = 0;
+  @Prop programWeekStatus: ProgramWeekStatus = new ProgramWeekStatus();
+  @Prop todayPlan: TodayTrainingPlan = new TodayTrainingPlan();
   onStartRecommended: () => void = () => {};
   onOpenProgramWorkout: (code: string) => void = (_code: string) => {};
   onResumeWorkout: () => void = () => {};
@@ -91,20 +94,19 @@ export struct TrainingHomePage {
           }.alignItems(HorizontalAlign.Start).layoutWeight(1)
           Text('当前计划').fontSize(12).fontColor(APP_COLOR_GREEN_DARK)
         }.width('100%')
-        ForEach(this.programWorkouts, (workout: ProgramWorkout, index: number) => {
+        ForEach(this.programWeekStatus.items, (item: ProgramWorkoutWeekItem, index: number) => {
           Row() {
             Text(`${index + 1}`).width(28).fontSize(14).fontWeight(FontWeight.Bold)
-              .fontColor(workout.code === 'optional_arms' ? APP_COLOR_MUTED : APP_COLOR_GREEN_DARK)
+              .fontColor(item.workout.optional ? APP_COLOR_MUTED : APP_COLOR_GREEN_DARK)
             Column({ space: 3 }) {
-              Text(workout.name).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
-              Text(`${workout.exercises.length} 个动作 · 约 ${workout.estimatedMinutes} 分钟`)
+              Text(item.workout.name).fontSize(15).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
+              Text(`${item.workout.exercises.length} 个动作 · 约 ${item.workout.estimatedMinutes} 分钟`)
                 .fontSize(12).fontColor(APP_COLOR_MUTED)
             }.alignItems(HorizontalAlign.Start).layoutWeight(1)
-            Text(workout.code === 'optional_arms' ? '可选' : (index < this.nextRequiredWorkoutIndex ? '已完成' :
-              index === this.nextRequiredWorkoutIndex ? '下一项' : '待完成'))
-              .fontSize(12).fontColor(workout.code === 'optional_arms' ? APP_COLOR_MUTED : APP_COLOR_GREEN_DARK)
+            Text(this.statusLabel(item.state))
+              .fontSize(12).fontColor(item.workout.optional ? APP_COLOR_MUTED : APP_COLOR_GREEN_DARK)
           }.width('100%').padding({ top: 8, bottom: 8 })
-        }, (workout: ProgramWorkout) => workout.code)
+        }, (item: ProgramWorkoutWeekItem) => item.workout.code)
         if (this.programWorkouts.find((workout: ProgramWorkout) => workout.code === 'optional_arms') !== undefined) {
           Button('查看 Optional 训练')
             .width('100%').height(46).fontSize(14).fontWeight(FontWeight.Bold)
@@ -115,6 +117,13 @@ export struct TrainingHomePage {
       }.alignItems(HorizontalAlign.Start).width('100%').padding(18).borderRadius(18)
         .backgroundColor(Color.White).border({ width: 1, color: APP_COLOR_LINE })
     }
+  }
+
+  private statusLabel(state: string): string {
+    if (state === 'completed' || state === 'optional_completed') return '已完成';
+    if (state === 'next') return '下一项';
+    if (state === 'optional') return '可选';
+    return '待完成';
   }
 
   @Builder
@@ -141,7 +150,7 @@ export struct TrainingHomePage {
         .fontWeight(FontWeight.Bold)
         .fontColor(Color.White)
         .margin({ top: 18 })
-      Text(`已完成 ${this.activeCompletedExercises} / ${this.workout.exercises.length} 个动作`)
+      Text(`已完成 ${this.activeCompletedExercises} / ${this.activeTotalExercises} 个动作`)
         .width('100%')
         .fontSize(15)
         .fontColor(Color.White)
@@ -171,38 +180,34 @@ export struct TrainingHomePage {
   @Builder
   TodayWorkoutCard() {
     Column({ space: 10 }) {
-      Text('今天的训练')
+      Text(this.todayPlan.title)
         .width('100%')
         .fontSize(15)
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_TEXT)
-      Text(`${this.workout.code} · ${this.workout.name}`)
+      Text(this.todayPlan.subtitle)
         .width('100%')
         .fontSize(26)
         .fontWeight(FontWeight.Bold)
         .fontColor(APP_COLOR_TEXT)
         .margin({ top: 8 })
-      Text(`${this.workout.exercises.length} 个动作 · 约 ${this.workout.estimatedMinutes} 分钟`)
+      Text(this.todayPlan.reason)
         .width('100%')
         .fontSize(14)
         .fontColor(APP_COLOR_MUTED)
-      Text(this.workout.exercises.map((item) => item.nameSnapshot).slice(0, 3).join(' · ') + ' · …')
-        .width('100%')
-        .fontSize(13)
-        .fontColor(APP_COLOR_MUTED)
-        .maxLines(1)
-        .textOverflow({ overflow: TextOverflow.Ellipsis })
-      Button('开始今天训练')
-        .width('100%')
-        .height(56)
-        .fontSize(16)
-        .fontWeight(FontWeight.Bold)
-        .fontColor(Color.White)
-        .borderRadius(17)
-        .backgroundColor(APP_COLOR_GREEN)
-        .stateEffect(true)
-        .margin({ top: 6 })
-        .onClick(() => this.onStartRecommended())
+      if (this.todayPlan.state === TodayTrainingState.Required || this.todayPlan.state === TodayTrainingState.Optional) {
+        Button('开始今天训练')
+          .width('100%')
+          .height(56)
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(Color.White)
+          .borderRadius(17)
+          .backgroundColor(APP_COLOR_GREEN)
+          .stateEffect(true)
+          .margin({ top: 6 })
+          .onClick(() => this.onStartRecommended())
+      }
     }
     .alignItems(HorizontalAlign.Start)
     .width('100%')

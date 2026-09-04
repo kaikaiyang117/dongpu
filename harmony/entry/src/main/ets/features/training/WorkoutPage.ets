@@ -13,6 +13,7 @@ import { findExercise } from '../../data/ExerciseCatalog';
 import { Exercise } from '../../model/Exercise';
 import { WorkoutExerciseRecord } from '../../domain/workout/WorkoutModels';
 import { ExitWorkoutPage } from './ExitWorkoutPage';
+import { formatWeight, kgToDisplay } from '../../utils/WeightUnit';
 
 @Component
 export struct WorkoutPage {
@@ -36,8 +37,10 @@ export struct WorkoutPage {
 
   aboutToAppear(): void {
     if (this.exercise.suggestedWeight > 0) {
-      this.weight = this.weightUnit === 'lb' ? this.exercise.suggestedWeight * 2.2046226218 :
-        this.exercise.suggestedWeight;
+      this.weight = kgToDisplay(this.exercise.suggestedWeight, this.weightUnit);
+      this.hasWeight = true;
+    } else if (this.isBodyweight()) {
+      this.weight = 0;
       this.hasWeight = true;
     }
     this.reps = this.exercise.suggestedReps;
@@ -48,18 +51,17 @@ export struct WorkoutPage {
   }
 
   private changeWeight(delta: number): void {
-    if (this.exercise.weightIncrementKg <= 0) {
+    if (this.isBodyweight() || this.exercise.weightIncrementKg <= 0) {
       return;
     }
     if (!this.hasWeight && delta > 0) {
-      this.weight = this.weightUnit === 'lb' ? this.exercise.weightIncrementKg * 2.2046226218 :
-        this.exercise.weightIncrementKg;
+      this.weight = kgToDisplay(this.exercise.weightIncrementKg, this.weightUnit);
       this.hasWeight = true;
       return;
     }
-    const unitDelta: number = this.weightUnit === 'lb' ? delta * 2 : delta;
+    const unitDelta: number = kgToDisplay(delta, this.weightUnit);
     this.weight = Math.max(0, this.weight + unitDelta);
-    this.hasWeight = this.weight > 0;
+    this.hasWeight = this.isBodyweight() || this.weight > 0;
   }
 
   build() {
@@ -147,7 +149,7 @@ export struct WorkoutPage {
           .width('100%')
           .padding({ left: 14, right: 14 })
 
-          if (this.exercise.completedSets === 0 && this.exercise.suggestedWeight === 0) {
+          if (!this.isBodyweight() && this.exercise.completedSets === 0 && this.exercise.suggestedWeight === 0) {
             Column({ space: 4 }) {
               Text('第一次做这个动作')
                 .fontSize(14)
@@ -165,8 +167,7 @@ export struct WorkoutPage {
           }
 
           if (this.exercise.suggestedWeight > 0) {
-            Text(`上次记录 ${(this.weightUnit === 'lb' ? this.exercise.suggestedWeight * 2.2046226218 :
-              this.exercise.suggestedWeight).toFixed(1)} ${this.weightUnit} × ${this.exercise.suggestedReps}`)
+            Text(`上次记录 ${formatWeight(this.exercise.suggestedWeight, this.weightUnit)} × ${this.exercise.suggestedReps}`)
               .width('100%')
               .fontSize(13)
               .fontColor(APP_COLOR_MUTED)
@@ -181,7 +182,7 @@ export struct WorkoutPage {
                   .width(44).height(48).fontSize(20).fontColor(APP_COLOR_GREEN_DARK)
                   .backgroundColor(APP_COLOR_GREEN_SOFT).stateEffect(true).accessibilityText('减少重量')
                   .onClick(() => this.changeWeight(-this.exercise.weightIncrementKg))
-                Text(this.hasWeight ? `${this.weight.toFixed(1)} ${this.weightUnit}` : '选择')
+                Text(this.isBodyweight() ? '自重' : (this.hasWeight ? `${this.weight.toFixed(1)} ${this.weightUnit}` : '选择'))
                   .layoutWeight(1).textAlign(TextAlign.Center).fontSize(this.hasWeight ? 18 : 15)
                   .fontWeight(FontWeight.Bold).fontColor(this.hasWeight ? APP_COLOR_TEXT : APP_COLOR_GREEN_DARK)
                   .maxLines(1)
@@ -260,7 +261,7 @@ export struct WorkoutPage {
           .fontColor(Color.White)
           .borderRadius(18)
           .backgroundColor(APP_COLOR_GREEN)
-          .enabled(!this.isSaving && this.hasWeight)
+          .enabled(!this.isSaving && this.hasWeight && this.reps > 0)
           .onClick(() => this.onCompleteSet(this.weight, this.reps))
       }
       .width('100%')
@@ -391,5 +392,9 @@ export struct WorkoutPage {
     if (part === 'legs') return '腿部';
     if (part === 'core') return '核心';
     return part;
+  }
+
+  private isBodyweight(): boolean {
+    return this.exercise.equipmentNameSnapshot === '自重';
   }
 }

@@ -145,12 +145,12 @@ export struct OnboardingPage {
       Text('先给你一个可执行的 3—4 练方案。').width('100%').fontSize(15).fontColor(APP_COLOR_MUTED)
       Text('每周训练次数').width('100%').fontSize(14).fontColor(APP_COLOR_MUTED)
       Row({ space: 10 }) {
-        this.ChoiceButton('3 次', this.frequencyMin === 3, () => {
+        this.ChoiceButton('3 次', this.frequencyMax === 3, () => {
           this.frequencyMin = 3;
-          this.frequencyMax = 4;
+          this.frequencyMax = 3;
         })
-        this.ChoiceButton('4 次', this.frequencyMin === 4, () => {
-          this.frequencyMin = 4;
+        this.ChoiceButton('4 次', this.frequencyMax === 4, () => {
+          this.frequencyMin = 3;
           this.frequencyMax = 4;
         })
       }.width('100%')
@@ -190,7 +190,7 @@ export struct OnboardingPage {
         this.SummaryRow('每日热量', `${this.summaryCalories()} kcal`)
         this.SummaryRow('每日蛋白质', `${this.summaryProtein()} g`)
         this.SummaryRow('每日步数', '8000 步')
-        this.SummaryRow('训练安排', `${this.frequencyMin}—${this.frequencyMax} 次 / 周`)
+        this.SummaryRow('训练安排', `${this.frequencyMax} 次 / 周（3 次必做）`)
         this.SummaryRow('记录方式', this.nutritionMode === 'simple' ? '热量 + 蛋白质' : '详细营养')
       }
       .width('100%').padding(18).borderRadius(18).backgroundColor(Color.White)

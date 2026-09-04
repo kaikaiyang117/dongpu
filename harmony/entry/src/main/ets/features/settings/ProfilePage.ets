@@ -6,6 +6,7 @@ import {
   APP_COLOR_TEXT
 } from '../../app/AppTheme';
 import { AppHeader } from '../../components/AppHeader';
+import { formatWeight } from '../../utils/WeightUnit';
 
 @Component
 export struct ProfilePage {
@@ -76,13 +77,13 @@ export struct ProfilePage {
             Row() {
               Column({ space: 5 }) {
                 Text('当前目标').fontSize(13).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_GREEN_DARK)
-                Text(this.targetWeightKg > 0 ? `${this.targetWeightKg.toFixed(1)} kg` : '待设置')
+                Text(this.targetWeightKg > 0 ? formatWeight(this.targetWeightKg, this.weightUnit) : '待设置')
                   .fontSize(28).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
                 Text('目标体重').fontSize(12).fontColor(APP_COLOR_MUTED)
               }.alignItems(HorizontalAlign.Start)
               Blank()
               Column({ space: 5 }) {
-                Text(this.latestWeightKg > 0 ? `${this.latestWeightKg.toFixed(1)} kg` : '--')
+                Text(this.latestWeightKg > 0 ? formatWeight(this.latestWeightKg, this.weightUnit) : '--')
                   .fontSize(21).fontWeight(FontWeight.Bold).fontColor(APP_COLOR_TEXT)
                 Text('最近体重').fontSize(12).fontColor(APP_COLOR_MUTED)
               }.alignItems(HorizontalAlign.End)
@@ -94,7 +95,7 @@ export struct ProfilePage {
 
           this.SectionTitle('目标与记录')
           this.EntryGroup('目标设置', `${this.targetCalories} kcal`, () => this.onOpenSettings(),
-            '记录身体', this.latestWeightKg > 0 ? `${this.latestWeightKg.toFixed(1)} kg` : '未记录',
+            '记录身体', this.latestWeightKg > 0 ? formatWeight(this.latestWeightKg, this.weightUnit) : '未记录',
             () => this.onRecordBody())
 
           this.SectionTitle('训练与活动')

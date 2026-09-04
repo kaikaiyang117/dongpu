@@ -25,6 +25,12 @@ export struct V2UpgradePage {
   @State private preferMachines: boolean = true;
   onComplete: (draft: OnboardingDraft) => void = (_draft: OnboardingDraft) => {};
 
+  aboutToAppear(): void {
+    this.heightText = this.existingHeightCm > 0 ? this.existingHeightCm.toString() : '';
+    this.weightText = this.existingWeightKg > 0 ? this.existingWeightKg.toFixed(1) : '';
+    this.frequency = this.existingFrequency === 4 ? 4 : 3;
+  }
+
   private numberValue(text: string): number {
     const value: number = Number(text);
     return Number.isFinite(value) ? value : 0;
@@ -41,7 +47,7 @@ export struct V2UpgradePage {
     if (!this.valid()) return;
     const draft: OnboardingDraft = new OnboardingDraft(
       'fat_loss', this.numberValue(this.heightText), this.numberValue(this.weightText),
-      this.numberValue(this.targetText), 0, this.frequency, this.frequency === 3 ? 4 : 4,
+      this.numberValue(this.targetText), 0, 3, this.frequency === 4 ? 4 : 3,
       this.location, false, this.preferMachines, 'simple'
     );
     this.onComplete(draft);

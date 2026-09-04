@@ -3,6 +3,7 @@ import { NutritionSummary } from '../../domain/nutrition/NutritionModels';
 import { WaistTrend, WeightTrend, WeightTrendStatus } from '../../domain/progress/ProgressModels';
 import { ExerciseProgress } from '../../domain/workout/WorkoutModels';
 import { AppHeader } from '../../components/AppHeader';
+import { formatWeight, formatWeightChange } from '../../utils/WeightUnit';
 
 @Component
 export struct WeeklyReviewPage {
@@ -11,6 +12,7 @@ export struct WeeklyReviewPage {
   @Prop nutrition: NutritionSummary = new NutritionSummary();
   @Prop weeklyCompleted: number = 0;
   @Prop weeklyFrequency: number = 0;
+  @Prop weightUnit: string = 'kg';
   @Prop proteinDays: number = 0;
   @Prop nutritionLoggedDays: number = 0;
   @Prop averageCalories: number = 0;
@@ -41,7 +43,7 @@ export struct WeeklyReviewPage {
           }.width('100%').alignItems(HorizontalAlign.Start)
           Column() {
             this.Metric('体重变化', this.trend.status === WeightTrendStatus.Insufficient ? '数据不足' :
-              `${this.trend.changeKg > 0 ? '+' : ''}${this.trend.changeKg.toFixed(1)} kg · ${this.trend.changePercent > 0 ? '+' : ''}${this.trend.changePercent.toFixed(1)}%`)
+              `${formatWeightChange(this.trend.changeKg, this.weightUnit)} · ${this.trend.changePercent > 0 ? '+' : ''}${this.trend.changePercent.toFixed(1)}%`)
             this.Metric('腰围变化', this.waistTrend.hasData && this.waistTrend.previousCm > 0 ?
               `${this.waistTrend.changeCm > 0 ? '+' : ''}${this.waistTrend.changeCm.toFixed(1)} cm` : '数据不足')
             this.Metric('训练完成', `${this.requiredWorkouts} / 3 必做${this.optionalWorkouts > 0 ? ` · +${this.optionalWorkouts} 可选` : ''}`)
@@ -61,7 +63,7 @@ export struct WeeklyReviewPage {
                 .fontSize(13).fontColor(APP_COLOR_MUTED)
             } else {
               ForEach(this.strengthHighlights, (item: ExerciseProgress) => {
-                Text(`${item.exerciseName}  ${item.previousWeight.toFixed(1)}kg × ${item.previousReps} → ${item.currentWeight.toFixed(1)}kg × ${item.currentReps}`)
+                Text(`${item.exerciseName}  ${formatWeight(item.previousWeight, this.weightUnit)} × ${item.previousReps} → ${formatWeight(item.currentWeight, this.weightUnit)} × ${item.currentReps}`)
                   .fontSize(13).fontColor(APP_COLOR_TEXT)
               }, (item: ExerciseProgress) => item.exerciseName)
             }

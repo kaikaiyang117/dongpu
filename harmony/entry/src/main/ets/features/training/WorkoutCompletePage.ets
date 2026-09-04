@@ -1,5 +1,6 @@
 import { APP_COLOR_GREEN, APP_COLOR_GREEN_DARK, APP_COLOR_LINE, APP_COLOR_MUTED, APP_COLOR_TEXT } from '../../app/AppTheme';
 import { ExerciseProgress } from '../../domain/workout/WorkoutModels';
+import { formatWeight } from '../../utils/WeightUnit';
 
 @Component
 export struct WorkoutCompletePage {
@@ -13,13 +14,6 @@ export struct WorkoutCompletePage {
   @Prop weightUnit: string = 'kg';
   @Prop progressHighlights: ExerciseProgress[] = [];
   onDone: () => void = () => {};
-
-  private formatWeight(kg: number): string {
-    if (this.weightUnit === 'lb') {
-      return `${(kg * 2.2046226218).toFixed(1)} lb`;
-    }
-    return `${kg.toFixed(1)} kg`;
-  }
 
   @Builder
   Metric(value: string, label: string) {
@@ -75,12 +69,12 @@ export struct WorkoutCompletePage {
             .fontColor(APP_COLOR_TEXT)
           ForEach(this.progressHighlights, (progress: ExerciseProgress) => {
             if (progress.hasWeightProgress && progress.hasRepsProgress) {
-              Text(`${progress.exerciseName} ${this.formatWeight(progress.previousWeight)} → ${this.formatWeight(progress.currentWeight)}，${progress.previousReps} 次 → ${progress.currentReps} 次`)
+              Text(`${progress.exerciseName} ${formatWeight(progress.previousWeight, this.weightUnit)} → ${formatWeight(progress.currentWeight, this.weightUnit)}，${progress.previousReps} 次 → ${progress.currentReps} 次`)
                 .width('100%')
                 .fontSize(14)
                 .fontColor(APP_COLOR_GREEN_DARK)
             } else if (progress.hasWeightProgress) {
-              Text(`${progress.exerciseName} ${this.formatWeight(progress.previousWeight)} → ${this.formatWeight(progress.currentWeight)}`)
+              Text(`${progress.exerciseName} ${formatWeight(progress.previousWeight, this.weightUnit)} → ${formatWeight(progress.currentWeight, this.weightUnit)}`)
                 .width('100%')
                 .fontSize(14)
                 .fontColor(APP_COLOR_GREEN_DARK)
