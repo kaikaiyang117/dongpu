@@ -7,6 +7,7 @@ const harmonyDir = dirname(toolDir);
 const projectDir = dirname(harmonyDir);
 const datasetDir = join(projectDir, 'assets/vendor/exercises-dataset');
 const dataDir = join(harmonyDir, 'data');
+const generatedPath = join(dataDir, 'generated/exercise_localization_candidates.zh-CN.json');
 const rawfileDir = join(harmonyDir, 'entry/src/main/resources/rawfile');
 const imageDir = join(rawfileDir, 'exercise_images');
 
@@ -44,6 +45,7 @@ const cautions = {
 const source = JSON.parse(await readFile(join(datasetDir, 'data/exercises.json'), 'utf8'));
 const localization = JSON.parse(await readFile(join(dataDir, 'exercise_localization.zh-CN.json'), 'utf8'));
 const metadataOverrides = JSON.parse(await readFile(join(dataDir, 'exercise_metadata_overrides.json'), 'utf8'));
+const generated = JSON.parse(await readFile(generatedPath, 'utf8'));
 await mkdir(imageDir, { recursive: true });
 
 const localizationStatuses = new Set(['raw', 'auto', 'reviewed', 'approved']);
@@ -86,6 +88,7 @@ const catalog = [];
 for (const item of source) {
   const localized = readLocalization(item);
   const metadata = metadataOverrides[item.id] ?? {};
+  const generatedItem = generated[item.id] ?? {};
   const imageName = parse(item.image).base;
   const motionName = `${parse(item.gif_url).name}.mp4`;
   await cp(join(datasetDir, item.image), join(imageDir, imageName));
@@ -114,6 +117,9 @@ for (const item of source) {
     recommendedForBeginner: metadata.recommendedForBeginner ?? false,
     gymEligible: metadata.gymEligible ?? true,
     localizationStatus: localized.status,
+    translationConfidence: generatedItem.translationConfidence ?? generatedItem.confidence ?? 0,
+    translationMethod: generatedItem.translationMethod ?? 'upstream-English',
+    localizationQuality: generatedItem.qualityGrade ?? 'needs_manual',
     contentReviewStatus: metadata.contentReviewStatus ?? 'raw',
     libraryVisible: metadata.libraryVisible ?? false
   });

@@ -62,12 +62,116 @@
     "source": "dongpu-review:agent",
     "note": "弹力带Y字平举"
   },
+  "1263": {
+    "nameZh": "健身球绳索单臂飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1264": {
+    "nameZh": "健身球绳索上斜单臂飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1276": {
+    "nameZh": "哑铃下斜单臂飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1277": {
+    "nameZh": "健身球哑铃飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1278": {
+    "nameZh": "健身球哑铃上斜飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1279": {
+    "nameZh": "哑铃上斜单臂飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1280": {
+    "nameZh": "健身球哑铃上斜单臂飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1287": {
+    "nameZh": "哑铃下斜单臂推胸",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1289": {
+    "nameZh": "哑铃上斜单臂推胸",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1292": {
+    "nameZh": "健身球哑铃单腿飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "1299": {
     "nameZh": "上斜器械推胸",
     "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
+  },
+  "1300": {
+    "nameZh": "器械下斜推胸",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1308": {
+    "nameZh": "史密斯机宽握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1309": {
+    "nameZh": "史密斯机下斜宽握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "1323": {
     "nameZh": "窄握绳索坐姿划船",
@@ -84,6 +188,30 @@
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
+  },
+  "1359": {
+    "nameZh": "史密斯机俯身划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1360": {
+    "nameZh": "史密斯机单臂划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1367": {
+    "nameZh": "宽握后束引体向上",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "1371": {
     "nameZh": "杠铃坐姿提踵",
@@ -113,12 +241,28 @@
     "source": "dongpu-review:agent",
     "note": "单腿绳索提踵"
   },
+  "1385": {
+    "nameZh": "器械坐姿提踵腿举深蹲",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "1409": {
     "nameZh": "杠铃臀桥",
     "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-review:agent",
     "note": "杠铃臀桥"
+  },
+  "1431": {
+    "nameZh": "站姿辅助反手引体",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "1432": {
     "nameZh": "站姿辅助引体向上",
@@ -141,6 +285,14 @@
     "source": "dongpu-review:agent",
     "note": "高杠位深蹲"
   },
+  "1451": {
+    "nameZh": "器械坐姿臂屈伸",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "1452": {
     "nameZh": "器械卷腹",
     "aliasesZh": [],
@@ -155,12 +307,60 @@
     "source": "dongpu-review:agent",
     "note": "哑铃罗马尼亚硬拉"
   },
+  "1624": {
+    "nameZh": "哑铃反向卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1625": {
+    "nameZh": "史密斯机下斜窄握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1626": {
+    "nameZh": "史密斯机下斜窄握反向卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "1630": {
     "nameZh": "窄握绳索弯举",
     "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-review:agent",
     "note": "窄握绳索弯举"
+  },
+  "1701": {
+    "nameZh": "药球窄握俯卧撑",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1717": {
+    "nameZh": "绳索深蹲划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "1719": {
+    "nameZh": "杠铃上斜窄握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "1722": {
     "nameZh": "绳索过头臂屈伸",
@@ -175,6 +375,14 @@
     "status": "approved",
     "source": "dongpu-review:agent",
     "note": "单臂绳索三头下压"
+  },
+  "1756": {
+    "nameZh": "杠铃单腿硬拉",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "1760": {
     "nameZh": "哑铃高脚杯深蹲",
@@ -204,6 +412,14 @@
     "source": "dongpu-review:agent",
     "note": "坐姿绳索推胸"
   },
+  "2187": {
+    "nameZh": "杠铃窄握反向卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "2287": {
     "nameZh": "器械交替单腿腿举",
     "aliasesZh": [
@@ -212,6 +428,14 @@
     "status": "approved",
     "source": "dongpu-curated",
     "note": ""
+  },
+  "2328": {
+    "nameZh": "健身球窄握俯卧撑",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "2330": {
     "nameZh": "全程绳索高位下拉",
@@ -234,6 +458,14 @@
     "source": "dongpu-review:agent",
     "note": "登阶弓步复合动作"
   },
+  "2812": {
+    "nameZh": "哑铃分腿蹲登阶",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "2963": {
     "nameZh": "悬垂举腿",
     "aliasesZh": [],
@@ -241,12 +473,60 @@
     "source": "dongpu-review:agent",
     "note": "船长椅直腿举"
   },
+  "3122": {
+    "nameZh": "弹力带坐姿推肩",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "3124": {
+    "nameZh": "弹力带坐姿推胸",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
   "3563": {
     "nameZh": "单臂绳索下拉",
     "aliasesZh": [],
     "status": "approved",
     "source": "dongpu-review:agent",
     "note": "单臂纳入名称"
+  },
+  "3642": {
+    "nameZh": "负重拉伸弓步",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "3670": {
+    "nameZh": "下斜负重仰卧起坐",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "3758": {
+    "nameZh": "器械站姿推胸",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "3759": {
+    "nameZh": "器械坐姿早安式",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   },
   "0017": {
     "nameZh": "辅助引体",
@@ -1134,5 +1414,349 @@
     "status": "approved",
     "source": "dongpu-review:agent",
     "note": "健身球支撑的上斜绳索夹胸"
+  },
+  "0975": {
+    "nameZh": "弹力带窄握俯卧撑",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0983": {
+    "nameZh": "弹力带单臂跪姿下拉",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0987": {
+    "nameZh": "弹力带单腿单臂分腿蹲",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0030": {
+    "nameZh": "杠铃窄握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0071": {
+    "nameZh": "杠铃仰卧起坐推举",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0090": {
+    "nameZh": "杠铃坐姿早安式",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0115": {
+    "nameZh": "杠铃直腿早安式",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0116": {
+    "nameZh": "杠铃直腿硬拉",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0124": {
+    "nameZh": "杠铃宽握深蹲",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0158": {
+    "nameZh": "绳索下斜飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0159": {
+    "nameZh": "绳索下斜宽握坐姿划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0189": {
+    "nameZh": "绳索单臂俯身划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0205": {
+    "nameZh": "绳索后束下拉",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0232": {
+    "nameZh": "绳索站姿下拉",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0290": {
+    "nameZh": "哑铃坐姿卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0307": {
+    "nameZh": "哑铃下斜转体飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0327": {
+    "nameZh": "哑铃上斜划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0352": {
+    "nameZh": "哑铃对握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0292": {
+    "nameZh": "哑铃单臂俯身划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0363": {
+    "nameZh": "哑铃单臂直立划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0378": {
+    "nameZh": "哑铃后束飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0381": {
+    "nameZh": "哑铃后束弓步",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0383": {
+    "nameZh": "哑铃反向飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0386": {
+    "nameZh": "哑铃反向旋转飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0405": {
+    "nameZh": "哑铃坐姿推肩",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0404": {
+    "nameZh": "哑铃对握坐姿推肩",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0411": {
+    "nameZh": "哑铃单腿深蹲",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0490": {
+    "nameZh": "上斜窄握俯卧撑",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0541": {
+    "nameZh": "壶铃单臂划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0571": {
+    "nameZh": "器械窄握交替坐姿划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0572": {
+    "nameZh": "器械辅助反手引体",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0588": {
+    "nameZh": "器械窄握坐姿划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0589": {
+    "nameZh": "器械单臂俯身划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0590": {
+    "nameZh": "器械单臂推肩",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0596": {
+    "nameZh": "器械坐姿飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0602": {
+    "nameZh": "器械坐姿反向飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0601": {
+    "nameZh": "器械对握坐姿反向飞鸟",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0666": {
+    "nameZh": "单臂俯卧撑平举",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.98,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0751": {
+    "nameZh": "史密斯机窄握卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0753": {
+    "nameZh": "史密斯机下斜卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0757": {
+    "nameZh": "史密斯机上斜卧推",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0761": {
+    "nameZh": "史密斯机窄握划船",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
+  },
+  "0765": {
+    "nameZh": "史密斯机坐姿推肩",
+    "aliasesZh": [],
+    "status": "reviewed",
+    "source": "structured-parser+rules",
+    "confidence": 0.96,
+    "note": "自动质量分级为 auto_reviewed，待人工抽查。"
   }
 }

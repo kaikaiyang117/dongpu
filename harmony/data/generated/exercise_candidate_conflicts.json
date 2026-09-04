@@ -1,0 +1,3962 @@
+[
+  {
+    "candidate": "弹力带站姿卷腹",
+    "entries": [
+      {
+        "id": "1005",
+        "nameEn": "band standing crunch",
+        "candidate": "弹力带站姿卷腹"
+      },
+      {
+        "id": "1007",
+        "nameEn": "band standing twisting crunch",
+        "candidate": "弹力带站姿卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "弹力带直腿硬拉",
+    "entries": [
+      {
+        "id": "1009",
+        "nameEn": "band stiff leg deadlift",
+        "candidate": "弹力带直腿硬拉"
+      },
+      {
+        "id": "1010",
+        "nameEn": "band straight leg deadlift",
+        "candidate": "弹力带直腿硬拉"
+      },
+      {
+        "id": "1023",
+        "nameEn": "band straight back stiff leg deadlift",
+        "candidate": "弹力带直腿硬拉"
+      }
+    ]
+  },
+  {
+    "candidate": "弹力带推举",
+    "entries": [
+      {
+        "id": "1012",
+        "nameEn": "band twisting overhead press",
+        "candidate": "弹力带推举"
+      },
+      {
+        "id": "1015",
+        "nameEn": "band vertical pallof press",
+        "candidate": "弹力带推举"
+      },
+      {
+        "id": "0979",
+        "nameEn": "band horizontal pallof press",
+        "candidate": "弹力带推举"
+      }
+    ]
+  },
+  {
+    "candidate": "弹力带反手下拉",
+    "entries": [
+      {
+        "id": "1013",
+        "nameEn": "band underhand pulldown",
+        "candidate": "弹力带反手下拉"
+      },
+      {
+        "id": "3116",
+        "nameEn": "band fixed back underhand pulldown",
+        "candidate": "弹力带反手下拉"
+      }
+    ]
+  },
+  {
+    "candidate": "弹力带弯举",
+    "entries": [
+      {
+        "id": "1016",
+        "nameEn": "band wrist curl",
+        "candidate": "弹力带弯举"
+      },
+      {
+        "id": "0976",
+        "nameEn": "band concentration curl",
+        "candidate": "弹力带弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "拉伸",
+    "entries": [
+      {
+        "id": "1167",
+        "nameEn": "dynamic chest stretch (male)",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1259",
+        "nameEn": "behind head chest stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1271",
+        "nameEn": "chest and front of shoulder stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1363",
+        "nameEn": "spine stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1365",
+        "nameEn": "upper back stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1377",
+        "nameEn": "calf stretch with hands against wall",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1388",
+        "nameEn": "peroneals stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1389",
+        "nameEn": "posterior tibialis stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1403",
+        "nameEn": "neck side stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1405",
+        "nameEn": "back pec stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1407",
+        "nameEn": "calf push stretch with hands against wall",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1419",
+        "nameEn": "iron cross stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1511",
+        "nameEn": "hamstring stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1512",
+        "nameEn": "all fours squad stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1548",
+        "nameEn": "chair leg extended stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1564",
+        "nameEn": "intermediate hip flexor and quad stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1576",
+        "nameEn": "leg up hamstring stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1585",
+        "nameEn": "runners stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "1604",
+        "nameEn": "world greatest stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "2202",
+        "nameEn": "roller hip stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "2205",
+        "nameEn": "roller hip lat stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "2207",
+        "nameEn": "roller side lat stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "2208",
+        "nameEn": "roller back stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "2571",
+        "nameEn": "rocking frog stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "0257",
+        "nameEn": "circles knee stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "0643",
+        "nameEn": "overhead triceps stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "0716",
+        "nameEn": "side push neck stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "0721",
+        "nameEn": "side wrist pull stretch",
+        "candidate": "拉伸"
+      },
+      {
+        "id": "0817",
+        "nameEn": "triceps stretch",
+        "candidate": "拉伸"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃下斜上拉",
+    "entries": [
+      {
+        "id": "1255",
+        "nameEn": "barbell decline pullover",
+        "candidate": "杠铃下斜上拉"
+      },
+      {
+        "id": "0034",
+        "nameEn": "barbell decline bent arm pullover",
+        "candidate": "杠铃下斜上拉"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球拉伸",
+    "entries": [
+      {
+        "id": "1272",
+        "nameEn": "chest stretch with exercise ball",
+        "candidate": "健身球拉伸"
+      },
+      {
+        "id": "1339",
+        "nameEn": "exercise ball lat stretch",
+        "candidate": "健身球拉伸"
+      },
+      {
+        "id": "1341",
+        "nameEn": "exercise ball lower back stretch (pyramid)",
+        "candidate": "健身球拉伸"
+      },
+      {
+        "id": "1559",
+        "nameEn": "exercise ball hip flexor stretch",
+        "candidate": "健身球拉伸"
+      }
+    ]
+  },
+  {
+    "candidate": "俯卧撑",
+    "entries": [
+      {
+        "id": "1273",
+        "nameEn": "clap push up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "1274",
+        "nameEn": "deep push up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "1275",
+        "nameEn": "drop push up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "1306",
+        "nameEn": "plyo push up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "1307",
+        "nameEn": "push up on bosu ball",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "1421",
+        "nameEn": "modified push up to lower arms",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "1467",
+        "nameEn": "push-up on lower arms",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3021",
+        "nameEn": "scapula push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3145",
+        "nameEn": "push-up plus",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3216",
+        "nameEn": "chest tap push-up (male)",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3217",
+        "nameEn": "modified hindu push-up (male)",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3294",
+        "nameEn": "archer push up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3327",
+        "nameEn": "full planche push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "3662",
+        "nameEn": "pike-to-cobra push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0258",
+        "nameEn": "clock push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0283",
+        "nameEn": "diamond push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0471",
+        "nameEn": "handstand push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0642",
+        "nameEn": "outside leg kick push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0662",
+        "nameEn": "push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0653",
+        "nameEn": "push-up (bosu ball)",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0659",
+        "nameEn": "push-up (wall)",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0658",
+        "nameEn": "push-up (wall) v. 2",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0661",
+        "nameEn": "push-up inside leg kick",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0699",
+        "nameEn": "shoulder tap push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0717",
+        "nameEn": "side push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0778",
+        "nameEn": "spider crawl push up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0803",
+        "nameEn": "superman push-up",
+        "candidate": "俯卧撑"
+      },
+      {
+        "id": "0806",
+        "nameEn": "suspended push-up",
+        "candidate": "俯卧撑"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜单臂推举",
+    "entries": [
+      {
+        "id": "1281",
+        "nameEn": "dumbbell incline one arm press",
+        "candidate": "哑铃上斜单臂推举"
+      },
+      {
+        "id": "1619",
+        "nameEn": "dumbbell incline one arm hammer press",
+        "candidate": "哑铃上斜单臂推举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃上斜单臂推举",
+    "entries": [
+      {
+        "id": "1282",
+        "nameEn": "dumbbell incline one arm press on exercise ball",
+        "candidate": "健身球哑铃上斜单臂推举"
+      },
+      {
+        "id": "1620",
+        "nameEn": "dumbbell incline one arm hammer press on exercise ball",
+        "candidate": "健身球哑铃上斜单臂推举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃上斜推举",
+    "entries": [
+      {
+        "id": "1283",
+        "nameEn": "dumbbell incline press on exercise ball",
+        "candidate": "健身球哑铃上斜推举"
+      },
+      {
+        "id": "1618",
+        "nameEn": "dumbbell incline hammer press on exercise ball",
+        "candidate": "健身球哑铃上斜推举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃单臂飞鸟",
+    "entries": [
+      {
+        "id": "1286",
+        "nameEn": "dumbbell one arm chest fly on exercise ball",
+        "candidate": "健身球哑铃单臂飞鸟"
+      },
+      {
+        "id": "1288",
+        "nameEn": "dumbbell one arm fly on exercise ball",
+        "candidate": "健身球哑铃单臂飞鸟"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃单臂推举",
+    "entries": [
+      {
+        "id": "1290",
+        "nameEn": "dumbbell one arm press on exercise ball",
+        "candidate": "健身球哑铃单臂推举"
+      },
+      {
+        "id": "1621",
+        "nameEn": "dumbbell one arm hammer press on exercise ball",
+        "candidate": "健身球哑铃单臂推举"
+      },
+      {
+        "id": "1736",
+        "nameEn": "dumbbell one arm french press on exercise ball",
+        "candidate": "健身球哑铃单臂推举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球俯卧撑",
+    "entries": [
+      {
+        "id": "1296",
+        "nameEn": "exercise ball pike push up",
+        "candidate": "健身球俯卧撑"
+      },
+      {
+        "id": "0655",
+        "nameEn": "push-up (on stability ball)",
+        "candidate": "健身球俯卧撑"
+      },
+      {
+        "id": "0656",
+        "nameEn": "push-up (on stability ball)",
+        "candidate": "健身球俯卧撑"
+      }
+    ]
+  },
+  {
+    "candidate": "壶铃单臂推举",
+    "entries": [
+      {
+        "id": "1298",
+        "nameEn": "kettlebell one arm floor press",
+        "candidate": "壶铃单臂推举"
+      },
+      {
+        "id": "0531",
+        "nameEn": "kettlebell extended range one arm press on floor",
+        "candidate": "壶铃单臂推举"
+      },
+      {
+        "id": "0539",
+        "nameEn": "kettlebell one arm military press to the side",
+        "candidate": "壶铃单臂推举"
+      },
+      {
+        "id": "0540",
+        "nameEn": "kettlebell one arm push press",
+        "candidate": "壶铃单臂推举"
+      }
+    ]
+  },
+  {
+    "candidate": "器械上斜推胸",
+    "entries": [
+      {
+        "id": "1299",
+        "nameEn": "lever incline chest press",
+        "candidate": "器械上斜推胸"
+      },
+      {
+        "id": "1479",
+        "nameEn": "lever incline chest press v. 2",
+        "candidate": "器械上斜推胸"
+      }
+    ]
+  },
+  {
+    "candidate": "器械推胸",
+    "entries": [
+      {
+        "id": "1301",
+        "nameEn": "machine inner chest press",
+        "candidate": "器械推胸"
+      },
+      {
+        "id": "0577",
+        "nameEn": "lever chest press",
+        "candidate": "器械推胸"
+      },
+      {
+        "id": "0576",
+        "nameEn": "lever chest press",
+        "candidate": "器械推胸"
+      }
+    ]
+  },
+  {
+    "candidate": "器械划船",
+    "entries": [
+      {
+        "id": "1313",
+        "nameEn": "lever unilateral row",
+        "candidate": "器械划船"
+      },
+      {
+        "id": "0581",
+        "nameEn": "lever high row",
+        "candidate": "器械划船"
+      },
+      {
+        "id": "0606",
+        "nameEn": "lever t bar row",
+        "candidate": "器械划船"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球伸展",
+    "entries": [
+      {
+        "id": "1314",
+        "nameEn": "back extension on exercise ball",
+        "candidate": "健身球伸展"
+      },
+      {
+        "id": "1333",
+        "nameEn": "exercise ball back extension with arms extended",
+        "candidate": "健身球伸展"
+      },
+      {
+        "id": "1334",
+        "nameEn": "exercise ball back extension with hands behind head",
+        "candidate": "健身球伸展"
+      },
+      {
+        "id": "1335",
+        "nameEn": "exercise ball back extension with knees off ground",
+        "candidate": "健身球伸展"
+      },
+      {
+        "id": "1746",
+        "nameEn": "exercise ball supine triceps extension",
+        "candidate": "健身球伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃上拉",
+    "entries": [
+      {
+        "id": "1316",
+        "nameEn": "barbell bent arm pullover",
+        "candidate": "杠铃上拉"
+      },
+      {
+        "id": "0073",
+        "nameEn": "barbell pullover",
+        "candidate": "杠铃上拉"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索划船",
+    "entries": [
+      {
+        "id": "1319",
+        "nameEn": "cable palm rotational row",
+        "candidate": "绳索划船"
+      },
+      {
+        "id": "1324",
+        "nameEn": "cable upper row",
+        "candidate": "绳索划船"
+      },
+      {
+        "id": "2464",
+        "nameEn": "cable thibaudeau kayak row",
+        "candidate": "绳索划船"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索坐姿划船",
+    "entries": [
+      {
+        "id": "1320",
+        "nameEn": "cable rope crossover seated row",
+        "candidate": "绳索坐姿划船"
+      },
+      {
+        "id": "1321",
+        "nameEn": "cable rope elevated seated row",
+        "candidate": "绳索坐姿划船"
+      },
+      {
+        "id": "1323",
+        "nameEn": "cable rope seated row",
+        "candidate": "绳索坐姿划船"
+      },
+      {
+        "id": "0180",
+        "nameEn": "cable low seated row",
+        "candidate": "绳索坐姿划船"
+      },
+      {
+        "id": "0213",
+        "nameEn": "cable seated high row (v-bar)",
+        "candidate": "绳索坐姿划船"
+      },
+      {
+        "id": "0861",
+        "nameEn": "cable seated row",
+        "candidate": "绳索坐姿划船"
+      },
+      {
+        "id": "0239",
+        "nameEn": "cable straight back seated row",
+        "candidate": "绳索坐姿划船"
+      }
+    ]
+  },
+  {
+    "candidate": "反手引体",
+    "entries": [
+      {
+        "id": "1326",
+        "nameEn": "chin-up",
+        "candidate": "反手引体"
+      },
+      {
+        "id": "0627",
+        "nameEn": "mixed grip chin-up",
+        "candidate": "反手引体"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃俯身划船",
+    "entries": [
+      {
+        "id": "1329",
+        "nameEn": "dumbbell palm rotational bent over row",
+        "candidate": "哑铃俯身划船"
+      },
+      {
+        "id": "0293",
+        "nameEn": "dumbbell bent over row",
+        "candidate": "哑铃俯身划船"
+      }
+    ]
+  },
+  {
+    "candidate": "器械反向划船",
+    "entries": [
+      {
+        "id": "1348",
+        "nameEn": "lever reverse grip vertical row",
+        "candidate": "器械反向划船"
+      },
+      {
+        "id": "1349",
+        "nameEn": "lever reverse t-bar row",
+        "candidate": "器械反向划船"
+      },
+      {
+        "id": "1351",
+        "nameEn": "lever t-bar reverse grip row",
+        "candidate": "器械反向划船"
+      }
+    ]
+  },
+  {
+    "candidate": "弯举",
+    "entries": [
+      {
+        "id": "1352",
+        "nameEn": "lower back curl",
+        "candidate": "弯举"
+      },
+      {
+        "id": "1770",
+        "nameEn": "biceps leg concentration curl",
+        "candidate": "弯举"
+      },
+      {
+        "id": "2404",
+        "nameEn": "ez-bar biceps curl (with arm blaster)",
+        "candidate": "弯举"
+      },
+      {
+        "id": "3016",
+        "nameEn": "curl-up",
+        "candidate": "弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃坐姿提踵",
+    "entries": [
+      {
+        "id": "1371",
+        "nameEn": "barbell seated calf raise",
+        "candidate": "杠铃坐姿提踵"
+      },
+      {
+        "id": "0088",
+        "nameEn": "barbell seated calf raise",
+        "candidate": "杠铃坐姿提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃站姿提踵",
+    "entries": [
+      {
+        "id": "1372",
+        "nameEn": "barbell standing calf raise",
+        "candidate": "杠铃站姿提踵"
+      },
+      {
+        "id": "0108",
+        "nameEn": "barbell standing leg calf raise",
+        "candidate": "杠铃站姿提踵"
+      },
+      {
+        "id": "0111",
+        "nameEn": "barbell standing rocking leg calf raise",
+        "candidate": "杠铃站姿提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "站姿提踵",
+    "entries": [
+      {
+        "id": "1373",
+        "nameEn": "bodyweight standing calf raise",
+        "candidate": "站姿提踵"
+      },
+      {
+        "id": "1490",
+        "nameEn": "standing calf raise (on a staircase)",
+        "candidate": "站姿提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单腿坐姿提踵",
+    "entries": [
+      {
+        "id": "1380",
+        "nameEn": "dumbbell seated one leg calf raise - hammer grip",
+        "candidate": "哑铃单腿坐姿提踵"
+      },
+      {
+        "id": "1381",
+        "nameEn": "dumbbell seated one leg calf raise - palm up",
+        "candidate": "哑铃单腿坐姿提踵"
+      },
+      {
+        "id": "0400",
+        "nameEn": "dumbbell seated one leg calf raise",
+        "candidate": "哑铃单腿坐姿提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球提踵",
+    "entries": [
+      {
+        "id": "1382",
+        "nameEn": "exercise ball on the wall calf raise",
+        "candidate": "健身球提踵"
+      },
+      {
+        "id": "3240",
+        "nameEn": "exercise ball on the wall calf raise (tennis ball between knees)",
+        "candidate": "健身球提踵"
+      },
+      {
+        "id": "3241",
+        "nameEn": "exercise ball on the wall calf raise (tennis ball between ankles)",
+        "candidate": "健身球提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "提踵",
+    "entries": [
+      {
+        "id": "1383",
+        "nameEn": "hack calf raise",
+        "candidate": "提踵"
+      },
+      {
+        "id": "0284",
+        "nameEn": "donkey calf raise",
+        "candidate": "提踵"
+      },
+      {
+        "id": "0742",
+        "nameEn": "sled forward angled calf raise",
+        "candidate": "提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "单腿提踵",
+    "entries": [
+      {
+        "id": "1384",
+        "nameEn": "hack one leg calf raise",
+        "candidate": "单腿提踵"
+      },
+      {
+        "id": "1386",
+        "nameEn": "one leg donkey calf raise",
+        "candidate": "单腿提踵"
+      },
+      {
+        "id": "1387",
+        "nameEn": "one leg floor calf raise",
+        "candidate": "单腿提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "坐姿拉伸",
+    "entries": [
+      {
+        "id": "1390",
+        "nameEn": "seated calf stretch (male)",
+        "candidate": "坐姿拉伸"
+      },
+      {
+        "id": "1424",
+        "nameEn": "seated glute stretch",
+        "candidate": "坐姿拉伸"
+      },
+      {
+        "id": "2567",
+        "nameEn": "seated piriformis stretch",
+        "candidate": "坐姿拉伸"
+      },
+      {
+        "id": "0690",
+        "nameEn": "seated lower back stretch",
+        "candidate": "坐姿拉伸"
+      }
+    ]
+  },
+  {
+    "candidate": "史密斯机平举",
+    "entries": [
+      {
+        "id": "1396",
+        "nameEn": "smith toe raise",
+        "candidate": "史密斯机平举"
+      },
+      {
+        "id": "0756",
+        "nameEn": "smith hip raise",
+        "candidate": "史密斯机平举"
+      }
+    ]
+  },
+  {
+    "candidate": "站姿拉伸",
+    "entries": [
+      {
+        "id": "1398",
+        "nameEn": "standing calves calf stretch",
+        "candidate": "站姿拉伸"
+      },
+      {
+        "id": "1599",
+        "nameEn": "standing hamstring and calf stretch with strap",
+        "candidate": "站姿拉伸"
+      },
+      {
+        "id": "0794",
+        "nameEn": "standing lateral stretch",
+        "candidate": "站姿拉伸"
+      }
+    ]
+  },
+  {
+    "candidate": "臂屈伸",
+    "entries": [
+      {
+        "id": "1399",
+        "nameEn": "bench dip on floor",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "1753",
+        "nameEn": "three bench dip",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "2462",
+        "nameEn": "chest dip on straight bar",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "0129",
+        "nameEn": "bench dip (knees bent)",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "0251",
+        "nameEn": "chest dip",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "0814",
+        "nameEn": "triceps dip",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "0812",
+        "nameEn": "triceps dip (bench leg)",
+        "candidate": "臂屈伸"
+      },
+      {
+        "id": "0813",
+        "nameEn": "triceps dip (between benches)",
+        "candidate": "臂屈伸"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃臀桥",
+    "entries": [
+      {
+        "id": "1409",
+        "nameEn": "barbell glute bridge",
+        "candidate": "杠铃臀桥"
+      },
+      {
+        "id": "3562",
+        "nameEn": "barbell glute bridge two legs on bench (male)",
+        "candidate": "杠铃臀桥"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃弓步",
+    "entries": [
+      {
+        "id": "1410",
+        "nameEn": "barbell lateral lunge",
+        "candidate": "杠铃弓步"
+      },
+      {
+        "id": "0054",
+        "nameEn": "barbell lunge",
+        "candidate": "杠铃弓步"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃弯举",
+    "entries": [
+      {
+        "id": "1411",
+        "nameEn": "barbell palms down wrist curl over a bench",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "1412",
+        "nameEn": "barbell palms up wrist curl over a bench",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "2407",
+        "nameEn": "barbell biceps curl (with arm blaster)",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0023",
+        "nameEn": "barbell alternate biceps curl",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0031",
+        "nameEn": "barbell curl",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0038",
+        "nameEn": "barbell drag curl",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0070",
+        "nameEn": "barbell preacher curl",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0079",
+        "nameEn": "barbell revers wrist curl v. 2",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0126",
+        "nameEn": "barbell wrist curl",
+        "candidate": "杠铃弯举"
+      },
+      {
+        "id": "0125",
+        "nameEn": "barbell wrist curl v. 2",
+        "candidate": "杠铃弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索单臂反向弯举",
+    "entries": [
+      {
+        "id": "1413",
+        "nameEn": "cable reverse one arm curl",
+        "candidate": "绳索单臂反向弯举"
+      },
+      {
+        "id": "1635",
+        "nameEn": "cable one arm reverse preacher curl",
+        "candidate": "绳索单臂反向弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂反向弯举",
+    "entries": [
+      {
+        "id": "1414",
+        "nameEn": "dumbbell one arm reverse preacher curl",
+        "candidate": "哑铃单臂反向弯举"
+      },
+      {
+        "id": "1441",
+        "nameEn": "dumbbell over bench one arm reverse wrist curl",
+        "candidate": "哑铃单臂反向弯举"
+      },
+      {
+        "id": "1667",
+        "nameEn": "dumbbell one arm reverse spider curl",
+        "candidate": "哑铃单臂反向弯举"
+      },
+      {
+        "id": "0358",
+        "nameEn": "dumbbell one arm reverse wrist curl",
+        "candidate": "哑铃单臂反向弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂坐姿弯举",
+    "entries": [
+      {
+        "id": "1415",
+        "nameEn": "dumbbell one arm seated neutral wrist curl",
+        "candidate": "哑铃单臂坐姿弯举"
+      },
+      {
+        "id": "1669",
+        "nameEn": "dumbbell one arm seated hammer curl",
+        "candidate": "哑铃单臂坐姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "史密斯机深蹲",
+    "entries": [
+      {
+        "id": "1433",
+        "nameEn": "smith front squat (clean grip)",
+        "candidate": "史密斯机深蹲"
+      },
+      {
+        "id": "1434",
+        "nameEn": "smith low bar squat",
+        "candidate": "史密斯机深蹲"
+      },
+      {
+        "id": "3142",
+        "nameEn": "smith sumo squat",
+        "candidate": "史密斯机深蹲"
+      },
+      {
+        "id": "3281",
+        "nameEn": "smith full squat",
+        "candidate": "史密斯机深蹲"
+      },
+      {
+        "id": "0750",
+        "nameEn": "smith chair squat",
+        "candidate": "史密斯机深蹲"
+      },
+      {
+        "id": "0755",
+        "nameEn": "smith hack squat",
+        "candidate": "史密斯机深蹲"
+      },
+      {
+        "id": "0770",
+        "nameEn": "smith squat",
+        "candidate": "史密斯机深蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃深蹲",
+    "entries": [
+      {
+        "id": "1435",
+        "nameEn": "barbell low bar squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "1436",
+        "nameEn": "barbell high bar squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "1461",
+        "nameEn": "barbell full squat (back pov)",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "1462",
+        "nameEn": "barbell full squat (side pov)",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "1545",
+        "nameEn": "barbell full zercher squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0024",
+        "nameEn": "barbell bench front squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0026",
+        "nameEn": "barbell bench squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0029",
+        "nameEn": "barbell clean-grip front squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0039",
+        "nameEn": "barbell front chest squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0042",
+        "nameEn": "barbell front squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0043",
+        "nameEn": "barbell full squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0046",
+        "nameEn": "barbell hack squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0051",
+        "nameEn": "barbell jefferson squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0053",
+        "nameEn": "barbell jump squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0069",
+        "nameEn": "barbell overhead squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0101",
+        "nameEn": "barbell speed squat",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0102",
+        "nameEn": "barbell squat (on knees)",
+        "candidate": "杠铃深蹲"
+      },
+      {
+        "id": "0127",
+        "nameEn": "barbell zercher squat",
+        "candidate": "杠铃深蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "壶铃坐姿推举",
+    "entries": [
+      {
+        "id": "1438",
+        "nameEn": "kettlebell seated two arm military press",
+        "candidate": "壶铃坐姿推举"
+      },
+      {
+        "id": "0546",
+        "nameEn": "kettlebell seated press",
+        "candidate": "壶铃坐姿推举"
+      }
+    ]
+  },
+  {
+    "candidate": "器械坐姿卷腹",
+    "entries": [
+      {
+        "id": "1452",
+        "nameEn": "lever seated crunch",
+        "candidate": "器械坐姿卷腹"
+      },
+      {
+        "id": "3760",
+        "nameEn": "lever seated crunch v. 2",
+        "candidate": "器械坐姿卷腹"
+      },
+      {
+        "id": "0595",
+        "nameEn": "lever seated crunch (chest pad)",
+        "candidate": "器械坐姿卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃硬拉",
+    "entries": [
+      {
+        "id": "1459",
+        "nameEn": "dumbbell romanian deadlift",
+        "candidate": "哑铃硬拉"
+      },
+      {
+        "id": "0300",
+        "nameEn": "dumbbell deadlift",
+        "candidate": "哑铃硬拉"
+      }
+    ]
+  },
+  {
+    "candidate": "弓步",
+    "entries": [
+      {
+        "id": "1460",
+        "nameEn": "walking lunge",
+        "candidate": "弓步"
+      },
+      {
+        "id": "3470",
+        "nameEn": "forward lunge (male)",
+        "candidate": "弓步"
+      },
+      {
+        "id": "3582",
+        "nameEn": "lunge with jump",
+        "candidate": "弓步"
+      },
+      {
+        "id": "3655",
+        "nameEn": "walking high knees lunge",
+        "candidate": "弓步"
+      }
+    ]
+  },
+  {
+    "candidate": "腿举",
+    "entries": [
+      {
+        "id": "1463",
+        "nameEn": "sled 45° leg press (side pov)",
+        "candidate": "腿举"
+      },
+      {
+        "id": "1464",
+        "nameEn": "sled 45в° leg press (back pov)",
+        "candidate": "腿举"
+      },
+      {
+        "id": "0739",
+        "nameEn": "sled 45в° leg press",
+        "candidate": "腿举"
+      }
+    ]
+  },
+  {
+    "candidate": "转体",
+    "entries": [
+      {
+        "id": "1466",
+        "nameEn": "twist hip lift",
+        "candidate": "转体"
+      },
+      {
+        "id": "1468",
+        "nameEn": "crab twist toe touch",
+        "candidate": "转体"
+      },
+      {
+        "id": "2329",
+        "nameEn": "spine twist",
+        "candidate": "转体"
+      },
+      {
+        "id": "0687",
+        "nameEn": "russian twist",
+        "candidate": "转体"
+      }
+    ]
+  },
+  {
+    "candidate": "单腿深蹲",
+    "entries": [
+      {
+        "id": "1476",
+        "nameEn": "one leg squat",
+        "candidate": "单腿深蹲"
+      },
+      {
+        "id": "1759",
+        "nameEn": "single leg squat (pistol) male",
+        "candidate": "单腿深蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "深蹲",
+    "entries": [
+      {
+        "id": "1489",
+        "nameEn": "sissy squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "1685",
+        "nameEn": "squat to overhead reach",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "1705",
+        "nameEn": "squat on bosu ball",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "3119",
+        "nameEn": "potty squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "3132",
+        "nameEn": "potty squat with support",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "3194",
+        "nameEn": "frankenstein squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "3222",
+        "nameEn": "semi squat jump (male)",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "3543",
+        "nameEn": "bodyweight drop jump squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "3769",
+        "nameEn": "curtsey squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "0514",
+        "nameEn": "jump squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "0513",
+        "nameEn": "jump squat v. 2",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "0741",
+        "nameEn": "sled closer hack squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "0743",
+        "nameEn": "sled hack squat",
+        "candidate": "深蹲"
+      },
+      {
+        "id": "0786",
+        "nameEn": "squat jerk",
+        "candidate": "深蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "卷腹",
+    "entries": [
+      {
+        "id": "1495",
+        "nameEn": "oblique crunch v. 2",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "2429",
+        "nameEn": "frog crunch",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "3640",
+        "nameEn": "knee touch crunch",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "0262",
+        "nameEn": "cross body crunch",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "0267",
+        "nameEn": "crunch (hands overhead)",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "0274",
+        "nameEn": "crunch floor",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "0469",
+        "nameEn": "groin crunch",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "0634",
+        "nameEn": "negative crunch",
+        "candidate": "卷腹"
+      },
+      {
+        "id": "0871",
+        "nameEn": "tuck crunch",
+        "candidate": "卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球坐姿拉伸",
+    "entries": [
+      {
+        "id": "1560",
+        "nameEn": "exercise ball seated hamstring stretch",
+        "candidate": "健身球坐姿拉伸"
+      },
+      {
+        "id": "1745",
+        "nameEn": "exercise ball seated triceps stretch",
+        "candidate": "健身球坐姿拉伸"
+      }
+    ]
+  },
+  {
+    "candidate": "器械弯举",
+    "entries": [
+      {
+        "id": "1614",
+        "nameEn": "lever preacher curl v. 2",
+        "candidate": "器械弯举"
+      },
+      {
+        "id": "1615",
+        "nameEn": "lever hammer grip preacher curl",
+        "candidate": "器械弯举"
+      },
+      {
+        "id": "0575",
+        "nameEn": "lever bicep curl",
+        "candidate": "器械弯举"
+      },
+      {
+        "id": "0592",
+        "nameEn": "lever preacher curl",
+        "candidate": "器械弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜卧推",
+    "entries": [
+      {
+        "id": "1623",
+        "nameEn": "dumbbell palms in incline bench press",
+        "candidate": "哑铃上斜卧推"
+      },
+      {
+        "id": "0314",
+        "nameEn": "dumbbell incline bench press",
+        "candidate": "哑铃上斜卧推"
+      }
+    ]
+  },
+  {
+    "candidate": "曲杆杠铃窄握弯举",
+    "entries": [
+      {
+        "id": "1627",
+        "nameEn": "ez barbell close grip preacher curl",
+        "candidate": "曲杆杠铃窄握弯举"
+      },
+      {
+        "id": "0446",
+        "nameEn": "ez barbell close-grip curl",
+        "candidate": "曲杆杠铃窄握弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "曲杆杠铃弯举",
+    "entries": [
+      {
+        "id": "1628",
+        "nameEn": "ez barbell spider curl",
+        "candidate": "曲杆杠铃弯举"
+      },
+      {
+        "id": "0447",
+        "nameEn": "ez barbell curl",
+        "candidate": "曲杆杠铃弯举"
+      },
+      {
+        "id": "0454",
+        "nameEn": "ez barbell spider curl",
+        "candidate": "曲杆杠铃弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃宽握站姿弯举",
+    "entries": [
+      {
+        "id": "1629",
+        "nameEn": "barbell standing wide grip biceps curl",
+        "candidate": "杠铃宽握站姿弯举"
+      },
+      {
+        "id": "0113",
+        "nameEn": "barbell standing wide-grip curl",
+        "candidate": "杠铃宽握站姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索弯举",
+    "entries": [
+      {
+        "id": "1631",
+        "nameEn": "cable concentration curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "1632",
+        "nameEn": "cable drag curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "1636",
+        "nameEn": "cable overhead curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "1639",
+        "nameEn": "cable rope hammer preacher curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "1644",
+        "nameEn": "cable squatting curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "0868",
+        "nameEn": "cable curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "0165",
+        "nameEn": "cable hammer curl (with rope)",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "0195",
+        "nameEn": "cable preacher curl",
+        "candidate": "绳索弯举"
+      },
+      {
+        "id": "0247",
+        "nameEn": "cable wrist curl",
+        "candidate": "绳索弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索单臂弯举",
+    "entries": [
+      {
+        "id": "1633",
+        "nameEn": "cable one arm preacher curl",
+        "candidate": "绳索单臂弯举"
+      },
+      {
+        "id": "1640",
+        "nameEn": "cable rope one arm hammer preacher curl",
+        "candidate": "绳索单臂弯举"
+      },
+      {
+        "id": "0190",
+        "nameEn": "cable one arm curl",
+        "candidate": "绳索单臂弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索坐姿弯举",
+    "entries": [
+      {
+        "id": "1641",
+        "nameEn": "cable seated curl",
+        "candidate": "绳索坐姿弯举"
+      },
+      {
+        "id": "1643",
+        "nameEn": "cable seated overhead curl",
+        "candidate": "绳索坐姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃弯举",
+    "entries": [
+      {
+        "id": "1646",
+        "nameEn": "dumbbell alternate hammer preacher curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "1647",
+        "nameEn": "dumbbell alternate preacher curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "1653",
+        "nameEn": "dumbbell bicep curl with stork stance",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "1656",
+        "nameEn": "dumbbell biceps curl v sit on bosu ball",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "1657",
+        "nameEn": "dumbbell cross body hammer curl v. 2",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "1664",
+        "nameEn": "dumbbell high curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "2294",
+        "nameEn": "dumbbell zottman preacher curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "2401",
+        "nameEn": "dumbbell biceps curl (with arm blaster)",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "2403",
+        "nameEn": "dumbbell alternate biceps curl (with arm blaster)",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "5201",
+        "nameEn": "dumbbell waiter biceps curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0285",
+        "nameEn": "dumbbell alternate biceps curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0294",
+        "nameEn": "dumbbell biceps curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0297",
+        "nameEn": "dumbbell concentration curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0298",
+        "nameEn": "dumbbell cross body hammer curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0313",
+        "nameEn": "dumbbell hammer curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0312",
+        "nameEn": "dumbbell hammer curl v. 2",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0365",
+        "nameEn": "dumbbell over bench neutral wrist curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0368",
+        "nameEn": "dumbbell over bench revers wrist curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0369",
+        "nameEn": "dumbbell over bench wrist curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0370",
+        "nameEn": "dumbbell peacher hammer curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0372",
+        "nameEn": "dumbbell preacher curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0382",
+        "nameEn": "dumbbell revers grip biceps curl",
+        "candidate": "哑铃弯举"
+      },
+      {
+        "id": "0439",
+        "nameEn": "dumbbell zottman curl",
+        "candidate": "哑铃弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃坐姿弯举",
+    "entries": [
+      {
+        "id": "1648",
+        "nameEn": "dumbbell alternate seated hammer curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "1677",
+        "nameEn": "dumbbell seated bicep curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "1678",
+        "nameEn": "dumbbell seated hammer curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "0391",
+        "nameEn": "dumbbell seated curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "0393",
+        "nameEn": "dumbbell seated inner biceps curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "0397",
+        "nameEn": "dumbbell seated neutral wrist curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "0401",
+        "nameEn": "dumbbell seated palms up wrist curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "0402",
+        "nameEn": "dumbbell seated preacher curl",
+        "candidate": "哑铃坐姿弯举"
+      },
+      {
+        "id": "0403",
+        "nameEn": "dumbbell seated revers grip concentration curl",
+        "candidate": "哑铃坐姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃弓步弯举",
+    "entries": [
+      {
+        "id": "1651",
+        "nameEn": "dumbbell bicep curl lunge with bowling motion",
+        "candidate": "哑铃弓步弯举"
+      },
+      {
+        "id": "1658",
+        "nameEn": "dumbbell lunge with bicep curl",
+        "candidate": "哑铃弓步弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃弯举",
+    "entries": [
+      {
+        "id": "1652",
+        "nameEn": "dumbbell bicep curl on exercise ball with leg raised",
+        "candidate": "健身球哑铃弯举"
+      },
+      {
+        "id": "1659",
+        "nameEn": "dumbbell hammer curl on exercise ball",
+        "candidate": "健身球哑铃弯举"
+      },
+      {
+        "id": "1673",
+        "nameEn": "dumbbell preacher curl over exercise ball",
+        "candidate": "健身球哑铃弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃反向弯举",
+    "entries": [
+      {
+        "id": "1654",
+        "nameEn": "dumbbell biceps curl reverse",
+        "candidate": "哑铃反向弯举"
+      },
+      {
+        "id": "1675",
+        "nameEn": "dumbbell reverse spider curl",
+        "candidate": "哑铃反向弯举"
+      },
+      {
+        "id": "0384",
+        "nameEn": "dumbbell reverse preacher curl",
+        "candidate": "哑铃反向弯举"
+      },
+      {
+        "id": "0385",
+        "nameEn": "dumbbell reverse wrist curl",
+        "candidate": "哑铃反向弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃仰卧弯举",
+    "entries": [
+      {
+        "id": "1661",
+        "nameEn": "dumbbell lying supine biceps curl",
+        "candidate": "哑铃仰卧弯举"
+      },
+      {
+        "id": "0350",
+        "nameEn": "dumbbell lying supine curl",
+        "candidate": "哑铃仰卧弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂弯举",
+    "entries": [
+      {
+        "id": "1663",
+        "nameEn": "dumbbell one arm hammer preacher curl",
+        "candidate": "哑铃单臂弯举"
+      },
+      {
+        "id": "1665",
+        "nameEn": "dumbbell one arm prone curl",
+        "candidate": "哑铃单臂弯举"
+      },
+      {
+        "id": "1666",
+        "nameEn": "dumbbell one arm prone hammer curl",
+        "candidate": "哑铃单臂弯举"
+      },
+      {
+        "id": "1672",
+        "nameEn": "dumbbell one arm zottman preacher curl",
+        "candidate": "哑铃单臂弯举"
+      },
+      {
+        "id": "0364",
+        "nameEn": "dumbbell one arm wrist curl",
+        "candidate": "哑铃单臂弯举"
+      },
+      {
+        "id": "0366",
+        "nameEn": "dumbbell over bench one arm neutral wrist curl",
+        "candidate": "哑铃单臂弯举"
+      },
+      {
+        "id": "0367",
+        "nameEn": "dumbbell over bench one arm wrist curl",
+        "candidate": "哑铃单臂弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃单臂坐姿弯举",
+    "entries": [
+      {
+        "id": "1668",
+        "nameEn": "dumbbell one arm seated bicep curl on exercise ball",
+        "candidate": "健身球哑铃单臂坐姿弯举"
+      },
+      {
+        "id": "1679",
+        "nameEn": "dumbbell seated one arm bicep curl on exercise ball with leg raised",
+        "candidate": "健身球哑铃单臂坐姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂站姿弯举",
+    "entries": [
+      {
+        "id": "1670",
+        "nameEn": "dumbbell one arm standing curl",
+        "candidate": "哑铃单臂站姿弯举"
+      },
+      {
+        "id": "1671",
+        "nameEn": "dumbbell one arm standing hammer curl",
+        "candidate": "哑铃单臂站姿弯举"
+      },
+      {
+        "id": "0421",
+        "nameEn": "dumbbell standing one arm concentration curl",
+        "candidate": "哑铃单臂站姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜弯举",
+    "entries": [
+      {
+        "id": "1674",
+        "nameEn": "dumbbell prone incline hammer curl",
+        "candidate": "哑铃上斜弯举"
+      },
+      {
+        "id": "0315",
+        "nameEn": "dumbbell incline biceps curl",
+        "candidate": "哑铃上斜弯举"
+      },
+      {
+        "id": "0318",
+        "nameEn": "dumbbell incline curl",
+        "candidate": "哑铃上斜弯举"
+      },
+      {
+        "id": "0317",
+        "nameEn": "dumbbell incline curl v. 2",
+        "candidate": "哑铃上斜弯举"
+      },
+      {
+        "id": "0320",
+        "nameEn": "dumbbell incline hammer curl",
+        "candidate": "哑铃上斜弯举"
+      },
+      {
+        "id": "0322",
+        "nameEn": "dumbbell incline inner biceps curl",
+        "candidate": "哑铃上斜弯举"
+      },
+      {
+        "id": "0374",
+        "nameEn": "dumbbell prone incline curl",
+        "candidate": "哑铃上斜弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球哑铃坐姿弯举",
+    "entries": [
+      {
+        "id": "1676",
+        "nameEn": "dumbbell seated alternate hammer curl on exercise ball",
+        "candidate": "健身球哑铃坐姿弯举"
+      },
+      {
+        "id": "0390",
+        "nameEn": "dumbbell seated biceps curl (on stability ball)",
+        "candidate": "健身球哑铃坐姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜单臂站姿弯举",
+    "entries": [
+      {
+        "id": "1680",
+        "nameEn": "dumbbell standing one arm curl over incline bench",
+        "candidate": "哑铃上斜单臂站姿弯举"
+      },
+      {
+        "id": "0422",
+        "nameEn": "dumbbell standing one arm curl (over incline bench)",
+        "candidate": "哑铃上斜单臂站姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃推举",
+    "entries": [
+      {
+        "id": "1700",
+        "nameEn": "dumbbell push press",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "2136",
+        "nameEn": "dumbbell cuban press v. 2",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "2137",
+        "nameEn": "dumbbell arnold press",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "2397",
+        "nameEn": "dumbbell scott press",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "0286",
+        "nameEn": "dumbbell alternate side press",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "0287",
+        "nameEn": "dumbbell arnold press v. 2",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "0299",
+        "nameEn": "dumbbell cuban press",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "0436",
+        "nameEn": "dumbbell tate press",
+        "candidate": "哑铃推举"
+      },
+      {
+        "id": "0438",
+        "nameEn": "dumbbell w-press",
+        "candidate": "哑铃推举"
+      }
+    ]
+  },
+  {
+    "candidate": "仰卧辅助拉伸",
+    "entries": [
+      {
+        "id": "1708",
+        "nameEn": "assisted lying calves stretch",
+        "candidate": "仰卧辅助拉伸"
+      },
+      {
+        "id": "1709",
+        "nameEn": "assisted lying glutes stretch",
+        "candidate": "仰卧辅助拉伸"
+      },
+      {
+        "id": "1710",
+        "nameEn": "assisted lying gluteus and piriformis stretch",
+        "candidate": "仰卧辅助拉伸"
+      },
+      {
+        "id": "1713",
+        "nameEn": "assisted prone lying quads stretch",
+        "candidate": "仰卧辅助拉伸"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃仰卧伸展",
+    "entries": [
+      {
+        "id": "1720",
+        "nameEn": "barbell lying back of the head tricep extension",
+        "candidate": "杠铃仰卧伸展"
+      },
+      {
+        "id": "0057",
+        "nameEn": "barbell lying extension",
+        "candidate": "杠铃仰卧伸展"
+      },
+      {
+        "id": "0061",
+        "nameEn": "barbell lying triceps extension",
+        "candidate": "杠铃仰卧伸展"
+      },
+      {
+        "id": "0060",
+        "nameEn": "barbell lying triceps extension skull crusher",
+        "candidate": "杠铃仰卧伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索伸展",
+    "entries": [
+      {
+        "id": "1722",
+        "nameEn": "cable high pulley overhead tricep extension",
+        "candidate": "绳索伸展"
+      },
+      {
+        "id": "1724",
+        "nameEn": "cable rope high pulley overhead tricep extension",
+        "candidate": "绳索伸展"
+      },
+      {
+        "id": "0149",
+        "nameEn": "cable alternate triceps extension",
+        "candidate": "绳索伸展"
+      },
+      {
+        "id": "0152",
+        "nameEn": "cable concentration extension (on knee)",
+        "candidate": "绳索伸展"
+      },
+      {
+        "id": "0194",
+        "nameEn": "cable overhead triceps extension (rope attachment)",
+        "candidate": "绳索伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索上斜伸展",
+    "entries": [
+      {
+        "id": "1725",
+        "nameEn": "cable rope incline tricep extension",
+        "candidate": "绳索上斜伸展"
+      },
+      {
+        "id": "0173",
+        "nameEn": "cable incline triceps extension",
+        "candidate": "绳索上斜伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索仰卧伸展",
+    "entries": [
+      {
+        "id": "1726",
+        "nameEn": "cable rope lying on floor tricep extension",
+        "candidate": "绳索仰卧伸展"
+      },
+      {
+        "id": "0186",
+        "nameEn": "cable lying triceps extension v. 2",
+        "candidate": "绳索仰卧伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索后踢",
+    "entries": [
+      {
+        "id": "1728",
+        "nameEn": "cable two arm tricep kickback",
+        "candidate": "绳索后踢"
+      },
+      {
+        "id": "0860",
+        "nameEn": "cable kickback",
+        "candidate": "绳索后踢"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃仰卧伸展",
+    "entries": [
+      {
+        "id": "1729",
+        "nameEn": "dumbbell lying alternate extension",
+        "candidate": "哑铃仰卧伸展"
+      },
+      {
+        "id": "1735",
+        "nameEn": "dumbbell lying single extension",
+        "candidate": "哑铃仰卧伸展"
+      },
+      {
+        "id": "0337",
+        "nameEn": "dumbbell lying extension (across face)",
+        "candidate": "哑铃仰卧伸展"
+      },
+      {
+        "id": "0351",
+        "nameEn": "dumbbell lying triceps extension",
+        "candidate": "哑铃仰卧伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃窄握推举",
+    "entries": [
+      {
+        "id": "1731",
+        "nameEn": "dumbbell close grip press",
+        "candidate": "哑铃窄握推举"
+      },
+      {
+        "id": "0296",
+        "nameEn": "dumbbell close-grip press",
+        "candidate": "哑铃窄握推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜伸展",
+    "entries": [
+      {
+        "id": "1733",
+        "nameEn": "dumbbell incline two arm extension",
+        "candidate": "哑铃上斜伸展"
+      },
+      {
+        "id": "0330",
+        "nameEn": "dumbbell incline triceps extension",
+        "candidate": "哑铃上斜伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃后踢",
+    "entries": [
+      {
+        "id": "1742",
+        "nameEn": "dumbbell tricep kickback with stork stance",
+        "candidate": "哑铃后踢"
+      },
+      {
+        "id": "0333",
+        "nameEn": "dumbbell kickback",
+        "candidate": "哑铃后踢"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃卧推",
+    "entries": [
+      {
+        "id": "1743",
+        "nameEn": "dumbbell twisting bench press",
+        "candidate": "哑铃卧推"
+      },
+      {
+        "id": "0289",
+        "nameEn": "dumbbell bench press",
+        "candidate": "哑铃卧推"
+      }
+    ]
+  },
+  {
+    "candidate": "站姿推举",
+    "entries": [
+      {
+        "id": "1749",
+        "nameEn": "ez bar standing french press",
+        "candidate": "站姿推举"
+      },
+      {
+        "id": "0788",
+        "nameEn": "standing behind neck press",
+        "candidate": "站姿推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单腿硬拉",
+    "entries": [
+      {
+        "id": "1757",
+        "nameEn": "dumbbell single leg deadlift",
+        "candidate": "哑铃单腿硬拉"
+      },
+      {
+        "id": "2805",
+        "nameEn": "dumbbell single leg deadlift with stepbox support",
+        "candidate": "哑铃单腿硬拉"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃深蹲",
+    "entries": [
+      {
+        "id": "1760",
+        "nameEn": "dumbbell goblet squat",
+        "candidate": "哑铃深蹲"
+      },
+      {
+        "id": "2803",
+        "nameEn": "dumbbell supported squat",
+        "candidate": "哑铃深蹲"
+      },
+      {
+        "id": "0291",
+        "nameEn": "dumbbell bench squat",
+        "candidate": "哑铃深蹲"
+      },
+      {
+        "id": "0371",
+        "nameEn": "dumbbell plyo squat",
+        "candidate": "哑铃深蹲"
+      },
+      {
+        "id": "0413",
+        "nameEn": "dumbbell squat",
+        "candidate": "哑铃深蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "平举",
+    "entries": [
+      {
+        "id": "1761",
+        "nameEn": "hanging oblique knee raise",
+        "candidate": "平举"
+      },
+      {
+        "id": "1764",
+        "nameEn": "hanging leg hip raise",
+        "candidate": "平举"
+      },
+      {
+        "id": "2801",
+        "nameEn": "twisted leg raise (female)",
+        "candidate": "平举"
+      },
+      {
+        "id": "2802",
+        "nameEn": "twisted leg raise",
+        "candidate": "平举"
+      },
+      {
+        "id": "3193",
+        "nameEn": "glute-ham raise",
+        "candidate": "平举"
+      },
+      {
+        "id": "0472",
+        "nameEn": "hanging leg raise",
+        "candidate": "平举"
+      },
+      {
+        "id": "0476",
+        "nameEn": "hanging straight twisting leg hip raise",
+        "candidate": "平举"
+      },
+      {
+        "id": "0484",
+        "nameEn": "hip raise (bent knee)",
+        "candidate": "平举"
+      },
+      {
+        "id": "0826",
+        "nameEn": "vertical leg raise (on parallel bars)",
+        "candidate": "平举"
+      }
+    ]
+  },
+  {
+    "candidate": "引体向上",
+    "entries": [
+      {
+        "id": "1763",
+        "nameEn": "shoulder grip pull-up",
+        "candidate": "引体向上"
+      },
+      {
+        "id": "3293",
+        "nameEn": "archer pull up",
+        "candidate": "引体向上"
+      },
+      {
+        "id": "3418",
+        "nameEn": "l-pull-up",
+        "candidate": "引体向上"
+      },
+      {
+        "id": "0140",
+        "nameEn": "biceps pull-up",
+        "candidate": "引体向上"
+      },
+      {
+        "id": "0652",
+        "nameEn": "pull-up",
+        "candidate": "引体向上"
+      },
+      {
+        "id": "0688",
+        "nameEn": "scapular pull-up",
+        "candidate": "引体向上"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃直立划船",
+    "entries": [
+      {
+        "id": "1765",
+        "nameEn": "dumbbell upright row (back pov)",
+        "candidate": "哑铃直立划船"
+      },
+      {
+        "id": "0437",
+        "nameEn": "dumbbell upright row",
+        "candidate": "哑铃直立划船"
+      }
+    ]
+  },
+  {
+    "candidate": "辅助腿弯举",
+    "entries": [
+      {
+        "id": "1766",
+        "nameEn": "self assisted inverse leg curl",
+        "candidate": "辅助腿弯举"
+      },
+      {
+        "id": "0697",
+        "nameEn": "self assisted inverse leg curl",
+        "candidate": "辅助腿弯举"
+      },
+      {
+        "id": "0696",
+        "nameEn": "self assisted inverse leg curl (on floor)",
+        "candidate": "辅助腿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "负重臂屈伸",
+    "entries": [
+      {
+        "id": "1767",
+        "nameEn": "weighted triceps dip on high parallel bars",
+        "candidate": "负重臂屈伸"
+      },
+      {
+        "id": "3313",
+        "nameEn": "weighted straight bar dip",
+        "candidate": "负重臂屈伸"
+      },
+      {
+        "id": "0830",
+        "nameEn": "weighted bench dip",
+        "candidate": "负重臂屈伸"
+      }
+    ]
+  },
+  {
+    "candidate": "平板支撑",
+    "entries": [
+      {
+        "id": "1775",
+        "nameEn": "side plank hip adduction",
+        "candidate": "平板支撑"
+      },
+      {
+        "id": "3665",
+        "nameEn": "power point plank",
+        "candidate": "平板支撑"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃坐姿伸展",
+    "entries": [
+      {
+        "id": "2188",
+        "nameEn": "dumbbell seated triceps extension",
+        "candidate": "哑铃坐姿伸展"
+      },
+      {
+        "id": "0389",
+        "nameEn": "dumbbell seated bench extension",
+        "candidate": "哑铃坐姿伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "反向卷腹",
+    "entries": [
+      {
+        "id": "2206",
+        "nameEn": "roller reverse crunch",
+        "candidate": "反向卷腹"
+      },
+      {
+        "id": "0872",
+        "nameEn": "reverse crunch",
+        "candidate": "反向卷腹"
+      },
+      {
+        "id": "0807",
+        "nameEn": "suspended reverse crunch",
+        "candidate": "反向卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "器械伸展",
+    "entries": [
+      {
+        "id": "2286",
+        "nameEn": "lever hip extension v. 2",
+        "candidate": "器械伸展"
+      },
+      {
+        "id": "0573",
+        "nameEn": "lever back extension",
+        "candidate": "器械伸展"
+      },
+      {
+        "id": "0607",
+        "nameEn": "lever triceps extension",
+        "candidate": "器械伸展"
+      }
+    ]
+  },
+  {
+    "candidate": "器械推举",
+    "entries": [
+      {
+        "id": "2289",
+        "nameEn": "lever calf press",
+        "candidate": "器械推举"
+      },
+      {
+        "id": "0587",
+        "nameEn": "lever military press",
+        "candidate": "器械推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃站姿弯举",
+    "entries": [
+      {
+        "id": "2293",
+        "nameEn": "dumbbell standing zottman preacher curl",
+        "candidate": "哑铃站姿弯举"
+      },
+      {
+        "id": "2321",
+        "nameEn": "dumbbell standing inner biceps curl v. 2",
+        "candidate": "哑铃站姿弯举"
+      },
+      {
+        "id": "0416",
+        "nameEn": "dumbbell standing biceps curl",
+        "candidate": "哑铃站姿弯举"
+      },
+      {
+        "id": "0418",
+        "nameEn": "dumbbell standing concentration curl",
+        "candidate": "哑铃站姿弯举"
+      },
+      {
+        "id": "0428",
+        "nameEn": "dumbbell standing preacher curl",
+        "candidate": "哑铃站姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "健身球卷腹",
+    "entries": [
+      {
+        "id": "2297",
+        "nameEn": "stability ball crunch (full range hands behind head)",
+        "candidate": "健身球卷腹"
+      },
+      {
+        "id": "0271",
+        "nameEn": "crunch (on stability ball)",
+        "candidate": "健身球卷腹"
+      },
+      {
+        "id": "0272",
+        "nameEn": "crunch (on stability ball, arms straight)",
+        "candidate": "健身球卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "划船",
+    "entries": [
+      {
+        "id": "2298",
+        "nameEn": "inverted row on bench",
+        "candidate": "划船"
+      },
+      {
+        "id": "2300",
+        "nameEn": "inverted row bent knees",
+        "candidate": "划船"
+      },
+      {
+        "id": "3167",
+        "nameEn": "bodyweight squatting row (with towel)",
+        "candidate": "划船"
+      },
+      {
+        "id": "3168",
+        "nameEn": "bodyweight squatting row",
+        "candidate": "划船"
+      },
+      {
+        "id": "0499",
+        "nameEn": "inverted row",
+        "candidate": "划船"
+      },
+      {
+        "id": "0497",
+        "nameEn": "inverted row v. 2",
+        "candidate": "划船"
+      },
+      {
+        "id": "0498",
+        "nameEn": "inverted row with straps",
+        "candidate": "划船"
+      },
+      {
+        "id": "0808",
+        "nameEn": "suspended row",
+        "candidate": "划船"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃坐姿侧平举",
+    "entries": [
+      {
+        "id": "2317",
+        "nameEn": "dumbbell seated bent arm lateral raise",
+        "candidate": "哑铃坐姿侧平举"
+      },
+      {
+        "id": "0396",
+        "nameEn": "dumbbell seated lateral raise",
+        "candidate": "哑铃坐姿侧平举"
+      },
+      {
+        "id": "0395",
+        "nameEn": "dumbbell seated lateral raise v. 2",
+        "candidate": "哑铃坐姿侧平举"
+      }
+    ]
+  },
+  {
+    "candidate": "器械推肩",
+    "entries": [
+      {
+        "id": "2318",
+        "nameEn": "lever shoulder press v. 3",
+        "candidate": "器械推肩"
+      },
+      {
+        "id": "0603",
+        "nameEn": "lever shoulder press",
+        "candidate": "器械推肩"
+      },
+      {
+        "id": "0869",
+        "nameEn": "lever shoulder press v. 2",
+        "candidate": "器械推肩"
+      }
+    ]
+  },
+  {
+    "candidate": "负重转体",
+    "entries": [
+      {
+        "id": "2371",
+        "nameEn": "weighted russian twist v. 2",
+        "candidate": "负重转体"
+      },
+      {
+        "id": "0846",
+        "nameEn": "weighted russian twist",
+        "candidate": "负重转体"
+      },
+      {
+        "id": "0845",
+        "nameEn": "weighted russian twist (legs up)",
+        "candidate": "负重转体"
+      }
+    ]
+  },
+  {
+    "candidate": "窄握俯卧撑",
+    "entries": [
+      {
+        "id": "2398",
+        "nameEn": "close-grip push-up (on knees)",
+        "candidate": "窄握俯卧撑"
+      },
+      {
+        "id": "0259",
+        "nameEn": "close-grip push-up",
+        "candidate": "窄握俯卧撑"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索下压",
+    "entries": [
+      {
+        "id": "2405",
+        "nameEn": "cable triceps pushdown (v-bar) (with arm blaster)",
+        "candidate": "绳索下压"
+      },
+      {
+        "id": "0201",
+        "nameEn": "cable pushdown",
+        "candidate": "绳索下压"
+      },
+      {
+        "id": "0199",
+        "nameEn": "cable pushdown (straight arm) v. 2",
+        "candidate": "绳索下压"
+      },
+      {
+        "id": "0200",
+        "nameEn": "cable pushdown (with rope attachment)",
+        "candidate": "绳索下压"
+      },
+      {
+        "id": "0241",
+        "nameEn": "cable triceps pushdown (v-bar)",
+        "candidate": "绳索下压"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索反向下压",
+    "entries": [
+      {
+        "id": "2406",
+        "nameEn": "cable reverse grip triceps pushdown (sz-bar) (with arm blaster)",
+        "candidate": "绳索反向下压"
+      },
+      {
+        "id": "0207",
+        "nameEn": "cable reverse-grip pushdown",
+        "candidate": "绳索反向下压"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃站姿弯举",
+    "entries": [
+      {
+        "id": "2414",
+        "nameEn": "barbell standing concentration curl",
+        "candidate": "杠铃站姿弯举"
+      },
+      {
+        "id": "0104",
+        "nameEn": "barbell standing back wrist curl",
+        "candidate": "杠铃站姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索下拉",
+    "entries": [
+      {
+        "id": "2616",
+        "nameEn": "cable lateral pulldown with v-bar",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0150",
+        "nameEn": "cable bar lateral pulldown",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0153",
+        "nameEn": "cable cross-over lateral pulldown",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0177",
+        "nameEn": "cable lateral pulldown (with rope attachment)",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0198",
+        "nameEn": "cable pulldown",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0197",
+        "nameEn": "cable pulldown (pro lat bar)",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0238",
+        "nameEn": "cable straight arm pulldown",
+        "candidate": "绳索下拉"
+      },
+      {
+        "id": "0237",
+        "nameEn": "cable straight arm pulldown (with rope)",
+        "candidate": "绳索下拉"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃平举",
+    "entries": [
+      {
+        "id": "2799",
+        "nameEn": "barbell sitted alternate leg raise",
+        "candidate": "杠铃平举"
+      },
+      {
+        "id": "2800",
+        "nameEn": "barbell sitted alternate leg raise (female)",
+        "candidate": "杠铃平举"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃分腿蹲",
+    "entries": [
+      {
+        "id": "2810",
+        "nameEn": "barbell split squat v. 2",
+        "candidate": "杠铃分腿蹲"
+      },
+      {
+        "id": "0098",
+        "nameEn": "barbell side split squat",
+        "candidate": "杠铃分腿蹲"
+      },
+      {
+        "id": "0097",
+        "nameEn": "barbell side split squat v. 2",
+        "candidate": "杠铃分腿蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "直腿平举",
+    "entries": [
+      {
+        "id": "2963",
+        "nameEn": "captains chair straight leg raise",
+        "candidate": "直腿平举"
+      },
+      {
+        "id": "0474",
+        "nameEn": "hanging straight leg hip raise",
+        "candidate": "直腿平举"
+      },
+      {
+        "id": "0475",
+        "nameEn": "hanging straight leg raise",
+        "candidate": "直腿平举"
+      }
+    ]
+  },
+  {
+    "candidate": "上斜俯卧撑",
+    "entries": [
+      {
+        "id": "3011",
+        "nameEn": "incline scapula push up",
+        "candidate": "上斜俯卧撑"
+      },
+      {
+        "id": "3785",
+        "nameEn": "incline push-up (on box)",
+        "candidate": "上斜俯卧撑"
+      },
+      {
+        "id": "0492",
+        "nameEn": "incline push up depth jump",
+        "candidate": "上斜俯卧撑"
+      },
+      {
+        "id": "0493",
+        "nameEn": "incline push-up",
+        "candidate": "上斜俯卧撑"
+      }
+    ]
+  },
+  {
+    "candidate": "臀桥",
+    "entries": [
+      {
+        "id": "3013",
+        "nameEn": "low glute bridge on floor",
+        "candidate": "臀桥"
+      },
+      {
+        "id": "3523",
+        "nameEn": "glute bridge two legs on bench (male)",
+        "candidate": "臀桥"
+      },
+      {
+        "id": "3561",
+        "nameEn": "glute bridge march",
+        "candidate": "臀桥"
+      }
+    ]
+  },
+  {
+    "candidate": "弹力带窄握下拉",
+    "entries": [
+      {
+        "id": "3117",
+        "nameEn": "band fixed back close grip pulldown",
+        "candidate": "弹力带窄握下拉"
+      },
+      {
+        "id": "0974",
+        "nameEn": "band close-grip pulldown",
+        "candidate": "弹力带窄握下拉"
+      }
+    ]
+  },
+  {
+    "candidate": "单臂站姿划船",
+    "entries": [
+      {
+        "id": "3161",
+        "nameEn": "bodyweight standing one arm row (with towel)",
+        "candidate": "单臂站姿划船"
+      },
+      {
+        "id": "3162",
+        "nameEn": "bodyweight standing one arm row",
+        "candidate": "单臂站姿划船"
+      }
+    ]
+  },
+  {
+    "candidate": "站姿划船",
+    "entries": [
+      {
+        "id": "3165",
+        "nameEn": "bodyweight standing row (with towel)",
+        "candidate": "站姿划船"
+      },
+      {
+        "id": "3166",
+        "nameEn": "bodyweight standing row",
+        "candidate": "站姿划船"
+      }
+    ]
+  },
+  {
+    "candidate": "器械俯身划船",
+    "entries": [
+      {
+        "id": "3200",
+        "nameEn": "lever bent-over row with v-bar",
+        "candidate": "器械俯身划船"
+      },
+      {
+        "id": "0574",
+        "nameEn": "lever bent over row",
+        "candidate": "器械俯身划船"
+      }
+    ]
+  },
+  {
+    "candidate": "仰卧起坐",
+    "entries": [
+      {
+        "id": "3201",
+        "nameEn": "quarter sit-up",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "3202",
+        "nameEn": "half sit-up (male)",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "3203",
+        "nameEn": "prisoner half sit-up (male)",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "3204",
+        "nameEn": "arms overhead full sit-up (male)",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "3679",
+        "nameEn": "sit-up with arms on chest",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "0001",
+        "nameEn": "3/4 sit-up",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "0507",
+        "nameEn": "jackknife sit-up",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "0508",
+        "nameEn": "janda sit-up",
+        "candidate": "仰卧起坐"
+      },
+      {
+        "id": "0735",
+        "nameEn": "sit-up v. 2",
+        "candidate": "仰卧起坐"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃飞鸟",
+    "entries": [
+      {
+        "id": "3234",
+        "nameEn": "hyght dumbbell fly",
+        "candidate": "哑铃飞鸟"
+      },
+      {
+        "id": "0308",
+        "nameEn": "dumbbell fly",
+        "candidate": "哑铃飞鸟"
+      }
+    ]
+  },
+  {
+    "candidate": "负重引体向上",
+    "entries": [
+      {
+        "id": "3290",
+        "nameEn": "weighted one hand pull up",
+        "candidate": "负重引体向上"
+      },
+      {
+        "id": "0841",
+        "nameEn": "weighted pull-up",
+        "candidate": "负重引体向上"
+      }
+    ]
+  },
+  {
+    "candidate": "推举",
+    "entries": [
+      {
+        "id": "3291",
+        "nameEn": "stalder press",
+        "candidate": "推举"
+      },
+      {
+        "id": "0738",
+        "nameEn": "sled 45в° calf press",
+        "candidate": "推举"
+      },
+      {
+        "id": "0816",
+        "nameEn": "triceps press",
+        "candidate": "推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜平举",
+    "entries": [
+      {
+        "id": "3541",
+        "nameEn": "dumbbell incline y-raise",
+        "candidate": "哑铃上斜平举"
+      },
+      {
+        "id": "3542",
+        "nameEn": "dumbbell incline t-raise",
+        "candidate": "哑铃上斜平举"
+      },
+      {
+        "id": "0325",
+        "nameEn": "dumbbell incline raise",
+        "candidate": "哑铃上斜平举"
+      },
+      {
+        "id": "0328",
+        "nameEn": "dumbbell incline shoulder raise",
+        "candidate": "哑铃上斜平举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上斜推举",
+    "entries": [
+      {
+        "id": "3545",
+        "nameEn": "dumbbell incline alternate press",
+        "candidate": "哑铃上斜推举"
+      },
+      {
+        "id": "0321",
+        "nameEn": "dumbbell incline hammer press",
+        "candidate": "哑铃上斜推举"
+      },
+      {
+        "id": "0324",
+        "nameEn": "dumbbell incline palm-in press",
+        "candidate": "哑铃上斜推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃弓步",
+    "entries": [
+      {
+        "id": "3635",
+        "nameEn": "dumbbell contralateral forward lunge",
+        "candidate": "哑铃弓步"
+      },
+      {
+        "id": "0336",
+        "nameEn": "dumbbell lunge",
+        "candidate": "哑铃弓步"
+      }
+    ]
+  },
+  {
+    "candidate": "跪姿辅助臂屈伸",
+    "entries": [
+      {
+        "id": "0009",
+        "nameEn": "assisted chest dip (kneeling)",
+        "candidate": "跪姿辅助臂屈伸"
+      },
+      {
+        "id": "0019",
+        "nameEn": "assisted triceps dip (kneeling)",
+        "candidate": "跪姿辅助臂屈伸"
+      }
+    ]
+  },
+  {
+    "candidate": "辅助平举",
+    "entries": [
+      {
+        "id": "0011",
+        "nameEn": "assisted hanging knee raise",
+        "candidate": "辅助平举"
+      },
+      {
+        "id": "0010",
+        "nameEn": "assisted hanging knee raise with throw down",
+        "candidate": "辅助平举"
+      }
+    ]
+  },
+  {
+    "candidate": "仰卧辅助平举",
+    "entries": [
+      {
+        "id": "0012",
+        "nameEn": "assisted lying leg raise with lateral throw down",
+        "candidate": "仰卧辅助平举"
+      },
+      {
+        "id": "0013",
+        "nameEn": "assisted lying leg raise with throw down",
+        "candidate": "仰卧辅助平举"
+      }
+    ]
+  },
+  {
+    "candidate": "弹力带仰卧起坐",
+    "entries": [
+      {
+        "id": "0981",
+        "nameEn": "band jack knife sit-up",
+        "candidate": "弹力带仰卧起坐"
+      },
+      {
+        "id": "0992",
+        "nameEn": "band push sit-up",
+        "candidate": "弹力带仰卧起坐"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃卧推",
+    "entries": [
+      {
+        "id": "0025",
+        "nameEn": "barbell bench press",
+        "candidate": "杠铃卧推"
+      },
+      {
+        "id": "0045",
+        "nameEn": "barbell guillotine bench press",
+        "candidate": "杠铃卧推"
+      },
+      {
+        "id": "0052",
+        "nameEn": "barbell jm bench press",
+        "candidate": "杠铃卧推"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃硬拉",
+    "entries": [
+      {
+        "id": "0032",
+        "nameEn": "barbell deadlift",
+        "candidate": "杠铃硬拉"
+      },
+      {
+        "id": "0085",
+        "nameEn": "barbell romanian deadlift",
+        "candidate": "杠铃硬拉"
+      },
+      {
+        "id": "0117",
+        "nameEn": "barbell sumo deadlift",
+        "candidate": "杠铃硬拉"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃后束弓步",
+    "entries": [
+      {
+        "id": "0078",
+        "nameEn": "barbell rear lunge",
+        "candidate": "杠铃后束弓步"
+      },
+      {
+        "id": "0077",
+        "nameEn": "barbell rear lunge v. 2",
+        "candidate": "杠铃后束弓步"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃反向弯举",
+    "entries": [
+      {
+        "id": "0080",
+        "nameEn": "barbell reverse curl",
+        "candidate": "杠铃反向弯举"
+      },
+      {
+        "id": "0081",
+        "nameEn": "barbell reverse preacher curl",
+        "candidate": "杠铃反向弯举"
+      },
+      {
+        "id": "0082",
+        "nameEn": "barbell reverse wrist curl",
+        "candidate": "杠铃反向弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃坐姿推举",
+    "entries": [
+      {
+        "id": "0086",
+        "nameEn": "barbell seated behind head military press",
+        "candidate": "杠铃坐姿推举"
+      },
+      {
+        "id": "0087",
+        "nameEn": "barbell seated bradford rocky press",
+        "candidate": "杠铃坐姿推举"
+      },
+      {
+        "id": "0091",
+        "nameEn": "barbell seated overhead press",
+        "candidate": "杠铃坐姿推举"
+      }
+    ]
+  },
+  {
+    "candidate": "杠铃直立划船",
+    "entries": [
+      {
+        "id": "0120",
+        "nameEn": "barbell upright row",
+        "candidate": "杠铃直立划船"
+      },
+      {
+        "id": "0119",
+        "nameEn": "barbell upright row v. 2",
+        "candidate": "杠铃直立划船"
+      },
+      {
+        "id": "0121",
+        "nameEn": "barbell upright row v. 3",
+        "candidate": "杠铃直立划船"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索推肩",
+    "entries": [
+      {
+        "id": "0148",
+        "nameEn": "cable alternate shoulder press",
+        "candidate": "绳索推肩"
+      },
+      {
+        "id": "0219",
+        "nameEn": "cable shoulder press",
+        "candidate": "绳索推肩"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索飞鸟",
+    "entries": [
+      {
+        "id": "0154",
+        "nameEn": "cable cross-over revers fly",
+        "candidate": "绳索飞鸟"
+      },
+      {
+        "id": "0179",
+        "nameEn": "cable low fly",
+        "candidate": "绳索飞鸟"
+      },
+      {
+        "id": "0188",
+        "nameEn": "cable middle fly",
+        "candidate": "绳索飞鸟"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索宽握坐姿划船",
+    "entries": [
+      {
+        "id": "0160",
+        "nameEn": "cable floor seated wide-grip row",
+        "candidate": "绳索宽握坐姿划船"
+      },
+      {
+        "id": "0218",
+        "nameEn": "cable seated wide-grip row",
+        "candidate": "绳索宽握坐姿划船"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索平举",
+    "entries": [
+      {
+        "id": "0161",
+        "nameEn": "cable forward raise",
+        "candidate": "绳索平举"
+      },
+      {
+        "id": "0164",
+        "nameEn": "cable front shoulder raise",
+        "candidate": "绳索平举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索后束划船",
+    "entries": [
+      {
+        "id": "0202",
+        "nameEn": "cable rear delt row (stirrups)",
+        "candidate": "绳索后束划船"
+      },
+      {
+        "id": "0203",
+        "nameEn": "cable rear delt row (with rope)",
+        "candidate": "绳索后束划船"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索反向卷腹",
+    "entries": [
+      {
+        "id": "0873",
+        "nameEn": "cable reverse crunch",
+        "candidate": "绳索反向卷腹"
+      },
+      {
+        "id": "0242",
+        "nameEn": "cable tuck reverse crunch",
+        "candidate": "绳索反向卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索反向弯举",
+    "entries": [
+      {
+        "id": "0206",
+        "nameEn": "cable reverse curl",
+        "candidate": "绳索反向弯举"
+      },
+      {
+        "id": "0209",
+        "nameEn": "cable reverse preacher curl",
+        "candidate": "绳索反向弯举"
+      },
+      {
+        "id": "0210",
+        "nameEn": "cable reverse wrist curl",
+        "candidate": "绳索反向弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索卷腹",
+    "entries": [
+      {
+        "id": "0221",
+        "nameEn": "cable side bend crunch (bosu ball)",
+        "candidate": "绳索卷腹"
+      },
+      {
+        "id": "0223",
+        "nameEn": "cable side crunch",
+        "candidate": "绳索卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索站姿弯举",
+    "entries": [
+      {
+        "id": "0224",
+        "nameEn": "cable standing back wrist curl",
+        "candidate": "绳索站姿弯举"
+      },
+      {
+        "id": "0229",
+        "nameEn": "cable standing inner curl",
+        "candidate": "绳索站姿弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索站姿卷腹",
+    "entries": [
+      {
+        "id": "0226",
+        "nameEn": "cable standing crunch",
+        "candidate": "绳索站姿卷腹"
+      },
+      {
+        "id": "0874",
+        "nameEn": "cable standing crunch (with rope attachment)",
+        "candidate": "绳索站姿卷腹"
+      }
+    ]
+  },
+  {
+    "candidate": "绳索转体",
+    "entries": [
+      {
+        "id": "0243",
+        "nameEn": "cable twist",
+        "candidate": "绳索转体"
+      },
+      {
+        "id": "0862",
+        "nameEn": "cable twist (up-down)",
+        "candidate": "绳索转体"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃上拉",
+    "entries": [
+      {
+        "id": "0288",
+        "nameEn": "dumbbell around pullover",
+        "candidate": "哑铃上拉"
+      },
+      {
+        "id": "0375",
+        "nameEn": "dumbbell pullover",
+        "candidate": "哑铃上拉"
+      },
+      {
+        "id": "0433",
+        "nameEn": "dumbbell straight arm pullover",
+        "candidate": "哑铃上拉"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃前平举",
+    "entries": [
+      {
+        "id": "0310",
+        "nameEn": "dumbbell front raise",
+        "candidate": "哑铃前平举"
+      },
+      {
+        "id": "0309",
+        "nameEn": "dumbbell front raise v. 2",
+        "candidate": "哑铃前平举"
+      },
+      {
+        "id": "0335",
+        "nameEn": "dumbbell lateral to front raise",
+        "candidate": "哑铃前平举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃侧平举",
+    "entries": [
+      {
+        "id": "0311",
+        "nameEn": "dumbbell full can lateral raise",
+        "candidate": "哑铃侧平举"
+      },
+      {
+        "id": "0334",
+        "nameEn": "dumbbell lateral raise",
+        "candidate": "哑铃侧平举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃仰卧推举",
+    "entries": [
+      {
+        "id": "0338",
+        "nameEn": "dumbbell lying elbow press",
+        "candidate": "哑铃仰卧推举"
+      },
+      {
+        "id": "0340",
+        "nameEn": "dumbbell lying hammer press",
+        "candidate": "哑铃仰卧推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂仰卧推举",
+    "entries": [
+      {
+        "id": "0343",
+        "nameEn": "dumbbell lying one arm press",
+        "candidate": "哑铃单臂仰卧推举"
+      },
+      {
+        "id": "0342",
+        "nameEn": "dumbbell lying one arm press v. 2",
+        "candidate": "哑铃单臂仰卧推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂侧平举",
+    "entries": [
+      {
+        "id": "0355",
+        "nameEn": "dumbbell one arm lateral raise",
+        "candidate": "哑铃单臂侧平举"
+      },
+      {
+        "id": "0356",
+        "nameEn": "dumbbell one arm lateral raise with support",
+        "candidate": "哑铃单臂侧平举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单臂推肩",
+    "entries": [
+      {
+        "id": "0361",
+        "nameEn": "dumbbell one arm shoulder press",
+        "candidate": "哑铃单臂推肩"
+      },
+      {
+        "id": "0360",
+        "nameEn": "dumbbell one arm shoulder press v. 2",
+        "candidate": "哑铃单臂推肩"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃后束侧平举",
+    "entries": [
+      {
+        "id": "0380",
+        "nameEn": "dumbbell rear lateral raise",
+        "candidate": "哑铃后束侧平举"
+      },
+      {
+        "id": "0379",
+        "nameEn": "dumbbell rear lateral raise (support head)",
+        "candidate": "哑铃后束侧平举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃坐姿前平举",
+    "entries": [
+      {
+        "id": "0387",
+        "nameEn": "dumbbell seated alternate front raise",
+        "candidate": "哑铃坐姿前平举"
+      },
+      {
+        "id": "0392",
+        "nameEn": "dumbbell seated front raise",
+        "candidate": "哑铃坐姿前平举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃单腿提踵",
+    "entries": [
+      {
+        "id": "0409",
+        "nameEn": "dumbbell single leg calf raise",
+        "candidate": "哑铃单腿提踵"
+      },
+      {
+        "id": "0727",
+        "nameEn": "single leg calf raise (on a dumbbell)",
+        "candidate": "哑铃单腿提踵"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃站姿推举",
+    "entries": [
+      {
+        "id": "0414",
+        "nameEn": "dumbbell standing alternate overhead press",
+        "candidate": "哑铃站姿推举"
+      },
+      {
+        "id": "0426",
+        "nameEn": "dumbbell standing overhead press",
+        "candidate": "哑铃站姿推举"
+      },
+      {
+        "id": "0427",
+        "nameEn": "dumbbell standing palms in press",
+        "candidate": "哑铃站姿推举"
+      }
+    ]
+  },
+  {
+    "candidate": "哑铃直腿硬拉",
+    "entries": [
+      {
+        "id": "0432",
+        "nameEn": "dumbbell stiff leg deadlift",
+        "candidate": "哑铃直腿硬拉"
+      },
+      {
+        "id": "0434",
+        "nameEn": "dumbbell straight leg deadlift",
+        "candidate": "哑铃直腿硬拉"
+      }
+    ]
+  },
+  {
+    "candidate": "曲杆杠铃反向弯举",
+    "entries": [
+      {
+        "id": "0451",
+        "nameEn": "ez barbell reverse grip curl",
+        "candidate": "曲杆杠铃反向弯举"
+      },
+      {
+        "id": "0452",
+        "nameEn": "ez barbell reverse grip preacher curl",
+        "candidate": "曲杆杠铃反向弯举"
+      }
+    ]
+  },
+  {
+    "candidate": "屈曲仰卧起坐",
+    "entries": [
+      {
+        "id": "0456",
+        "nameEn": "flexion leg sit up (bent knee)",
+        "candidate": "屈曲仰卧起坐"
+      },
+      {
+        "id": "0457",
+        "nameEn": "flexion leg sit up (straight arm)",
+        "candidate": "屈曲仰卧起坐"
+      }
+    ]
+  },
+  {
+    "candidate": "壶铃交替推举",
+    "entries": [
+      {
+        "id": "0520",
+        "nameEn": "kettlebell alternating press",
+        "candidate": "壶铃交替推举"
+      },
+      {
+        "id": "0519",
+        "nameEn": "kettlebell alternating press on floor",
+        "candidate": "壶铃交替推举"
+      }
+    ]
+  },
+  {
+    "candidate": "壶铃交替划船",
+    "entries": [
+      {
+        "id": "0521",
+        "nameEn": "kettlebell alternating renegade row",
+        "candidate": "壶铃交替划船"
+      },
+      {
+        "id": "0522",
+        "nameEn": "kettlebell alternating row",
+        "candidate": "壶铃交替划船"
+      }
+    ]
+  },
+  {
+    "candidate": "壶铃推举",
+    "entries": [
+      {
+        "id": "0523",
+        "nameEn": "kettlebell arnold press",
+        "candidate": "壶铃推举"
+      },
+      {
+        "id": "0524",
+        "nameEn": "kettlebell bent press",
+        "candidate": "壶铃推举"
+      },
+      {
+        "id": "0528",
+        "nameEn": "kettlebell double push press",
+        "candidate": "壶铃推举"
+      },
+      {
+        "id": "0547",
+        "nameEn": "kettlebell seesaw press",
+        "candidate": "壶铃推举"
+      },
+      {
+        "id": "0553",
+        "nameEn": "kettlebell two arm military press",
+        "candidate": "壶铃推举"
+      }
+    ]
+  },
+  {
+    "candidate": "壶铃深蹲",
+    "entries": [
+      {
+        "id": "0533",
+        "nameEn": "kettlebell front squat",
+        "candidate": "壶铃深蹲"
+      },
+      {
+        "id": "0534",
+        "nameEn": "kettlebell goblet squat",
+        "candidate": "壶铃深蹲"
+      },
+      {
+        "id": "0544",
+        "nameEn": "kettlebell pistol squat",
+        "candidate": "壶铃深蹲"
+      },
+      {
+        "id": "0551",
+        "nameEn": "kettlebell turkish get up (squat style)",
+        "candidate": "壶铃深蹲"
+      }
+    ]
+  },
+  {
+    "candidate": "史密斯机站姿推举",
+    "entries": [
+      {
+        "id": "0772",
+        "nameEn": "smith standing behind head military press",
+        "candidate": "史密斯机站姿推举"
+      },
+      {
+        "id": "0774",
+        "nameEn": "smith standing military press",
+        "candidate": "史密斯机站姿推举"
+      }
+    ]
+  },
+  {
+    "candidate": "负重深蹲",
+    "entries": [
+      {
+        "id": "0851",
+        "nameEn": "weighted sissy squat",
+        "candidate": "负重深蹲"
+      },
+      {
+        "id": "0852",
+        "nameEn": "weighted squat",
+        "candidate": "负重深蹲"
+      }
+    ]
+  }
+]

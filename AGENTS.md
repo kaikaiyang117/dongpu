@@ -195,15 +195,26 @@ Exercise catalog changes require, in order:
 ```text
 node harmony/tools/generate_exercise_translation_candidates.mjs
 node harmony/tools/report_exercise_unknown_tokens.mjs
+node harmony/tools/report_exercise_candidate_conflicts.mjs
+node harmony/tools/generate_exercise_review_queue.mjs
+node harmony/tools/promote_auto_reviewed_exercises.mjs --dry-run
+node harmony/tools/promote_auto_reviewed_exercises.mjs
 node harmony/tools/promote_exercise_localization_reviews.mjs
 node harmony/tools/sync_exercise_catalog.mjs
 node harmony/tools/validate_exercise_catalog.mjs
+node harmony/tools/report_exercise_localization.mjs
 HarmonyOS debug build
 ```
 
-Machine-generated localization is never automatically marked `approved`. `aliasesZh` must contain
-only same-exercise synonyms, never biomechanically distinct variants. Ambiguous exercise names must
-not be resolved by returning the first match; callers must handle the resolver's `ambiguous` result.
-Candidate generation must never overwrite `harmony/data/exercise_localization_reviews.zh-CN.json`.
+The full pipeline must cover every upstream exercise. Generated records must include a candidate (or
+an explicit failure), metadataCandidate, translation confidence/method, quality grade and issues.
+`auto_reviewed`, `needs_review` and `needs_manual` are generated quality grades; only the first may
+be auto-promoted, and auto-promote writes `reviewed`, never `approved`. Machine-generated
+localization is never automatically marked `approved`. `aliasesZh` must contain only same-exercise
+synonyms, never biomechanically distinct variants. Ambiguous exercise names must not be resolved by
+returning the first match; callers must handle the resolver's `ambiguous` result. Candidate
+generation must never overwrite `harmony/data/exercise_localization_reviews.zh-CN.json`.
+All 1324 actions remain processed even when `libraryVisible` is false; visibility and recommendation
+are separate metadata gates.
 Recommendation, content review and library visibility are maintained in
 `harmony/data/exercise_metadata_overrides.json`, not inferred from a hard-coded ID set.

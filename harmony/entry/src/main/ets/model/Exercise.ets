@@ -10,6 +10,7 @@ export class BodyPart {
 
 export type ContentReviewStatus = 'raw' | 'reviewed' | 'approved' | 'rejected';
 export type LocalizationStatus = 'raw' | 'auto' | 'reviewed' | 'approved';
+export type LocalizationQuality = 'auto_reviewed' | 'needs_review' | 'needs_manual';
 export type ExerciseDifficulty = 'beginner' | 'intermediate' | 'advanced' | 'unknown';
 export type ExerciseMechanic = 'compound' | 'isolation' | 'cardio' | 'mobility' | 'unknown';
 export type ExerciseForce = 'push' | 'pull' | 'static' | 'mixed' | 'unknown';
@@ -81,6 +82,9 @@ export interface ExerciseRecord {
   recommendedForBeginner?: boolean;
   gymEligible?: boolean;
   localizationStatus?: LocalizationStatus;
+  translationConfidence?: number;
+  translationMethod?: string;
+  localizationQuality?: LocalizationQuality;
   difficulty?: ExerciseDifficulty;
   mechanic?: ExerciseMechanic;
   force?: ExerciseForce;
@@ -111,6 +115,9 @@ export class Exercise {
   recommendedForBeginner: boolean;
   gymEligible: boolean;
   localizationStatus: LocalizationStatus;
+  translationConfidence: number;
+  translationMethod: string;
+  localizationQuality: LocalizationQuality;
   difficulty: ExerciseDifficulty;
   mechanic: ExerciseMechanic;
   force: ExerciseForce;
@@ -138,6 +145,9 @@ export class Exercise {
     this.recommendedForBeginner = record.recommendedForBeginner ?? record.recommended;
     this.gymEligible = record.gymEligible ?? true;
     this.localizationStatus = record.localizationStatus ?? (this.nameZh.length > 0 ? 'reviewed' : 'raw');
+    this.translationConfidence = record.translationConfidence ?? 0;
+    this.translationMethod = record.translationMethod ?? 'upstream-English';
+    this.localizationQuality = record.localizationQuality ?? 'needs_manual';
     this.difficulty = record.difficulty ?? 'unknown';
     this.mechanic = record.mechanic ?? 'unknown';
     this.force = record.force ?? 'unknown';

@@ -13,6 +13,7 @@ const source = JSON.parse(await readFile(join(datasetDir, 'data/exercises.json')
 const localization = JSON.parse(await readFile(join(harmonyDir, 'data/exercise_localization.zh-CN.json'), 'utf8'));
 const metadata = JSON.parse(await readFile(join(harmonyDir, 'data/exercise_metadata_overrides.json'), 'utf8'));
 const catalog = JSON.parse(await readFile(join(rawfileDir, 'exercise_catalog.json'), 'utf8'));
+const generated = JSON.parse(await readFile(generatedPath, 'utf8'));
 
 const difficulties = new Set(['beginner', 'intermediate', 'advanced', 'unknown']);
 const mechanics = new Set(['compound', 'isolation', 'cardio', 'mobility', 'unknown']);
@@ -40,6 +41,7 @@ const variantAliasTokens = [
 ];
 const sourceIds = new Set(source.map((item) => item.id));
 const catalogIds = new Set(catalog.map((item) => item.id));
+const generatedIds = new Set(Object.keys(generated));
 
 function normalize(value) {
   return String(value ?? '').trim().toLocaleLowerCase().replace(/\s+/g, '');
@@ -135,13 +137,30 @@ for (const item of catalog) {
   }
 }
 
-let generated = {};
-try {
-  generated = JSON.parse(await readFile(generatedPath, 'utf8'));
-} catch (_) {
-  generated = {};
-}
 const unknownTokenEntries = Object.values(generated).filter((item) => (item.unknownTokens ?? []).length > 0);
+const qualityGrades = new Set(['auto_reviewed', 'needs_review', 'needs_manual']);
+const translationMethods = new Set(['structured-parser', 'structured-parser+rules', 'structured-parser+agent-review', 'manual', 'upstream-English']);
+const generatedMetadataErrors = Object.values(generated).filter((item) => {
+  const metadataCandidate = item.metadataCandidate ?? {};
+  return !difficulties.has(metadataCandidate.difficulty ?? 'unknown') ||
+    !mechanics.has(metadataCandidate.mechanic ?? 'unknown') ||
+    !forces.has(metadataCandidate.force ?? 'unknown') ||
+    !movementPatterns.has(metadataCandidate.movementPattern ?? 'other') ||
+    !replacementGroups.has(metadataCandidate.replacementGroup ?? 'other') ||
+    (metadataCandidate.variantTags ?? []).some((tag) => !variantTags.has(tag));
+});
+const generatedSchemaErrors = Object.values(generated).filter((item) =>
+  typeof item.id !== 'string' || typeof item.nameEn !== 'string' || typeof item.candidate !== 'string' ||
+  typeof item.translationConfidence !== 'number' || typeof item.translationMethod !== 'string' ||
+  !Array.isArray(item.unknownTokens) || !Array.isArray(item.issues) || !qualityGrades.has(item.qualityGrade) ||
+  item.metadataCandidate === undefined || !Array.isArray(item.metadataCandidate.variantTags));
+const catalogQualityErrors = catalog.filter((item) =>
+  typeof item.translationConfidence !== 'number' || !translationMethods.has(item.translationMethod) ||
+  !qualityGrades.has(item.localizationQuality));
+const generatedMissingIds = source.filter((item) => !generatedIds.has(item.id)).map((item) => item.id);
+const generatedExtraIds = [...generatedIds].filter((id) => !sourceIds.has(id));
+const variantLost = Object.values(generated).filter((item) => (item.issues ?? []).includes('variant_lost'));
+const candidateCollisions = Object.values(generated).filter((item) => (item.issues ?? []).includes('candidate_collision'));
 
 const counts = { approved: 0, reviewed: 0, auto: 0, raw: 0 };
 for (const item of catalog) {
@@ -161,6 +180,11 @@ const errors = {
   duplicatePrimaryNameZh,
   aliasToPrimaryConflicts,
   aliasToAliasConflicts
+  , generatedSchemaErrors
+  , generatedMissingIds
+  , generatedExtraIds
+  , generatedMetadataErrors
+  , catalogQualityErrors
 };
 
 console.log(`总动作数：${source.length}`);
@@ -175,10 +199,13 @@ console.log(`alias-alias 冲突：${aliasToAliasConflicts.length}`);
 console.log(`英文原名冲突（warning）：${englishNameConflicts.length}`);
 console.log(`疑似 variant alias：${possibleVariantAlias.length}`);
 console.log(`unknown tokens：${unknownTokenEntries.length}`);
+console.log(`variant lost：${variantLost.length}`);
+console.log(`candidate collisions：${candidateCollisions.length}`);
+console.log(`全量 Generated：${generatedIds.size}`);
 console.log(`无法匹配动作：${invalidLocalizationIds.length + invalidMetadataIds.length}`);
 console.log(`仍显示英文动作：${englishFallback}`);
 
-const hasErrors = Object.values(errors).some((entries) => entries.length > 0) || catalog.length !== source.length;
+const hasErrors = Object.values(errors).some((entries) => entries.length > 0) || catalog.length !== source.length || generatedIds.size !== source.length;
 if (hasErrors) {
   console.error(JSON.stringify({ ...errors, catalogLength: catalog.length, sourceLength: source.length }, null, 2));
   process.exitCode = 1;

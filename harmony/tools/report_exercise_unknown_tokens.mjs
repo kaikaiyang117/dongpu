@@ -10,14 +10,17 @@ const tokenStats = new Map();
 
 for (const item of Object.values(candidates)) {
   for (const token of item.unknownTokens ?? []) {
-    const stat = tokenStats.get(token) ?? { count: 0, examples: [] };
+    const stat = tokenStats.get(token) ?? { count: 0, exampleIds: [], exampleNames: [] };
     stat.count += 1;
-    if (stat.examples.length < 3) stat.examples.push(`${item.id} ${item.nameEn}`);
+    if (stat.exampleIds.length < 3) {
+      stat.exampleIds.push(item.id);
+      stat.exampleNames.push(item.nameEn);
+    }
     tokenStats.set(token, stat);
   }
 }
 
-console.log('unknown token\t出现次数\t示例动作');
+console.log('token\tcount\texampleIds\texampleNames');
 for (const [token, stat] of [...tokenStats.entries()].sort((left, right) => right[1].count - left[1].count)) {
-  console.log(`${token}\t${stat.count}\t${stat.examples.join(' | ')}`);
+  console.log(`${token}\t${stat.count}\t${stat.exampleIds.join(',')}\t${stat.exampleNames.join(' | ')}`);
 }
